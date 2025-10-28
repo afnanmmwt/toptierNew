@@ -945,15 +945,17 @@ View Invoice: ${invoiceUrl}`;
                 <thead className="tableHeader">
                   <tr>
                     <th className="tableCell">
-                      {dict?.hotelInvoice?.travellers?.table?.no}
+                      {dict?.hotelInvoice?.travellers?.table?.number}
                     </th>
                     <th className="tableCell">
-                      {dict?.hotelInvoice?.travellers?.table?.sr}
+                      {dict?.hotelInvoice?.travellers?.table?.type}
                     </th>
                     <th className="tableCell">
                       {dict?.hotelInvoice?.travellers?.table?.name}
                     </th>
-                    <th className="tableCell">Traveler Type</th>
+                    <th className="tableCell">
+                      {dict?.hotelInvoice?.travellers?.travellerType}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1157,7 +1159,7 @@ View Invoice: ${invoiceUrl}`;
                 width="20"
                 height="20"
               />
-              <span>Loading...</span>
+              <span>{dict?.featured_hotels?.loading || "Loading..."}</span>
             </>
           ) : (
             <>
@@ -1188,7 +1190,7 @@ View Invoice: ${invoiceUrl}`;
                 width="20"
                 height="20"
               />
-              <span>Cancelling...</span>
+              <span>{dict?.featured_hotels?.cancelling || "جارٍ الإلغاء..."}</span>
             </>
           ) : (
             <>

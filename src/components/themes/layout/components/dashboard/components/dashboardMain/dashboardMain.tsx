@@ -46,6 +46,7 @@ export default function Dashboard() {
     return () => clearTimeout(t);
   }, [searchTerm]);
 
+
   // ===================== original verify block (kept commented) =====================
   // useEffect(() => {
   //   if (!user) return;
@@ -64,6 +65,7 @@ export default function Dashboard() {
   //     }
   //   };
   //   checkToken();
+
   // }, [user]);
   // =============================================================================
 
@@ -90,6 +92,7 @@ export default function Dashboard() {
 
     queryFn: async ({ pageParam }): Promise<PageResult> => {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
+
       if (filters.search?.trim()) payload.search = filters.search.trim();
       const res = await fetch_dashboard_data(payload); // must return { data, total }
       return { ...res, page: Number(pageParam), limit: PAGE_SIZE };

@@ -660,7 +660,7 @@ body:is(.dark *) {
 
 .hotelImage {
   width: 350px; /* ← Increased from 300px */
-  height: 229px;
+  height: 290px;
   object-fit: cover;
 }
 

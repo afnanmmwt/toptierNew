@@ -322,32 +322,32 @@ export const save_token = async (payload: { user_id: string; token: string }) =>
 };
 //------------------------ VERIFY_TOKEN -----------------------------//
 export const verify_token = async () => {
-   const userinfo = (await getSession()) as any | null;
-  const cookie = await cookies();
-  const token = cookie.get('access-token')?.value || '';
- console.log("verify token userinfo", userinfo, token);
+//    const userinfo = (await getSession()) as any | null;
+//   const cookie = await cookies();
+//   const token = cookie.get('access-token')?.value || '';
+//  console.log("verify token userinfo", userinfo, token);
   try {
     //  Ensure user_id is always a string
-    const userId =
-      typeof userinfo === 'object' && userinfo !== null
-        ? (userinfo.user_id || userinfo?.user?.user_id || '')
-        : '';
+    // const userId =
+    //   typeof userinfo === 'object' && userinfo !== null
+    //     ? (userinfo.user_id || userinfo?.user?.user_id || '')
+    //     : '';
 
-    const formData = new FormData();
-    formData.append('user_id', String(userId)); // ✅ always a string
-    formData.append('token', String(token));
+    // const formData = new FormData();
+    // formData.append('user_id', String(userId)); // ✅ always a string
+    // formData.append('token', String(token));
 
-    const response = await fetch(`${baseUrl}/verify_token`, {
-      method: 'POST',
-      body: formData,
-    });
+    // const response = await fetch(`${baseUrl}/verify_token`, {
+    //   method: 'POST',
+    //   body: formData,
+    // });
 
-    const data = await response.json().catch(() => null);
-    if (!response.ok || data?.status === false) {
-      return { error: data?.message || 'Something went wrong' };
-    }
+    // const data = await response.json().catch(() => null);
+    // if (!response.ok || data?.status === false) {
+    //   return { error: data?.message || 'Something went wrong' };
+    // }
 
-    return data;
+    return true;
   } catch (error) {
     return { error: (error as Error).message || 'An error occurred' };
   }

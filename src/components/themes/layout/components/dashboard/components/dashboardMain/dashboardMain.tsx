@@ -228,8 +228,8 @@ export default function Dashboard() {
 
       <div className="border border-gray-200 rounded-2xl bg-white shadow-md">
         {/* Filters (pagination controls removed) */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-gray-100">
-          <div className="flex gap-2">
+        <div className="flex flex-wrap md:flex-row items-center justify-between gap-4 p-4 border-b border-gray-100">
+          <div className="flex flex-wrap md:flex-row gap-2">
             {[
               {
                 label: dict?.dashboard?.all || "All",
@@ -336,7 +336,7 @@ export default function Dashboard() {
                     <div className="flex justify-center py-4">
                       <button
                         onClick={() => fetchNextPage()}
-                        // className="px-4 py-2 text-sm rounded-lg border  bg-gray-50 hover:bg-gray-100"
+                        // className="px-4 py-2 text-sm rounded-lg border bg-gray-50 hover:bg-gray-100"
                       >
                         {dict?.dashboard?.load_more || ""}
                       </button>

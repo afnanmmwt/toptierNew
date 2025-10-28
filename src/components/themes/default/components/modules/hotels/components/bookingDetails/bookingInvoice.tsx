@@ -28,6 +28,7 @@ interface RoomData {
   name: string;
   price: string;
   currency: string;
+  room_price: string;
   room_name: string;
   room_qaunitity: string;
 }
@@ -101,7 +102,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       totalNights: 1,
       type: rooms[0]?.room_name || "N/A",
       quantity: rooms[0].room_qaunitity,
-      price: rooms[0]?.price || data.price_markup,
+      price: rooms[0]?.room_price || data.price_markup,
       currency: rooms[0]?.currency || data.currency_markup,
     },
     taxes: data.tax || "0",
@@ -1050,7 +1051,7 @@ View Invoice: ${invoiceUrl}`;
                   <td className="roomCell">
                     {dict?.hotelInvoice?.roomDetails?.total}
                   </td>
-                  <td className="roomCell">{bookingData.total}</td>
+                  <td className="roomCell">{bookingData.room.currency}    {bookingData.room.price}</td>
                 </tr>
               </tbody>
             </table>

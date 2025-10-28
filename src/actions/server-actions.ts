@@ -48,7 +48,6 @@ export const fetchAppData = async (payload: appDataPayload) => {
     // explicitly type userinfo
     const userinfo = (await getSession()) as SessionUser | null;
     const user_id = userinfo?.user?.user_id ?? "";
-    console.log("fetch app data userinfo", userinfo);
     const formData = new FormData();
     formData.append("api_key", api_key ?? "");
     formData.append("language", payload.language);
@@ -322,13 +321,9 @@ export async function signIn(
     if (!response.ok || data?.status === false) {
       return { success: false, error: data?.message || 'Invalid credentials' };
     }
-
     // ✅ Create session (this runs on server, so cookies() works!)
     await createSession(data.data);
-
-    // Optional: redirect after success
-    // redirect('/dashboard');
-
+    await save_token();
     return { success: true };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -338,42 +333,66 @@ export async function signIn(
   }
 }
 export const signOut = async () => {
+   const userinfo = (await getSession()) as any | null;
   try {
-    await logout();
+    //  Ensure user_id is always a string
+    const userId =
+      typeof userinfo === 'object' && userinfo !== null
+        ? (userinfo.user_id || userinfo?.user?.user_id || '')
+        : '';
+
+    const formData = new FormData();
+    formData.append('user_id', String(userId)); //always a string
+    // formData.append('token', String(token));
+
+    const response = await fetch(`${baseUrl}/logout`, {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await response.json().catch(() => null);
+     await logout();
+    if (!response.ok || data?.status === false) {
+      return { error: data?.message || 'Something went wrong' };
+    }
     return { success: "Logged out successfully" };
   } catch (error) {
-    return { error: (error as Error).message || "An error occurred" };
+    return { error: (error as Error).message || 'An error occurred' };
   }
 };
+
 
 export const getUser = async () => {
   const session = await getSession();
   return session?.user;
 };
 //------------- SAVE TOKEN --------------------//
-export const save_token = async (payload: { user_id: string; token: string }) => {
+export const save_token = async () => {
+   const userinfo = (await getSession()) as any | null;
+  const cookie = await cookies();
+  const token = cookie.get('access-token')?.value || '';
   try {
+    //  Ensure user_id is always a string
+    const userId =
+      typeof userinfo === 'object' && userinfo !== null
+        ? (userinfo.user_id || userinfo?.user?.user_id || '')
+        : '';
+
     const formData = new FormData();
-    formData.append("user_id", payload.user_id);
-    formData.append("token", payload.token);
-   //  add api_key if needed
+    formData.append('user_id', String(userId)); // ✅ always a string
+    formData.append('token', String(token));
+
     const response = await fetch(`${baseUrl}/save_token`, {
-      method: "POST",
+      method: 'POST',
       body: formData,
-      //  don't set Content-Type, browser sets it for FormData
     });
 
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.status === false) {
-      return { error: data?.message || "Something went wrong" };
+      return { error: data?.message || 'Something went wrong' };
     }
-    const userinfo = data?.data;
-    // const user = decodeBearerToken(data.data);
-    // await createSession(userinfo);
-
     return data;
   } catch (error) {
-    return { error: (error as Error).message || "An error occurred" };
+    return { error: (error as Error).message || 'An error occurred' };
   }
 };
 //------------------------ VERIFY_TOKEN -----------------------------//
@@ -381,7 +400,6 @@ export const verify_token = async () => {
    const userinfo = (await getSession()) as any | null;
   const cookie = await cookies();
   const token = cookie.get('access-token')?.value || '';
- console.log("verify token userinfo", userinfo, token);
   try {
     //  Ensure user_id is always a string
     const userId =
@@ -408,7 +426,11 @@ export const verify_token = async () => {
     return { error: (error as Error).message || 'An error occurred' };
   }
 };
-
+export const getAccessToken = async () => {
+  const cookie = await cookies();
+  const token = cookie.get('access-token')?.value || '';
+  return token;
+};
 //------------------------ FORGET PASSWORD -----------------------------//
 export const forget_password = async (payload: {
   email: string;
@@ -611,9 +633,8 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
   try {
     const formData = new FormData();
     //  match exactly with API keys
-
     formData.append("hotel_id", String(payload.hotel_id));
-      formData.append("checkin", payload.checkin);
+    formData.append("checkin", payload.checkin);
     formData.append("checkout", payload.checkout);
     formData.append("rooms", String(payload.rooms));
     formData.append("adults", String(payload.adults));
@@ -623,7 +644,7 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
     formData.append("currency", payload.currency || "usd");
     formData.append("supplier_name", payload.supplier_name || "");
     formData.append("child_age","0" );
-     if (payload.child_age && payload.child_age.length > 0) {
+     if(payload.child_age && payload.child_age.length > 0) {
     const formattedAges = payload.child_age.map((age: string) => ({ ages: age }));
     formData.append("child_age", JSON.stringify(formattedAges));
   } else {

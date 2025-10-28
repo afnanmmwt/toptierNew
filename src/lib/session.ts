@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 const secret = process.env.JWT_PASSWORD;
 const key = new TextEncoder().encode(secret);
-
 export async function encrypt(payload: Record<string, unknown>) {
   return await new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
@@ -43,18 +42,25 @@ interface SessionUser {
 export async function createSession(user: any) {
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
   const session = await encrypt({ user });
-  (await cookies()).set("access-token", session, { httpOnly: true, expires });
+  // (await cookies()).set("access-token", session, { httpOnly: true, expires });
+  (await cookies()).set("access-token", session, {
+    httpOnly: false,
+    secure: true, //  Must be true because your site is HTTPS (toptiertravel.vip)
+    sameSite: "lax", // Required for cross-origin safety
+    path: "/", //  Critical — makes cookie available site-wide
+    expires,
+  });
 }
 
 export async function logout() {
   (await cookies()).set("access-token", "", { expires: new Date(0) });
+
 }
 
 export async function getSession() {
   const session = (await cookies()).get("access-token")?.value;
   if (!session) return null;
   // const userinfo= decrypt(session)
-  // console.log('sestion token' ,userinfo)
 
   return await decrypt(session);
 }

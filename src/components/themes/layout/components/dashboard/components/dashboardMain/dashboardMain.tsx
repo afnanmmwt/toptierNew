@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetch_dashboard_data, get_profile, verify_token } from "@src/actions";
+import { fetch_dashboard_data, get_profile, getAccessToken, verify_token } from "@src/actions";
 import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
 import DashboardCard, { toCardData } from "./dashboardCard";
@@ -37,35 +37,39 @@ export default function Dashboard() {
     }, 500);
     return () => clearTimeout(timeout);
   }, [searchTerm]);
-  // const [searchTerm, setSearchTerm] = useState("");
-// useEffect(() => {
-//   if (!user) return; // wait until user is defined
 
-//   const checkToken = async () => {
-//     try {
-//       const verify_response = await verify_token();
-//       console.log("verify_token response:", verify_response);
+React.useEffect(() => {
+  if (user == null) return;
 
-//       if (verify_response?.status) {
-//         if (user.user_type === "customer") {
-//           router.push("/dashboard");
-//         } else if (user.user_type === "Agent") {
-//           window.location.href = "https://chat.qwen.ai/c/guest";
-//         } else {
-//           router.push("/auth/login");
-//         }
-//       } else {
-//         router.push("/auth/login");
-//       }
-//     } catch (error) {
-//       console.error("Token verification failed:", error);
-//       router.push("/auth/login");
-//     }
-//   };
+  const verifyAndRedirect = async () => {
+    try {
+      const verify_response = await verify_token();
+      if (!verify_response?.status) {
+        router.push("/auth/login");
+        return;
+      }
+      const type = user.user_type;
+      if (type === "Customer") {
+         const token = await getAccessToken();
+        //  console.log("Token fetched:", token);
+        // router.push("/dashboard");
+  //        const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+  // window.location.href = url; // full redirect (bypasses SPA)
 
-//   checkToken();
-// }, [ user]);
-
+      } else if (type === "Agent") {
+       const token = await getAccessToken(); // ← must be a Server Action
+          const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+  window.location.href = url; // full redirect (bypasses SPA)
+      } else {
+        router.push("/auth/login");
+      }
+    } catch (error) {
+      console.error("Token verification failed:", error);
+      router.push("/auth/login");
+    }
+  };
+  verifyAndRedirect();
+}, [user, router]);
 
   // =============== Fetch dashboard data
   const { data, isLoading, isError, error } = useQuery({
@@ -108,10 +112,7 @@ export default function Dashboard() {
   const cancelledCount = bookings.filter(
     (b: any) => b.booking_status === "cancelled"
   ).length;
-  console.log(paidCount);
-  console.log(unpaidCount);
-  console.log(cancelledCount);
-  console.log(refundedCount);
+
 
   //  ========================== fetch profile data ==========
   const { data: cartResults } = useQuery({

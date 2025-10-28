@@ -32,22 +32,39 @@ export default function ProfileDropdown() {
           await checkSession?.();
           router.refresh();
   };
+ const defaultImage =
+    "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
 
+  // Check if profile_photo is a valid URL string
+  const getValidSrc = (src?: string) => {
+    try {
+      if (src && src.trim() !== "") {
+        // If it's a relative path, prepend base URL
+        if (src.startsWith("/")) {
+          return `${process.env.NEXT_PUBLIC_BASE_URL || ""}${src}`;
+        }
+
+        // Check if it’s a valid absolute URL
+        new URL(src);
+        return src;
+      }
+    } catch {
+      // invalid URL, fall back
+      return defaultImage;
+    }
+    return defaultImage;
+  };
   return (
     <div className="relative z-50" ref={dropdownRef}>
       {/* Profile Image (toggle button) */}
       <Image
-        src={
-    typeof user?.profile_photo === "string" && user.profile_photo.trim() !== ""
-      ? user.profile_photo
-      : "https://images.unsplash.com/photo-1633332755192-727a05c4013d"
-  }
-        alt="User"
-        width={40}
-        height={40}
-        className="h-10 w-10 cursor-pointer rounded-full object-cover"
-        onClick={() => setOpen((prev) => !prev)}
-      />
+      src={getValidSrc("https://images.unsplash.com/photo-1633332755192-727a05c4013d")}
+      alt="User"
+      width={40}
+      height={40}
+      className="h-10 w-10 cursor-pointer rounded-full object-cover"
+      onClick={() => setOpen((prev) => !prev)}
+    />
 
       {/* Dropdown */}
       {open && (

@@ -1,0 +1,77 @@
+{
+  "compilerOptions": {
+    "jsxImportSource": "react", // ✅ Important
+    // "jsx": "preserve",
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@lib/*": [
+        "src/lib/*"
+      ],
+      "@features/*": [
+        "src/features/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@types/*": [
+        "src/types/*"
+      ],
+      "@interfaces/*": [
+        "src/interfaces/*"
+      ],
+      "@theme/*": [
+        "src/theme/*"
+      ],
+      "@redux/*": [
+        "src/lib/redux/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@styles/*": [
+        "src/styles/*"
+      ],
+      "@src/*": [
+        "src/*"
+      ]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/@types",
+      "./src/types"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "next-env.d.ts",
+    "build/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

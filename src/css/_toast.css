@@ -1,0 +1,21 @@
+.custom-toast {
+    @apply rounded-xl shadow-lg font-sans px-5 py-5 min-w-[280px] max-w-[400px] flex items-center pr-9;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    /* fallback if Tailwind font-sans is overridden */
+}
+
+.custom-toast-dark {
+    @apply bg-gray-800 text-white;
+}
+
+.custom-toast-light {
+    @apply bg-white text-gray-800;
+}
+
+.custom-toast-body {
+    @apply text-base font-medium mb-0.5;
+}
+
+.custom-toast-subtitle {
+    @apply text-sm text-gray-400 mt-0.5 font-normal;
+}

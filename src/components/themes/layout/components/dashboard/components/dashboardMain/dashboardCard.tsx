@@ -10,7 +10,7 @@ type RoomItem = {
 
   [k: string]: unknown;
 };
-
+ 
 type BookingCardData = {
   first_name?: string;
   last_name?: string;

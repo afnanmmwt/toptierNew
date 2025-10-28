@@ -45,13 +45,13 @@ export default function ProfileDropdown() {
         alt="User"
         width={40}
         height={40}
-        className="h-10 w-10 cursor-pointer rounded-full object-cover"
+        className="h-10 w-10 cursor-pointer rounded-full object-cover ms-3"
         onClick={() => setOpen((prev) => !prev)}
       />
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 h-auto w-57 md:w-75 mt-2 rounded-md border border-gray-200 bg-white shadow-lg">
+        <div className="absolute left-5 h-auto w-52 md:w-75 mt-2 rounded-md border border-gray-200 bg-white shadow-lg">
           <ul className="py-2 px-2 space-y-2">
             {/* My Profile */}
             <li>

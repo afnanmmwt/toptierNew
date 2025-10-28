@@ -336,7 +336,7 @@ export default function Dashboard() {
                     <div className="flex justify-center py-4">
                       <button
                         onClick={() => fetchNextPage()}
-                        // className="px-4 py-2 text-sm rounded-lg border bg-gray-50 hover:bg-gray-100"
+                        // className="px-4 py-2 text-sm rounded-lg border  bg-gray-50 hover:bg-gray-100"
                       >
                         {dict?.dashboard?.load_more || ""}
                       </button>

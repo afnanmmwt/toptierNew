@@ -28,7 +28,7 @@ const DashboardSidebar: React.FC<SidebarProps> = ({
   const pathname = usePathname();
   const router = useRouter();
   // const {  isLoading: checkSession } = useUser();
-    const [direction] = useDirection();
+  const [direction] = useDirection();
 
   // detect active item
   const findActive = () => {
@@ -116,7 +116,9 @@ const DashboardSidebar: React.FC<SidebarProps> = ({
       //   width: isExpanded ? "280px" : "56px",
       // }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`absolute md:w-70 w-14 ${direction === "rtl" ? "right-0" : "left-0"} top-18 md:top-0 z-10 bg-white md:relative ${
+      className={`absolute md:w-70 w-14 ${
+        direction === "rtl" ? "right-0" : "left-0"
+      } top-18 md:top-0 z-10 bg-white md:relative ${
         isExpanded ? "w-70" : "w-14"
       } dark:bg-gray-900 dark:text-gray-50 md:rounded-lg   h-auto ${className}`}
     >

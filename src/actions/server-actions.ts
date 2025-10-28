@@ -4,7 +4,7 @@ import { baseUrl, api_key } from "./actions";
 import { decodeBearerToken } from "@src/utils/decodeToken";
 import { cookies, headers } from "next/headers";
 import { userInfo } from "os";
-
+import { z } from 'zod';
 // console.log("base",baseUrl);
 
 
@@ -48,6 +48,7 @@ export const fetchAppData = async (payload: appDataPayload) => {
     // explicitly type userinfo
     const userinfo = (await getSession()) as SessionUser | null;
     const user_id = userinfo?.user?.user_id ?? "";
+    console.log("fetch app data userinfo", userinfo);
     const formData = new FormData();
     formData.append("api_key", api_key ?? "");
     formData.append("language", payload.language);
@@ -251,36 +252,91 @@ export const sign_up = async (signUpData: {
 };
 
 //---------------------------- LOGIN --------------------------------------//
-export const signIn = async (payload: { email: string; password: string }) => {
+// export const signIn = async (payload: { email: string; password: string }) => {
+//   try {
+//     const formData = new FormData();
+//     formData.append("email", payload.email);
+//     formData.append("password", payload.password);
+//     formData.append("api_key", api_key ?? ""); //  add api_key if needed
+//     const response = await fetch(`${baseUrl}/login`, {
+//       method: "POST",
+//       body: formData,
+//       //  don't set Content-Type, browser sets it for FormData
+//     });
+
+//     const data = await response.json().catch(() => null);
+//     if (!response.ok || data?.status === false) {
+//       return { error: data?.message || "Something went wrong" };
+//     }
+//     const userinfo = data?.data;
+//     // const user = decodeBearerToken(data.data);
+//     await createSession(userinfo);
+//     //   const cookie = await cookies();
+//     //     const token = await cookie.get('access-token')?.value || '';
+//     // const saveed_token=await save_token({user_id:userinfo.user_id, token:token})
+//     // // return { success: "Logged in successfully" };
+//     // console.log("sign in user info", saveed_token);
+//     return data;
+//   } catch (error) {
+//     return { error: (error as Error).message || "An error occurred" };
+//   }
+// };
+
+
+
+const signInSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+export type SignInState =
+  | { success: true }
+  | { success: false; error: string };
+
+export async function signIn(
+  prevState: SignInState,
+  formData: FormData
+): Promise<SignInState> {
   try {
-    const formData = new FormData();
-    formData.append("email", payload.email);
-    formData.append("password", payload.password);
-    formData.append("api_key", api_key ?? ""); //  add api_key if needed
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    // Validate
+    signInSchema.parse({ email, password });
+
+    // Call your API
+
+
+    const body = new FormData();
+    body.append('email', email);
+    body.append('password', password);
+    if (api_key) body.append('api_key', api_key);
+
     const response = await fetch(`${baseUrl}/login`, {
-      method: "POST",
-      body: formData,
-      //  don't set Content-Type, browser sets it for FormData
+      method: 'POST',
+      body,
     });
 
-    const data = await response.json().catch(() => null);
-    if (!response.ok || data?.status === false) {
-      return { error: data?.message || "Something went wrong" };
-    }
-    const userinfo = data?.data;
-    // const user = decodeBearerToken(data.data);
-    await createSession(userinfo);
-      const cookie = await cookies();
-        const token = await cookie.get('access-token')?.value || '';
-    const saveed_token=await save_token({user_id:userinfo.user_id, token:token})
-    // return { success: "Logged in successfully" };
-    console.log("sign in user info", saveed_token);
-    return data;
-  } catch (error) {
-    return { error: (error as Error).message || "An error occurred" };
-  }
-};
+    const data = await response.json();
 
+    if (!response.ok || data?.status === false) {
+      return { success: false, error: data?.message || 'Invalid credentials' };
+    }
+
+    // ✅ Create session (this runs on server, so cookies() works!)
+    await createSession(data.data);
+
+    // Optional: redirect after success
+    // redirect('/dashboard');
+
+    return { success: true };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { success: false, error: 'Invalid input' };
+    }
+    return { success: false, error: 'An unexpected error occurred' };
+  }
+}
 export const signOut = async () => {
   try {
     await logout();

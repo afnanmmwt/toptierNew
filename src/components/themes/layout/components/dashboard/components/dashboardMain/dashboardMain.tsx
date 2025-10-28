@@ -37,6 +37,7 @@ export default function Dashboard() {
     return () => clearTimeout(timeout);
   }, [searchTerm]);
   // const [searchTerm, setSearchTerm] = useState("");
+
   // useEffect(() => {
   //   if (!user) return; // wait until user is defined
 
@@ -64,6 +65,7 @@ export default function Dashboard() {
 
   //   checkToken();
   // }, [ user]);
+
 
   // =============== Fetch dashboard data
   const { data, isLoading, isError, error } = useQuery({

@@ -1051,7 +1051,7 @@ View Invoice: ${invoiceUrl}`;
                 </tr>
                 <tr>
                   <td className="roomCell">
-                    {dict?.hotelInvoice?.roomDetails?.total}
+                    {dict?.modal?.roomPriceLabel}
                   </td>
                   <td className="roomCell">{bookingData.room.currency}    {bookingData.room.price}</td>
                 </tr>

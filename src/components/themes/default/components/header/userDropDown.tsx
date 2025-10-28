@@ -17,20 +17,23 @@ export default function ProfileDropdown() {
   // close when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-// console.log(user)
-  const handleLogout =async () => {
+  // console.log(user)
+  const handleLogout = async () => {
     // add your logout logic here (clear token, call API, etc.)
 
-          await signOut();
-          await checkSession?.();
-          router.refresh();
+    await signOut();
+    await checkSession?.();
+    router.refresh();
   };
  const defaultImage =
     "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
@@ -58,6 +61,7 @@ export default function ProfileDropdown() {
     <div className="relative z-50" ref={dropdownRef}>
       {/* Profile Image (toggle button) */}
       <Image
+
       src={getValidSrc("https://images.unsplash.com/photo-1633332755192-727a05c4013d")}
       alt="User"
       width={40}
@@ -66,9 +70,10 @@ export default function ProfileDropdown() {
       onClick={() => setOpen((prev) => !prev)}
     />
 
+
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 h-auto w-57 md:w-75 mt-2 rounded-md border border-gray-200 bg-white shadow-lg">
+        <div className="absolute right-10 md:right-0 h-auto w-52 md:w-75 mt-2 rounded-md border border-gray-200 bg-white shadow-lg">
           <ul className="py-2 px-2 space-y-2">
             {/* My Profile */}
             <li>
@@ -83,7 +88,9 @@ export default function ProfileDropdown() {
                   height={28}
                   className="h-6 w-6 rounded-full object-cover"
                 />
-                <span className="text-[15px] font-base font-medium">My Profile</span>
+                <span className="text-[15px] font-base font-medium">
+                  My Profile
+                </span>
               </Link>
             </li>
 
@@ -101,18 +108,24 @@ export default function ProfileDropdown() {
                 <span className="text-[15px] font-base font-medium">My Bookings</span>
               </Link>
             </li> */}
-              <li>
+            <li>
               <Link
                 href="/dashboard"
                 className="flex items-center gap-4 px-4 py-3  text-gray-500 hover:bg-gray-100 rounded-lg transition"
               >
-
-{/* <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1 8.11111C1 4.75911 1 3.08267 2.04178 2.04178C3.08356 1.00089 4.75911 1 8.11111 1H9.88889C13.2409 1 14.9173 1 15.9582 2.04178C16.9991 3.08356 17 4.75911 17 8.11111V11.6667C17 15.0187 17 16.6951 15.9582 17.736C14.9164 18.7769 13.2409 18.7778 9.88889 18.7778H8.11111C4.75911 18.7778 3.08267 18.7778 2.04178 17.736C1.00089 16.6942 1 15.0187 1 11.6667V8.11111Z" stroke="#112233" stroke-opacity="0.6" stroke-width="1.5"/>
 <path d="M5.44446 8.11115H12.5556M5.44446 11.6667H9.8889" stroke="#112233" stroke-opacity="0.6" stroke-width="1.5" stroke-linecap="round"/>
 </svg> */}
-<Icon icon="lucide:layout-dashboard" className="font-light text-gray-500" width="24" height="24" />
-                <span className="text-[15px] font-base font-medium">Dashbaord</span>
+                <Icon
+                  icon="lucide:layout-dashboard"
+                  className="font-light text-gray-500"
+                  width="24"
+                  height="24"
+                />
+                <span className="text-[15px] font-base font-medium">
+                  Dashbaord
+                </span>
               </Link>
             </li>
             {/* Settings */}
@@ -136,11 +149,26 @@ export default function ProfileDropdown() {
                 onClick={handleLogout}
                 className="flex w-full items-center cursor-pointer gap-4 px-4 py-3  text-gray-500 hover:bg-gray-100 rounded-lg transition text-left"
               >
-               <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M13 4.5C12.953 3.407 12.815 2.71 12.402 2.174C12.2423 1.96591 12.0561 1.77966 11.848 1.62C11.038 1 9.863 1 7.513 1H7.012C4.178 1 2.761 1 1.88 1.879C1 2.757 1 4.172 1 7V14C1 16.828 1 18.243 1.88 19.121C2.76 19.999 4.178 20 7.012 20H7.512C9.863 20 11.038 20 11.848 19.38C12.0573 19.2193 12.242 19.0347 12.402 18.826C12.815 18.29 12.953 17.593 13 16.5M19 10.5H7M16.5 14C16.5 14 20 11.422 20 10.5C20 9.578 16.5 7 16.5 7" stroke="#112233" stroke-opacity="0.6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+                <svg
+                  width="21"
+                  height="21"
+                  viewBox="0 0 21 21"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M13 4.5C12.953 3.407 12.815 2.71 12.402 2.174C12.2423 1.96591 12.0561 1.77966 11.848 1.62C11.038 1 9.863 1 7.513 1H7.012C4.178 1 2.761 1 1.88 1.879C1 2.757 1 4.172 1 7V14C1 16.828 1 18.243 1.88 19.121C2.76 19.999 4.178 20 7.012 20H7.512C9.863 20 11.038 20 11.848 19.38C12.0573 19.2193 12.242 19.0347 12.402 18.826C12.815 18.29 12.953 17.593 13 16.5M19 10.5H7M16.5 14C16.5 14 20 11.422 20 10.5C20 9.578 16.5 7 16.5 7"
+                    stroke="#112233"
+                    stroke-opacity="0.6"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
 
-                <span className="text-[15px] font-base font-medium">Logout</span>
+                <span className="text-[15px] font-base font-medium">
+                  Logout
+                </span>
               </button>
             </li>
           </ul>

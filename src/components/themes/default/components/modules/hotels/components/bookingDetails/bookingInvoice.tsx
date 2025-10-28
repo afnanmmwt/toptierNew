@@ -28,6 +28,7 @@ interface RoomData {
   name: string;
   price: string;
   currency: string;
+  room_price: string;
   room_name: string;
   room_qaunitity: string;
 }
@@ -101,7 +102,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       totalNights: 1,
       type: rooms[0]?.room_name || "N/A",
       quantity: rooms[0].room_qaunitity,
-      price: rooms[0]?.price || data.price_markup,
+      price: rooms[0]?.room_price || data.price_markup,
       currency: rooms[0]?.currency || data.currency_markup,
     },
     taxes: data.tax || "0",
@@ -944,15 +945,17 @@ View Invoice: ${invoiceUrl}`;
                 <thead className="tableHeader">
                   <tr>
                     <th className="tableCell">
-                      {dict?.hotelInvoice?.travellers?.table?.no}
+                      {dict?.hotelInvoice?.travellers?.table?.number}
                     </th>
                     <th className="tableCell">
-                      {dict?.hotelInvoice?.travellers?.table?.sr}
+                      {dict?.hotelInvoice?.travellers?.table?.type}
                     </th>
                     <th className="tableCell">
                       {dict?.hotelInvoice?.travellers?.table?.name}
                     </th>
-                    <th className="tableCell">Traveler Type</th>
+                    <th className="tableCell">
+                      {dict?.hotelInvoice?.travellers?.travellerType}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1048,9 +1051,9 @@ View Invoice: ${invoiceUrl}`;
                 </tr>
                 <tr>
                   <td className="roomCell">
-                    {dict?.hotelInvoice?.roomDetails?.total}
+                    {dict?.modal?.roomPriceLabel}
                   </td>
-                  <td className="roomCell">{bookingData.total}</td>
+                  <td className="roomCell">{bookingData.room.currency}    {bookingData.room.price}</td>
                 </tr>
               </tbody>
             </table>
@@ -1156,7 +1159,7 @@ View Invoice: ${invoiceUrl}`;
                 width="20"
                 height="20"
               />
-              <span>Loading...</span>
+              <span>{dict?.featured_hotels?.loading || "Loading..."}</span>
             </>
           ) : (
             <>
@@ -1187,7 +1190,7 @@ View Invoice: ${invoiceUrl}`;
                 width="20"
                 height="20"
               />
-              <span>Cancelling...</span>
+              <span>{dict?.featured_hotels?.cancelling || "جارٍ الإلغاء..."}</span>
             </>
           ) : (
             <>

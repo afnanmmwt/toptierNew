@@ -109,7 +109,7 @@ export default function SignUpForm() {
         setLoading(false);
         return;
       }
-      toast.success(dict?.signup_form?.success_message || "Signup successful! ");
+      toast.success(dict?.signup_form?.success_message || "Signup successful! 🎉");
       router.push(`/${lang}/auth/login`);
     },
   });
@@ -129,7 +129,7 @@ export default function SignUpForm() {
     [router, setError, mutate]
   );
 
-  //  Country select style
+  // ✅ Country select style
   const customStyles: StylesConfig<any, false> = {
     control: (base) => ({
       ...base,

@@ -22,10 +22,12 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
         setIsChecking(false);
         return;
       }
+
       if (!user) {
         router.replace('/auth/login');
         return;
       }
+
 
       setIsChecking(false);
     }

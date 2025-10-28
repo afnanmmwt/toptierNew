@@ -175,7 +175,7 @@ const HeaderMenus = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${isOpen ? "translate-x-0" : "translate-x-full py-4"
+        className={`md:hidden fixed top-0 right-0 h-full w-70 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${isOpen ? "translate-x-0" : "translate-x-full py-4 px-3"
           }`}
       >
         {/* Mobile Header */}
@@ -263,7 +263,7 @@ const HeaderMenus = () => {
       {/* ===== Customers Dropdown ===== */}
       <Dropdown
         label={
-          <div className="flex items-center gap-1.5 ps-0.5">
+          <div className="flex items-center gap-1.5 ps-2.5">
             <svg
               stroke="#000"
               className="pe-1"

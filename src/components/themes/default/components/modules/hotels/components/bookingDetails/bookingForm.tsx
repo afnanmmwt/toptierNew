@@ -26,9 +26,9 @@ const useBookingFormSchema = (dict: any) => {
     nationality: z.string().min(1, dict?.bookingForm?.errors?.nationalityRequired),
     currentCountry: z.string().min(1, dict?.bookingForm?.errors?.currentCountryRequired),
     phoneCountryCode: z.string().min(1, dict?.bookingForm?.errors?.countryCodeRequired),
-phoneNumber: z
-  .string()
-  .min(1, dict?.bookingForm?.errors?.phoneNumberRequired || "Phone number is required"),
+    phoneNumber: z
+      .string()
+      .min(1, dict?.bookingForm?.errors?.phoneNumberRequired || "Phone number is required"),
 
 
     travellers: z
@@ -56,15 +56,15 @@ phoneNumber: z
         message: dict?.bookingForm?.errors?.acceptPolicyRequired,
       }),
   }).superRefine((data, ctx) => {
-    const {  cardName, cardNumber, cardExpiry, cardCvv, cardZip } = data;
+    const { cardName, cardNumber, cardExpiry, cardCvv, cardZip } = data;
 
     // if (paymentMethod === 'credit_card') {
-      if (!cardName || cardName.trim() === '') {
-        ctx.addIssue({
-          path: ['cardName'],
-          message: dict?.bookingForm?.errors?.cardNameRequired || 'Cardholder name is required',
-          code: 'custom',
-        });
+    if (!cardName || cardName.trim() === '') {
+      ctx.addIssue({
+        path: ['cardName'],
+        message: dict?.bookingForm?.errors?.cardNameRequired || 'Cardholder name is required',
+        code: 'custom',
+      });
       // }
 
       if (!cardNumber || !/^\d{13,19}$/.test(cardNumber.replace(/\s+/g, ''))) {
@@ -119,41 +119,41 @@ export default function BookingForm({
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const bookingSchema = useBookingFormSchema(dict);
   interface User {
-  id: string;
-  user_id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  address1: string;
-  country_code: string;
-  phone_country_code: string;
-  phone: string;
-  // Add other fields if needed
-}
-const { user } = useUser();
+    id: string;
+    user_id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    address1: string;
+    country_code: string;
+    phone_country_code: string;
+    phone: string;
+    // Add other fields if needed
+  }
+  const { user } = useUser();
 
-// Cast to known type (safe because you've verified the structure)
-const typedUser = user as User | null | undefined;
+  // Cast to known type (safe because you've verified the structure)
+  const typedUser = user as User | null | undefined;
 
-const defaultValues: BookingFormValues = {
-  firstName: typedUser?.first_name || '',
-  lastName: typedUser?.last_name || '',
-  address: typedUser?.address1 || '',
-  email: typedUser?.email || '',
-  nationality: typedUser?.country_code || '',
-  currentCountry: typedUser?.country_code || '',
-  phoneCountryCode: typedUser?.phone_country_code
-    ? `+${typedUser.phone_country_code}`
-    : '',
-  phoneNumber: typedUser?.phone || '',
-  travellers: [{ title: dict?.bookingForm?.titles?.mr, firstName: '', lastName: '', age: '' }],
-  cardName: '',
-  cardNumber: '',
-  cardExpiry: '',
-  cardCvv: '',
-  cardZip: '',
-  acceptPolicy: false,
-};
+  const defaultValues: BookingFormValues = {
+    firstName: typedUser?.first_name || '',
+    lastName: typedUser?.last_name || '',
+    address: typedUser?.address1 || '',
+    email: typedUser?.email || '',
+    nationality: typedUser?.country_code || '',
+    currentCountry: typedUser?.country_code || '',
+    phoneCountryCode: typedUser?.phone_country_code
+      ? `+${typedUser.phone_country_code}`
+      : '',
+    phoneNumber: typedUser?.phone || '',
+    travellers: [{ title: dict?.bookingForm?.titles?.mr, firstName: '', lastName: '', age: '' }],
+    cardName: '',
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvv: '',
+    cardZip: '',
+    acceptPolicy: false,
+  };
 
   const {
     control,
@@ -174,15 +174,14 @@ const defaultValues: BookingFormValues = {
   const { countries: rawCountries } = useCountries();
   const { payment_gateways } = useAppSelector((state) => state.appData?.data);
   const selectedRoom = useAppSelector((state) => state.root.selectedRoom);
-  const {option}=selectedRoom||{};
-    const rootState = useAppSelector((state) => state.root);
-    console.log('rootState in BookingForm:', user);
+  const { option } = selectedRoom || {};
+  const rootState = useAppSelector((state) => state.root);
   const stripe = useStripe();
-const elements = useElements();
-const [bookingReference, setBookingReference] = useState<string>(
-  new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14)
-);
-const [isPending, setIsPending] = useState(false);
+  const elements = useElements();
+  const [bookingReference, setBookingReference] = useState<string>(
+    new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14)
+  );
+  const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const { hotelDetails } = selectedRoom || {};
   const [isTitleOpen, setIsTitleOpen] = useState<number | null>(null);
@@ -201,9 +200,9 @@ const [isPending, setIsPending] = useState(false);
   const { adults = 0, children = 0, nationality, checkin, checkout } = saveBookingData;
   const travelers = adults + children;
   const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night, per_day, service_fee, child, currency } = selectedRoom?.option || {};
-  const net_profit= (parseFloat(String(markup_price)) || 0) - (parseFloat(price) || 0);
-  const booking_data= selectedRoom?.option || {};
-  const modified_booking_data= { ...booking_data,  quantity: quantity,  markup_price: total, markup_price_per_night:markup_price};
+  const net_profit = (parseFloat(String(markup_price)) || 0) - (parseFloat(price) || 0);
+  const booking_data = selectedRoom?.option || {};
+  const modified_booking_data = { ...booking_data, quantity: quantity, markup_price: total, markup_price_per_night: markup_price };
   const {
     id: hotel_id,
     address: hotel_address,
@@ -230,12 +229,12 @@ const [isPending, setIsPending] = useState(false);
   const excludedCodes = ['0', '381', '599'];
   const countryList = Array.isArray(rawCountries)
     ? rawCountries
-        .map((c: any) => ({
-          iso: c.iso || c.code || '',
-          name: c.nicename || c.name || '',
-          phonecode: c.phonecode?.toString() || '0',
-        }))
-        .filter((c) => c.iso && c.name && !excludedCodes.includes(c.phonecode))
+      .map((c: any) => ({
+        iso: c.iso || c.code || '',
+        name: c.nicename || c.name || '',
+        phonecode: c.phonecode?.toString() || '0',
+      }))
+      .filter((c) => c.iso && c.name && !excludedCodes.includes(c.phonecode))
     : [];
 
   const countryOptions = countryList.map((c) => ({
@@ -277,125 +276,11 @@ const [isPending, setIsPending] = useState(false);
   }, [setValue, nationality, travelers, dict]);
 
 
-// Auto save booking
-// Add this useEffect right after defaultValues and before useForm
-useEffect(() => {
-  if (!user) return; // Only run if user data exists
+  // Auto save booking
+  // Add this useEffect right after defaultValues and before useForm
+  useEffect(() => {
+    if (!user) return; // Only run if user data exists
 
-  const {
-    firstName,
-    lastName,
-    address,
-    nationality,
-    currentCountry,
-    email,
-    phoneCountryCode,
-    phoneNumber,
-  } = defaultValues;
-
-  // Get travelers count from localStorage (same as in original code)
-  const curruntBooking = localStorage.getItem('hotelSearchForm');
-  const saveBookingData = curruntBooking ? JSON.parse(curruntBooking) : {};
-  const { adults = 0, children = 0 } = saveBookingData;
-  const travelers = adults + children;
-
-  // Build guest payload (same logic as onSubmit)
-  const guestPayload = Array.from({ length: travelers }, (_, index) => ({
-    traveller_type: index < adults ? 'adults' : 'child',
-    title: dict?.bookingForm?.titles?.mr || 'Mr',
-    first_name: '',
-    last_name: '',
-    nationality: nationality || '',
-    age: '',
-    dob_day: '',
-    dob_month: '',
-    dob_year: '',
-  }));
-
-  // Build booking payload (same structure as onSubmit)
-  const bookingPayload = {
-    booking_ref_no: bookingReference,
-    price_original: price || 0,
-    price_markup: total || 0,
-    vat: 0,
-    tax: 0,
-    gst: 0,
-    first_name: firstName || '',
-    last_name: lastName || '',
-    email: email || '',
-    address: address || '',
-    phone_country_code: phoneCountryCode || '+92',
-    phone: phoneNumber || '000-000-000',
-    country: hotel_country || 'UNITED ARAB EMIRATES',
-    stars: stars || 0,
-    hotel_id: hotel_id || '',
-    hotel_name: hotel_name || '',
-    hotel_phone: hotel_phone || '',
-    hotel_email: hotel_email || '',
-    hotel_website: hotel_website || '',
-    hotel_address: hotel_address || '',
-    room_data: [
-      {
-        room_id: option_id,
-        room_name: selectedRoom?.room?.name,
-        room_price: markup_price_per_night,
-        room_quantity: quantity,
-        room_extrabed_price: extrabed_price,
-        room_extrabed: extrabeds_quantity,
-        room_actual_price: price,
-      },
-    ],
-    location: hotel_location || '',
-    location_cords: hotel_address || '',
-    hotel_img: hotel_image?.[0] || '',
-    checkin: checkin || '10-10-2025',
-    checkout: checkout || '14-10-2025',
-    adults: adults || 0,
-    childs: children || 0,
-    child_ages: '',
-    currency_original: booking_currency || 'USD',
-    currency_markup: booking_currency || 'USD',
-    booking_data: modified_booking_data,
-    supplier: supplier_name || '',
-    user_id: '',
-    guest: guestPayload,
-    nationality: nationality || '',
-    user_data: {
-      first_name: firstName || '',
-      last_name: lastName || '',
-      address: address || '',
-      email: email || '',
-      phone: phoneNumber || '',
-      nationality: nationality || 'pk',
-      country_code: nationality || 'pk',
-    },
-    card: {
-      name: '',
-      number: '',
-      expiry: '',
-      cvv: '',
-      zip: '',
-    },
-  };
-
-  // Hit the API
-  hotel_booking(bookingPayload as any)
-    .then(response => {
-      setBookingReference(response.booking_ref_no);
-      // You can store response if needed
-    })
-    .catch(error => {
-      console.error('Pre-booking API failed:', error);
-    });
-}, [user, dict, bookingReference]); // Dependencies: user data, dict, and booking ref
-
-const onSubmit = async (data: BookingFormValues) => {
-  if (!data) return;
-
-  setIsProcessingPayment(true);
-  setIsPending(true);
-
-  try {
     const {
       firstName,
       lastName,
@@ -405,29 +290,30 @@ const onSubmit = async (data: BookingFormValues) => {
       email,
       phoneCountryCode,
       phoneNumber,
-      travellers,
-      cardName,
-      cardNumber,
-      cardExpiry,
-      cardCvv,
-      cardZip,
-    } = data;
+    } = defaultValues;
 
-    //  Fix guest type to 'child' not 'childs'
-    const guestPayload = (travellers || []).map((traveller: any, index: number) => ({
+    // Get travelers count from localStorage (same as in original code)
+    const curruntBooking = localStorage.getItem('hotelSearchForm');
+    const saveBookingData = curruntBooking ? JSON.parse(curruntBooking) : {};
+    const { adults = 0, children = 0 } = saveBookingData;
+    const travelers = adults + children;
+
+    // Build guest payload (same logic as onSubmit)
+    const guestPayload = Array.from({ length: travelers }, (_, index) => ({
       traveller_type: index < adults ? 'adults' : 'child',
-      title: traveller.title || '',
-      first_name: traveller.firstName || '',
-      last_name: traveller.lastName || '',
+      title: dict?.bookingForm?.titles?.mr || 'Mr',
+      first_name: '',
+      last_name: '',
       nationality: nationality || '',
       age: '',
       dob_day: '',
       dob_month: '',
       dob_year: '',
     }));
+
+    // Build booking payload (same structure as onSubmit)
     const bookingPayload = {
       booking_ref_no: bookingReference,
-      net_profit: net_profit || 0,
       price_original: price || 0,
       price_markup: total || 0,
       vat: 0,
@@ -451,8 +337,8 @@ const onSubmit = async (data: BookingFormValues) => {
         {
           room_id: option_id,
           room_name: selectedRoom?.room?.name,
-          room_price: markup_price || 0,
-          room_qaunitity: quantity,
+          room_price: markup_price_per_night,
+          room_quantity: quantity,
           room_extrabed_price: extrabed_price,
           room_extrabed: extrabeds_quantity,
           room_actual_price: price,
@@ -483,87 +369,200 @@ const onSubmit = async (data: BookingFormValues) => {
         country_code: nationality || 'pk',
       },
       card: {
-        name: cardName,
-        number: cardNumber,
-        expiry: cardExpiry,
-        cvv: cardCvv,
-        zip: cardZip,
+        name: '',
+        number: '',
+        expiry: '',
+        cvv: '',
+        zip: '',
       },
     };
 
-    //  Run hotel booking and paymentIntent API in parallel for performance
- const [bookingResponse, paymentRes] = await Promise.all([
+    // Hit the API
+    hotel_booking(bookingPayload as any)
+      .then(response => {
+        setBookingReference(response.booking_ref_no);
+        // You can store response if needed
+      })
+      .catch(error => {
+        console.error('Pre-booking API failed:', error);
+      });
+  }, [user, dict, bookingReference]); // Dependencies: user data, dict, and booking ref
 
-      hotel_booking(bookingPayload as any),
-      fetch("/api/paymentIntent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: total || 0,
-          currency: booking_currency,
-          booking_ref_no: bookingReference,
-          module_type: supplier_name,
-          email,
-        }),
-      }),
-    ]);
+  const onSubmit = async (data: BookingFormValues) => {
+    if (!data) return;
 
-    const bookingData = await bookingResponse;
-    const paymentData = await paymentRes.json();
-    const { clientSecret, success_url } = paymentData;
+    setIsProcessingPayment(true);
+    setIsPending(true);
 
-    if (!stripe || !elements) {
-      alert("Stripe not initialized");
-      setIsProcessingPayment(false);
-      setIsPending(false);
-      return;
-    }
+    try {
+      const {
+        firstName,
+        lastName,
+        address,
+        nationality,
+        currentCountry,
+        email,
+        phoneCountryCode,
+        phoneNumber,
+        travellers,
+        cardName,
+        cardNumber,
+        cardExpiry,
+        cardCvv,
+        cardZip,
+      } = data;
 
-    if (!clientSecret) {
-      console.error("Missing clientSecret from payment API:");
-      alert("Payment setup failed. Please try again.");
-      setIsProcessingPayment(false);
-      setIsPending(false);
-      return;
-    }
-
-    const cardElement = elements.getElement(CardElement);
-    if (!cardElement) {
-      alert("Card element not found");
-      setIsProcessingPayment(false);
-      setIsPending(false);
-      return;
-    }
-
-    // Confirm payment
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: cardElement,
-        billing_details: {
-          name: cardName,
-          email,
+      //  Fix guest type to 'child' not 'childs'
+      const guestPayload = (travellers || []).map((traveller: any, index: number) => ({
+        traveller_type: index < adults ? 'adults' : 'child',
+        title: traveller.title || '',
+        first_name: traveller.firstName || '',
+        last_name: traveller.lastName || '',
+        nationality: nationality || '',
+        age: '',
+        dob_day: '',
+        dob_month: '',
+        dob_year: '',
+      }));
+      const bookingPayload = {
+        booking_ref_no: bookingReference,
+        net_profit: net_profit || 0,
+        price_original: price || 0,
+        price_markup: total || 0,
+        vat: 0,
+        tax: 0,
+        gst: 0,
+        first_name: firstName || '',
+        last_name: lastName || '',
+        email: email || '',
+        address: address || '',
+        phone_country_code: phoneCountryCode || '+92',
+        phone: phoneNumber || '000-000-000',
+        country: hotel_country || 'UNITED ARAB EMIRATES',
+        stars: stars || 0,
+        hotel_id: hotel_id || '',
+        hotel_name: hotel_name || '',
+        hotel_phone: hotel_phone || '',
+        hotel_email: hotel_email || '',
+        hotel_website: hotel_website || '',
+        hotel_address: hotel_address || '',
+        room_data: [
+          {
+            room_id: option_id,
+            room_name: selectedRoom?.room?.name,
+            room_price: markup_price || 0,
+            room_qaunitity: quantity,
+            room_extrabed_price: extrabed_price,
+            room_extrabed: extrabeds_quantity,
+            room_actual_price: price,
+          },
+        ],
+        location: hotel_location || '',
+        location_cords: hotel_address || '',
+        hotel_img: hotel_image?.[0] || '',
+        checkin: checkin || '10-10-2025',
+        checkout: checkout || '14-10-2025',
+        adults: adults || 0,
+        childs: children || 0,
+        child_ages: '',
+        currency_original: booking_currency || 'USD',
+        currency_markup: booking_currency || 'USD',
+        booking_data: modified_booking_data,
+        supplier: supplier_name || '',
+        user_id: '',
+        guest: guestPayload,
+        nationality: nationality || '',
+        user_data: {
+          first_name: firstName || '',
+          last_name: lastName || '',
+          address: address || '',
+          email: email || '',
+          phone: phoneNumber || '',
+          nationality: nationality || 'pk',
+          country_code: nationality || 'pk',
         },
-      },
-    });
+        card: {
+          name: cardName,
+          number: cardNumber,
+          expiry: cardExpiry,
+          cvv: cardCvv,
+          zip: cardZip,
+        },
+      };
 
-    if (result.error) {
-      console.error("Payment failed:", result.error.message);
-      alert(`Payment failed: ${result.error.message}`);
+      //  Run hotel booking and paymentIntent API in parallel for performance
+      const [bookingResponse, paymentRes] = await Promise.all([
+
+        hotel_booking(bookingPayload as any),
+        fetch("/api/paymentIntent", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: total || 0,
+            currency: booking_currency,
+            booking_ref_no: bookingReference,
+            module_type: supplier_name,
+            email,
+          }),
+        }),
+      ]);
+
+      const bookingData = await bookingResponse;
+      const paymentData = await paymentRes.json();
+      const { clientSecret, success_url } = paymentData;
+
+      if (!stripe || !elements) {
+        alert("Stripe not initialized");
+        setIsProcessingPayment(false);
+        setIsPending(false);
+        return;
+      }
+
+      if (!clientSecret) {
+        console.error("Missing clientSecret from payment API:");
+        alert("Payment setup failed. Please try again.");
+        setIsProcessingPayment(false);
+        setIsPending(false);
+        return;
+      }
+
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        alert("Card element not found");
+        setIsProcessingPayment(false);
+        setIsPending(false);
+        return;
+      }
+
+      // Confirm payment
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: cardName,
+            email,
+          },
+        },
+      });
+
+      if (result.error) {
+        console.error("Payment failed:", result.error.message);
+        alert(`Payment failed: ${result.error.message}`);
+        setIsProcessingPayment(false);
+        setIsPending(false);
+      } else if (result.paymentIntent?.status === 'succeeded') {
+        router.replace(success_url);
+      } else {
+        alert("Payment did not succeed. Please try again.");
+        setIsProcessingPayment(false);
+      }
+    } catch (error) {
+      console.error("Payment process error:", error);
+      alert("An error occurred. Please try again.");
       setIsProcessingPayment(false);
       setIsPending(false);
-    } else if (result.paymentIntent?.status === 'succeeded') {
-      router.replace(success_url);
-    } else {
-      alert("Payment did not succeed. Please try again.");
-      setIsProcessingPayment(false);
     }
-  } catch (error) {
-    console.error("Payment process error:", error);
-    alert("An error occurred. Please try again.");
-    setIsProcessingPayment(false);
-    setIsPending(false);
-  }
-};
+  };
 
 
   const getCountryByIso = (iso: string) => countryList.find((c) => c.iso === iso);
@@ -688,7 +687,7 @@ const onSubmit = async (data: BookingFormValues) => {
 
         <div className="w-full max-w-2xl">
           <label htmlFor="currentCountry" className="block text-base font-medium text-[#5B697E] mb-2">
-            {dict?.bookingForm?.contactInformation?.currentCountryLabel}
+            {dict?.bookingForm?.contactInformation?.currentCountryLabel || "Current Country"}
           </label>
           <Controller
             name="currentCountry"
@@ -697,7 +696,7 @@ const onSubmit = async (data: BookingFormValues) => {
               <Select
                 {...field}
                 options={countryOptions}
-                placeholder={dict?.bookingForm?.contactInformation?.currentCountryLabel}
+                placeholder={dict?.bookingForm?.contactInformation?.currentCountryLabel || "Current Country"}
                 isSearchable
                 onChange={(option: any) => field.onChange(option?.value || '')}
                 value={countryOptions.find((opt) => opt.value === field.value) || null}
@@ -709,7 +708,9 @@ const onSubmit = async (data: BookingFormValues) => {
                   singleValue: () =>
                     'flex items-center gap-2 text-gray-800 font-medium truncate',
                   placeholder: () => 'text-gray-400 font-normal',
-                  indicatorsContainer: () => 'absolute right-4',
+                  // ✅ ONLY CHANGE: arrow position based on locale
+                  indicatorsContainer: () =>
+                    locale?.startsWith('ar') ? 'absolute left-4' : 'absolute right-4',
                 }}
                 onMenuOpen={() => setIsCountryListOpen(true)}
                 onMenuClose={() => setIsCountryListOpen(false)}
@@ -739,14 +740,14 @@ const onSubmit = async (data: BookingFormValues) => {
                       <span>{data.label}</span>
                     </div>
                   ),
+                  // ✅ ONLY CHANGE: keep arrow rotation, but no margin tricks
                   DropdownIndicator: () => (
                     <Icon
                       icon="mdi:keyboard-arrow-down"
                       width="24"
                       height="24"
-                      className={`text-gray-600 transi duration-100 ease-in-out ${
-                        isCountryListOpen ? 'rotate-180' : 'rotate-0'
-                      }`}
+                      className={`text-gray-600 transition duration-100 ease-in-out ${isCountryListOpen ? 'rotate-180' : 'rotate-0'
+                        }`}
                     />
                   ),
                   IndicatorSeparator: () => null,
@@ -756,11 +757,10 @@ const onSubmit = async (data: BookingFormValues) => {
           />
           {errors.currentCountry && <p className="text-red-500 text-sm mt-1">{errors.currentCountry.message}</p>}
         </div>
-
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="w-full sm:max-w-42">
             <label htmlFor="phoneCountryCode" className="block text-base font-medium text-[#5B697E] mb-2">
-              {dict?.bookingForm?.contactInformation?.phoneCodeLabel}
+              {dict?.bookingForm?.contactInformation?.phoneCodeLabel || "Country Code"}
             </label>
             <Controller
               name="phoneCountryCode"
@@ -769,7 +769,7 @@ const onSubmit = async (data: BookingFormValues) => {
                 <Select
                   {...field}
                   options={phoneCodeOptions}
-                  placeholder={dict?.bookingForm?.contactInformation?.phoneCodeLabel}
+                  placeholder={dict?.bookingForm?.contactInformation?.phoneCodeLabel || "Country Code"}
                   isSearchable
                   onChange={(option: any) => field.onChange(option?.value || '')}
                   value={phoneCodeOptions.find((opt) => opt.value === field.value) || null}
@@ -780,7 +780,9 @@ const onSubmit = async (data: BookingFormValues) => {
                     valueContainer: () => 'flex items-center gap-2 px-1',
                     singleValue: () => 'flex items-center justify-between text-gray-800 font-medium',
                     placeholder: () => 'text-gray-400 font-normal',
-                    indicatorsContainer: () => 'absolute right-4',
+                    //  ONLY CHANGE: arrow position
+                    indicatorsContainer: () =>
+                      locale?.startsWith('ar') ? 'absolute left-4' : 'absolute right-4',
                   }}
                   onMenuOpen={() => setIsPhoneCodeListOpen(true)}
                   onMenuClose={() => setIsPhoneCodeListOpen(false)}
@@ -815,9 +817,8 @@ const onSubmit = async (data: BookingFormValues) => {
                         icon="mdi:keyboard-arrow-down"
                         width="24"
                         height="24"
-                        className={`text-gray-600 transi duration-100 ease-in-out ${
-                          isPhoneCodeListOpen ? 'rotate-180' : 'rotate-0'
-                        }`}
+                        className={`text-gray-600 transition duration-100 ease-in-out ${isPhoneCodeListOpen ? 'rotate-180' : 'rotate-0'
+                          }`}
                       />
                     ),
                     IndicatorSeparator: () => null,
@@ -830,7 +831,7 @@ const onSubmit = async (data: BookingFormValues) => {
 
           <div className="w-full sm:max-w-122">
             <label htmlFor="phoneNumber" className="block text-base font-medium text-[#5B697E] mb-2">
-              {dict?.bookingForm?.contactInformation?.phoneNumberLabel}
+              {dict?.bookingForm?.contactInformation?.phoneNumberLabel || "Phone Number"}
             </label>
             <Controller
               name="phoneNumber"
@@ -868,76 +869,75 @@ const onSubmit = async (data: BookingFormValues) => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.5fr_1.5fr] gap-4">
               <div className="w-full">
-             {index < adults ? (
-  // 🔹 Adults — show title dropdown as usual
-  <>
-    <label
-      htmlFor={`travellers.${index}.title`}
-      className="block text-base font-medium text-[#5B697E] mb-2"
-    >
-      {dict?.bookingForm?.travelersInformation?.titleLabel}
-    </label>
-    <Controller
-      name={`travellers.${index}.title`}
-      control={control}
-      render={({ field }) => (
-        <div
-          className="relative"
-          ref={(el) => {
-            titleRefs.current[index] = el;
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => setIsTitleOpen(isTitleOpen === index ? null : index)}
-            className="flex cursor-pointer items-center justify-between w-full px-3 py-4 border border-gray-300 rounded-xl text-base focus:outline-none focus:border-[#163C8C]"
-          >
-            {field.value || `Select ${dict?.bookingForm?.travelersInformation?.titleLabel}`}
-            <Icon
-              icon="material-symbols:keyboard-arrow-up"
-              width="24"
-              height="24"
-              className={`h-5 w-5 text-gray-500 transition-transform ${
-                isTitleOpen === index ? 'rotate-0' : 'rotate-180'
-              }`}
-            />
-          </button>
-          {isTitleOpen === index && (
-            <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow">
-              {titles.map((title) => (
-                <div
-                  key={title}
-                  onClick={() => {
-                    field.onChange(title);
-                    setIsTitleOpen(null);
-                  }}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  {title}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-    />
-  </>
-) : (
-  // 🔹 Children — show disabled input with age
-  <>
-    <label
-      className="block text-base font-medium text-[#5B697E] mb-2"
-    >
-      {dict?.bookingForm?.travelersInformation?.ageLabel || "Child Age"}
-    </label>
-    <input
-      type="text"
-      value={`${option?.children_ages?.split(',')[index - adults]?.trim() || ''} years`}
-      disabled
-      className="block border border-gray-300 rounded-xl px-3 py-4 text-base w-full bg-gray-100 text-gray-700 cursor-not-allowed"
-    />
-  </>
-)}
+                {index < adults ? (
+                  // 🔹 Adults — show title dropdown as usual
+                  <>
+                    <label
+                      htmlFor={`travellers.${index}.title`}
+                      className="block text-base font-medium text-[#5B697E] mb-2"
+                    >
+                      {dict?.bookingForm?.travelersInformation?.titleLabel}
+                    </label>
+                    <Controller
+                      name={`travellers.${index}.title`}
+                      control={control}
+                      render={({ field }) => (
+                        <div
+                          className="relative"
+                          ref={(el) => {
+                            titleRefs.current[index] = el;
+                          }}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => setIsTitleOpen(isTitleOpen === index ? null : index)}
+                            className="flex cursor-pointer items-center justify-between w-full px-3 py-4 border border-gray-300 rounded-xl text-base focus:outline-none focus:border-[#163C8C]"
+                          >
+                            {field.value || `Select ${dict?.bookingForm?.travelersInformation?.titleLabel}`}
+                            <Icon
+                              icon="material-symbols:keyboard-arrow-up"
+                              width="24"
+                              height="24"
+                              className={`h-5 w-5 text-gray-500 transition-transform ${isTitleOpen === index ? 'rotate-0' : 'rotate-180'
+                                }`}
+                            />
+                          </button>
+                          {isTitleOpen === index && (
+                            <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow">
+                              {titles.map((title) => (
+                                <div
+                                  key={title}
+                                  onClick={() => {
+                                    field.onChange(title);
+                                    setIsTitleOpen(null);
+                                  }}
+                                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                >
+                                  {title}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    />
+                  </>
+                ) : (
+                  // 🔹 Children — show disabled input with age
+                  <>
+                    <label
+                      className="block text-base font-medium text-[#5B697E] mb-2"
+                    >
+                      {dict?.bookingForm?.travelersInformation?.ageLabel || "Child Age"}
+                    </label>
+                    <input
+                      type="text"
+                      value={`${option?.children_ages?.split(',')[index - adults]?.trim() || ''} years`}
+                      disabled
+                      className="block border border-gray-300 rounded-xl px-3 py-4 text-base w-full bg-gray-100 text-gray-700 cursor-not-allowed"
+                    />
+                  </>
+                )}
 
                 {errors.travellers?.[index]?.title && (
                   <p className="text-red-500 text-sm mt-1">{errors.travellers[index].title?.message}</p>
@@ -989,93 +989,61 @@ const onSubmit = async (data: BookingFormValues) => {
       </div>
 
 
-      {/* Conditional Credit Card Form */}
-<div className="flex flex-col gap-3 mb-12">
-  <h3 className="text-xl text-[#0F172BE5] font-semibold">
-    Payment Method
-  </h3>
-  <p className="text-[#0F172B66] text-base font-medium">
-    Safe Secure transaction.Your personal information is protected.
-  </p>
-  {/* <Controller
-    name="paymentMethod"
-    control={control}
-    render={({ field }) => (
-      <div className="space-y-3">
-        {activePayments.map((payment: any) => (
-          <label
-            key={payment.id}
-            className="flex items-center gap-3 p-4 border border-gray-300 rounded-xl cursor-pointer hover:border-[#163C8C] transition-colors"
-          >
-            <input
-              type="radio"
-              value={payment.name}
-              checked={field.value === payment.name}
-              onChange={() => field.onChange(payment.name)}
-              className="w-5 h-5 text-[#163C8C] focus:ring-[#163C8C]"
-            />
-            <span className="text-base font-medium text-[#0F172BE5]">
-              {payment.label}
-            </span>
+      {/* Payment Method */}
+      <div className="flex flex-col gap-3 mb-12">
+        <h3 className="text-xl text-[#0F172BE5] font-semibold">
+          {dict?.bookingForm?.paymentMethod?.title}
+        </h3>
+        <p className="text-[#0F172B66] text-base font-medium">
+          {dict?.bookingForm?.paymentMethod?.subtitle}
+        </p>
+      </div>
+
+      {/* Card Information */}
+      <div className="flex flex-col gap-3 mb-12">
+        <h3 className="text-xl text-[#0F172BE5] font-semibold">
+          {dict?.bookingForm?.paymentMethod?.cardInformationTitle}
+        </h3>
+        <div className="w-full max-w-2xl">
+          <label className="block text-base font-medium text-[#5B697E] mb-2">
+            {dict?.bookingForm?.paymentMethod?.cardholderNameLabel}
           </label>
-        ))}
-      </div>
-    )}
-  />
-  {errors.paymentMethod && (
-    <p className="text-red-500 text-sm mt-1">{errors.paymentMethod.message}</p>
-  )} */}
-</div>
-
-{/* Conditional Credit Card Form - Updated */}
-{/* {selectedPaymentMethod === 'credit_card' && ( */}
-  <div className="flex flex-col gap-3 mb-12">
-    <h3 className="text-xl text-[#0F172BE5] font-semibold">
-      Card Information
-    </h3>
-
-    <div className="w-full max-w-2xl">
-      <label className="block text-base font-medium text-[#5B697E] mb-2">
-        Cardholder Name
-      </label>
-      <Controller
-        name="cardName"
-        control={control}
-        render={({ field }) => (
-          <input
-            {...field}
-            type="text"
-            placeholder="John Doe"
-            className="block border border-gray-300 rounded-xl px-3 py-4 text-base w-full outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C]"
+          <Controller
+            name="cardName"
+            control={control}
+            render={({ field }) => (
+              <input
+                {...field}
+                type="text"
+                placeholder="John Doe"
+                className="block border border-gray-300 rounded-xl px-3 py-4 text-base w-full outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C]"
+              />
+            )}
           />
-        )}
-      />
-      {errors.cardName && (
-        <p className="text-red-500 text-sm mt-1">{errors.cardName.message}</p>
-      )}
-    </div>
-
-    <div className="w-full max-w-2xl">
-      <label className="block text-base font-medium text-[#5B697E] mb-2">
-        Card Details
-      </label>
-      <div className="border border-gray-300 rounded-xl px-3 py-4">
-        <CardElement
-          options={{
-            style: {
-              base: {
-                fontSize: '16px',
-                color: '#424770',
-                '::placeholder': { color: '#aab7c4' },
-              },
-              invalid: { color: '#9e2146' },
-            },
-          }}
-        />
+          {errors.cardName && (
+            <p className="text-red-500 text-sm mt-1">{errors.cardName.message}</p>
+          )}
+        </div>
+        <div className="w-full max-w-2xl">
+          <label className="block text-base font-medium text-[#5B697E] mb-2">
+            {dict?.bookingForm?.paymentMethod?.cardDetailsLabel}
+          </label>
+          <div className="border border-gray-300 rounded-xl px-3 py-4">
+            <CardElement
+              options={{
+                style: {
+                  base: {
+                    fontSize: '16px',
+                    color: '#424770',
+                    '::placeholder': { color: '#aab7c4' },
+                  },
+                  invalid: { color: '#9e2146' },
+                },
+              }}
+            />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-{/* )} */}
 
 
 
@@ -1084,26 +1052,26 @@ const onSubmit = async (data: BookingFormValues) => {
       <div className="flex flex-col gap-4 mt-3">
 
 
-    {hotelDetails?.cancellation !== "" && (
-  <>
-    <h3 className="text-xl text-[#0F172BE5] font-semibold">
-      {dict?.bookingForm?.cancellationPolicy?.title}
-    </h3>
-    <AccordionInfoCard
-      title={dict?.bookingForm?.cancellationPolicy?.title}
-      showDescription={false}
-      showLeftIcon={false}
-      titleClassName="text-red-500"
-    >
-      <div className="bg-red-100 text-red-500 p-4 w-full rounded-lg">
-        <p
-          className="text-[#0F172B66] text-base font-medium"
-          dangerouslySetInnerHTML={{ __html: hotelDetails.cancellation }}
-        />
-      </div>
-    </AccordionInfoCard>
-  </>
-)}
+        {hotelDetails?.cancellation !== "" && (
+          <>
+            <h3 className="text-xl text-[#0F172BE5] font-semibold">
+              {dict?.bookingForm?.cancellationPolicy?.title}
+            </h3>
+            <AccordionInfoCard
+              title={dict?.bookingForm?.cancellationPolicy?.title}
+              showDescription={false}
+              showLeftIcon={false}
+              titleClassName="text-red-500"
+            >
+              <div className="bg-red-100 text-red-500 p-4 w-full rounded-lg">
+                <p
+                  className="text-[#0F172B66] text-base font-medium"
+                  dangerouslySetInnerHTML={{ __html: hotelDetails.cancellation }}
+                />
+              </div>
+            </AccordionInfoCard>
+          </>
+        )}
 
         <Controller
           name="acceptPolicy"
@@ -1129,24 +1097,23 @@ const onSubmit = async (data: BookingFormValues) => {
       </div>
 
       {/* Submit Button */}
-     <button
-  type="submit"
-  disabled={isPending || isProcessingPayment} //  Block during booking OR payment
-  className={`w-full text-lg text-white py-3 font-medium rounded-lg mt-5 transition-colors focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 ${
-    (isPending || isProcessingPayment)
-      ? 'bg-gray-400 cursor-not-allowed'
-      : 'bg-[#163C8C] hover:bg-[#0f2d6b] cursor-pointer focus:ring-[#163C8C]'
-  }`}
->
-  {(isPending || isProcessingPayment) ? (
-    <>
-      <Icon icon="svg-spinners:ring-resize" width="20" height="20" className="text-white" />
-      {dict?.bookingForm?.buttons?.processing}
-    </>
-  ) : (
-    dict?.bookingForm?.buttons?.confirmAndBook
-  )}
-</button>
+      <button
+        type="submit"
+        disabled={isPending || isProcessingPayment} //  Block during booking OR payment
+        className={`w-full text-lg text-white py-3 font-medium rounded-lg mt-5 transition-colors focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 ${(isPending || isProcessingPayment)
+          ? 'bg-gray-400 cursor-not-allowed'
+          : 'bg-[#163C8C] hover:bg-[#0f2d6b] cursor-pointer focus:ring-[#163C8C]'
+          }`}
+      >
+        {(isPending || isProcessingPayment) ? (
+          <>
+            <Icon icon="svg-spinners:ring-resize" width="20" height="20" className="text-white" />
+            {dict?.bookingForm?.buttons?.processing}
+          </>
+        ) : (
+          dict?.bookingForm?.buttons?.confirmAndBook
+        )}
+      </button>
     </form>
   );
 }

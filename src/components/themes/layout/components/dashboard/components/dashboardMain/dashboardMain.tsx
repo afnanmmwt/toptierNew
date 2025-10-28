@@ -38,33 +38,33 @@ export default function Dashboard() {
     return () => clearTimeout(timeout);
   }, [searchTerm]);
   // const [searchTerm, setSearchTerm] = useState("");
-useEffect(() => {
-  if (!user) return; // wait until user is defined
+// useEffect(() => {
+//   if (!user) return; // wait until user is defined
 
-  const checkToken = async () => {
-    try {
-      const verify_response = await verify_token();
-      console.log("verify_token response:", verify_response);
+//   const checkToken = async () => {
+//     try {
+//       const verify_response = await verify_token();
+//       console.log("verify_token response:", verify_response);
 
-      if (verify_response?.status) {
-        if (user.user_type === "customer") {
-          router.push("/dashboard");
-        } else if (user.user_type === "Agent") {
-          window.location.href = "https://chat.qwen.ai/c/guest";
-        } else {
-          router.push("/auth/login");
-        }
-      } else {
-        router.push("/auth/login");
-      }
-    } catch (error) {
-      console.error("Token verification failed:", error);
-      router.push("/auth/login");
-    }
-  };
+//       if (verify_response?.status) {
+//         if (user.user_type === "customer") {
+//           router.push("/dashboard");
+//         } else if (user.user_type === "Agent") {
+//           window.location.href = "https://chat.qwen.ai/c/guest";
+//         } else {
+//           router.push("/auth/login");
+//         }
+//       } else {
+//         router.push("/auth/login");
+//       }
+//     } catch (error) {
+//       console.error("Token verification failed:", error);
+//       router.push("/auth/login");
+//     }
+//   };
 
-  checkToken();
-}, [ user]);
+//   checkToken();
+// }, [ user]);
 
 
   // =============== Fetch dashboard data

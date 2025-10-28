@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import {
-  fetch_dashboard_data,
-  get_profile /*, verify_token*/,
-} from "@src/actions";
+
+import React, { useState, useMemo, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetch_dashboard_data, get_profile, getAccessToken, verify_token } from "@src/actions";
+
+
 import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
 import DashboardCard, { toCardData } from "./dashboardCard";
@@ -45,6 +45,7 @@ export default function Dashboard() {
     }, 500);
     return () => clearTimeout(t);
   }, [searchTerm]);
+
 
 
   // ===================== original verify block (kept commented) =====================
@@ -93,6 +94,7 @@ export default function Dashboard() {
     queryFn: async ({ pageParam }): Promise<PageResult> => {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
 
+
       if (filters.search?.trim()) payload.search = filters.search.trim();
       const res = await fetch_dashboard_data(payload); // must return { data, total }
       return { ...res, page: Number(pageParam), limit: PAGE_SIZE };
@@ -126,6 +128,7 @@ export default function Dashboard() {
   const cancelledCount = bookings.filter(
     (b) => b.booking_status === "cancelled"
   ).length;
+
 
   // Client-side filtered view of the currently loaded items
   const visibleBookings = useMemo(() => {

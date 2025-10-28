@@ -55,7 +55,7 @@ const HeaderMenus = () => {
     {headerPages?.map((item:any, index:number) => (
       <Link
         key={index}
-        href={`/page/${item.slug_url}`}
+        href={`/pages/${item.slug_url}`}
         target={""}
         className="text-[#11223399] text-base hover:text-blue-700 transition-colors duration-200 ease-in-out"
       >

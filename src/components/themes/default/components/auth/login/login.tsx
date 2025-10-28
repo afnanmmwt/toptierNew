@@ -135,6 +135,7 @@ const Login = ({ dict }: { dict?: any }) => {
                 name="password"
                 control={control}
                 render={({ field }) => (
+
                   <Input
                     {...field}
                     type={showPassword ? "text" : "password"}
@@ -143,6 +144,8 @@ const Login = ({ dict }: { dict?: any }) => {
                     invalid={!!errors.password}
                     suffix={
                       <button type="button" onClick={() => setShowPassword(!showPassword)}>
+
+
                         {showPassword ? (
                           <Icon icon="mdi:eye-off" width="20" height="20" />
                         ) : (

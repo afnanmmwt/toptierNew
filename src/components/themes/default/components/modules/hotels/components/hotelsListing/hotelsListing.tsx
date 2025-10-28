@@ -248,19 +248,19 @@ function getOptionLabel(option: string) {
                   {[5, 4, 3, 2, 1].map((stars) => (
                     <div
                       key={stars}
-                      className="flex items-center justify-between cursor-pointer"
+                      className="flex items-center justify-between "
                       onClick={() => {
                         setSelectedStars(stars);
                         updateRatingFilter(stars);
                       }}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex">
+                        <div className="flex ">
                           {[...Array(stars)].map((_, i) => (
                             <Icon
                               key={i}
                               icon="mdi:star"
-                              className={`h-5 w-5 ${selectedStars === stars ? "text-yellow-400" : "text-gray-300"
+                              className={`h-5 w-5 cursor-pointer ${selectedStars === stars ? "text-yellow-400" : "text-gray-300"
                                 }`}
                             />
                           ))}
@@ -515,7 +515,7 @@ function getOptionLabel(option: string) {
                 <p className="text-gray-600 mb-4">{dict?.hotel_listing?.search_criteria || "Try adjusting your filters or search criteria"}</p>
                 <button
                   onClick={() => resetFilters(event)}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  className="bg-blue-800 text-white px-4 py-2.5 cursor-pointer rounded-lg font-medium hover:bg-gray-950 transition-colors"
                 >
                   {dict?.hotel_listing?.reset_all_filters || "Reset All Filters"}
                 </button>

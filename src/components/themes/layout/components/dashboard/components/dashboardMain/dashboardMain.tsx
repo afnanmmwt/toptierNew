@@ -10,7 +10,6 @@ import { verify } from "crypto";
 import { useUser } from "@hooks/use-user";
 import { useRouter } from "next/navigation";
 
-
 const ITEMS_PER_PAGE_OPTIONS = [6, 9, 12, 15] as const;
 
 export default function Dashboard() {
@@ -22,7 +21,7 @@ export default function Dashboard() {
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
   const { user } = useUser();
-   const router = useRouter();
+  const router = useRouter();
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 6,
@@ -38,33 +37,34 @@ export default function Dashboard() {
     return () => clearTimeout(timeout);
   }, [searchTerm]);
   // const [searchTerm, setSearchTerm] = useState("");
-// useEffect(() => {
-//   if (!user) return; // wait until user is defined
 
-//   const checkToken = async () => {
-//     try {
-//       const verify_response = await verify_token();
-//       console.log("verify_token response:", verify_response);
+  // useEffect(() => {
+  //   if (!user) return; // wait until user is defined
 
-//       if (verify_response?.status) {
-//         if (user.user_type === "customer") {
-//           router.push("/dashboard");
-//         } else if (user.user_type === "Agent") {
-//           window.location.href = "https://chat.qwen.ai/c/guest";
-//         } else {
-//           router.push("/auth/login");
-//         }
-//       } else {
-//         router.push("/auth/login");
-//       }
-//     } catch (error) {
-//       console.error("Token verification failed:", error);
-//       router.push("/auth/login");
-//     }
-//   };
+  //   const checkToken = async () => {
+  //     try {
+  //       const verify_response = await verify_token();
+  //       console.log("verify_token response:", verify_response);
 
-//   checkToken();
-// }, [ user]);
+  //       if (verify_response?.status) {
+  //         if (user.user_type === "customer") {
+  //           router.push("/dashboard");
+  //         } else if (user.user_type === "Agent") {
+  //           window.location.href = "https://chat.qwen.ai/c/guest";
+  //         } else {
+  //           router.push("/auth/login");
+  //         }
+  //       } else {
+  //         router.push("/auth/login");
+  //       }
+  //     } catch (error) {
+  //       console.error("Token verification failed:", error);
+  //       router.push("/auth/login");
+  //     }
+  //   };
+
+  //   checkToken();
+  // }, [ user]);
 
 
   // =============== Fetch dashboard data

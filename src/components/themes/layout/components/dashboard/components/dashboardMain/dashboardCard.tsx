@@ -10,7 +10,7 @@ type RoomItem = {
 
   [k: string]: unknown;
 };
-
+ 
 type BookingCardData = {
   first_name?: string;
   last_name?: string;
@@ -167,7 +167,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
           <div className="absolute inset-0 bg-black/50"></div>
 
           <div
-            className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-[90%] max-h-[630px] overflow-hidden"
+            className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-[90%] max-h-[535px] md:max-h-[650px] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Image */}
@@ -175,7 +175,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
               <img
                 src={data.hotel_img}
                 alt={data.hotel_name || "Hotel image"}
-                className="w-full h-56 object-cover"
+                className="w-full h-40 md:h-56 object-cover"
               />
             ) : (
               <div className="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
@@ -184,18 +184,18 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
             )}
 
             <div className="py-3 px-6">
-              <div className="flex justify-between mt-2 space-y-1">
-                <h3 className="text-2xl font-bold text-gray-900">
+              <div className="flex flex-col md:flex-row justify-between mt-1 md:mt-2 gap-0.5 md:gap-1">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900">
                   {data.hotel_name}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs md:text-sm text-gray-600">
                   <span className="font-medium">Supplier:</span>{" "}
                   {data.supplier?.toUpperCase?.() || "—"} (
                   {data.service?.toUpperCase?.() || "—"})
                 </p>
               </div>
 
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 {data.location} - {data.hotel_address} - {data.country}
               </p>
 
@@ -466,7 +466,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 flex justify-between gap-3">
+              <div className="mt-1 md:mt-3 flex justify-between gap-3">
                 <button
                   className="cursor-pointer px-4 py-2 rounded-lg bg-blue-900 text-white hover:bg-gray-950"
                   onClick={() => {

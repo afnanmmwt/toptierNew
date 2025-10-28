@@ -81,6 +81,7 @@
     "no_amenities": "No amenities found",
     "book_now": "Book Now",
     "loading": "Loading...",
+    "cancelling": "Cancelling...",
     "per_night": "/night",
     "error_login_required": "User must be logged in to mark as favourite",
     "error_failed_fav": "Failed to update favourite",
@@ -301,9 +302,10 @@
     },
     "travellers": {
       "title": "Travellers",
+      "travellerType": "Traveller Type",
       "table": {
-        "no": "No",
-        "sr": "SR",
+        "number": "Number",
+        "type": "Type",
         "name": "Name"
       }
     },

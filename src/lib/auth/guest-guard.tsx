@@ -24,10 +24,7 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
         return;
       }
 
-      if (user) {
-        router.replace('/');
-        return;
-      }
+
       setIsChecking(false);
     };
 

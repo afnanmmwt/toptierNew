@@ -1,63 +1,83 @@
 // app/(main)/booking_details/page.tsx
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import BookingForm from './bookingForm';
-import { useAppDispatch, useAppSelector } from '@lib/redux/store';
-import Image from 'next/image';
-import useCurrency from '@hooks/useCurrency';
-import useDictionary from '@hooks/useDict';
-import useLocale from '@hooks/useLocale';
-import StripeProvider from '@lib/stripeProvider';
-import getCurrencySymbol from '@src/utils/getCurrencySymbals';
-import { useState, useEffect } from 'react';
-import { set } from 'lodash';
-import { setSeletecRoom } from '@lib/redux/base';
+import { useRouter } from "next/navigation";
+import BookingForm from "./bookingForm";
+import { useAppDispatch, useAppSelector } from "@lib/redux/store";
+import Image from "next/image";
+import useCurrency from "@hooks/useCurrency";
+import useDictionary from "@hooks/useDict";
+import useLocale from "@hooks/useLocale";
+import StripeProvider from "@lib/stripeProvider";
+import getCurrencySymbol from "@src/utils/getCurrencySymbals";
+import { useState, useEffect } from "react";
+import { set } from "lodash";
+import { setSeletecRoom } from "@lib/redux/base";
+import { useUser } from "@hooks/use-user";
 
 export default function BookingDetails() {
   const selectedRoom = useAppSelector((state) => state.root.selectedRoom);
-  const curruntBooking = localStorage.getItem('hotelSearchForm');
+  const curruntBooking = localStorage.getItem("hotelSearchForm");
   const saveBookingData = curruntBooking ? JSON.parse(curruntBooking) : {};
   const router = useRouter();
   const { priceRateConverssion } = useCurrency();
+  const { user } = useUser();
+ const user_type = user?.user_type ?? "";    // ✅ Step 3: safely extract
+
   const { hotelDetails, room, option } = selectedRoom || {};
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-   const dispatch = useAppDispatch();
-  const { checkin, checkout, adults = 0, children = 0, rooms = 1 } = saveBookingData;
-  const { price = 0, markup_price_per_night = 0, currency = 'USD' } = option || {};
+
+  const dispatch = useAppDispatch();
+  const {
+    checkin,
+    checkout,
+    adults = 0,
+    children = 0,
+    rooms = 1,
+  } = saveBookingData;
+  const {
+    price = 0,
+    markup_price_per_night = 0,
+    currency = "USD",
+  } = option || {};
 
   // Calculate stay duration (in nights)
   const checkinDate = new Date(checkin);
   const checkoutDate = new Date(checkout);
-  const nights = Math.max(1, (checkoutDate.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24));
+  const nights = Math.max(
+    1,
+    (checkoutDate.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
   const persons = Number(adults) + Number(children);
 
   // Editable fields state
   const [quantity, setQuantity] = useState<string>(String(rooms || 1));
-  const [roomPrice, setRoomPrice] = useState<string>(String(markup_price_per_night || 0));
+  const [roomPrice, setRoomPrice] = useState<string>(
+    String(markup_price_per_night || 0)
+  );
   // Optional: topTierFee can be removed if not used
   // const [topTierFee, setTopTierFee] = useState<string>(String(Math.max(0, Number(price) - Number(markup_price)) || 0));
 
   // Clean and compute total
-const cleanRoomPriceNum = parseFloat(roomPrice.replace(/,/g, '') || '0');
-const cleanQuantityNum = parseInt(quantity.replace(/,/g, ''), 10) || 1; // quantity can't be 0
-const finalTotal = cleanRoomPriceNum * nights * cleanQuantityNum;
+  const cleanRoomPriceNum = parseFloat(roomPrice.replace(/,/g, "") || "0");
+  const cleanQuantityNum = parseInt(quantity.replace(/,/g, ""), 10) || 1; // quantity can't be 0
+  const finalTotal = cleanRoomPriceNum * nights * cleanQuantityNum;
 
   // Input handler for numeric fields
-const handleQuantityChange = (value: string) => {
-  // Allow empty or valid integer (no decimals for quantity)
-  if (value === '' || /^\d*$/.test(value)) {
-    setQuantity(value);
-  }
-};
+  const handleQuantityChange = (value: string) => {
+    // Allow empty or valid integer (no decimals for quantity)
+    if (value === "" || /^\d*$/.test(value)) {
+      setQuantity(value);
+    }
+  };
 
-const handleRoomPriceChange = (value: string) => {
-  // Allow empty or valid decimal number
-  if (value === '' || /^\d*\.?\d*$/.test(value)) {
-    setRoomPrice(value);
-  }
-};
+  const handleRoomPriceChange = (value: string) => {
+    // Allow empty or valid decimal number
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setRoomPrice(value);
+    }
+  };
 
   return (
     <section className="bg-[#F9FAFB] w-full">
@@ -101,7 +121,6 @@ const handleRoomPriceChange = (value: string) => {
               quantity={quantity}
               markup_price={roomPrice}
               total={finalTotal}
-
             />
           </StripeProvider>
         </div>
@@ -110,7 +129,10 @@ const handleRoomPriceChange = (value: string) => {
         <div className="w-full sm:max-w-full md:max-w-95 lg:max-w-95 border border-[#CACACA] shadow rounded-xl p-5 h-fit">
           <div className="flex gap-3 items-center mb-2">
             <Image
-              src={selectedRoom?.hotelDetails?.img?.[0] || 'https://toptiertravel.vip/uploads/7xd0llauy5gkwcgwk.jpg'}
+              src={
+                selectedRoom?.hotelDetails?.img?.[0] ||
+                "https://toptiertravel.vip/uploads/7xd0llauy5gkwcgwk.jpg"
+              }
               alt="Hotel"
               width={200}
               height={200}
@@ -137,51 +159,76 @@ const handleRoomPriceChange = (value: string) => {
             {/* Room Info */}
             <div className="space-y-3 text-base">
               <div className="flex justify-between">
-                <span className="text-gray-600">{dict?.bookingDetails?.roomName}</span>
+                <span className="text-gray-600">
+                  {dict?.bookingDetails?.roomName}
+                </span>
                 <span className="font-semibold text-[#0F172B]">
                   {selectedRoom?.room?.name || "Standard Room"}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">{dict?.bookingDetails?.checkinDate}</span>
+                <span className="text-gray-600">
+                  {dict?.bookingDetails?.checkinDate}
+                </span>
                 <span className="font-semibold text-[#0F172B]">{checkin}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">{dict?.bookingDetails?.checkoutDate}</span>
+                <span className="text-gray-600">
+                  {dict?.bookingDetails?.checkoutDate}
+                </span>
                 <span className="font-semibold text-[#0F172B]">{checkout}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">{dict?.bookingDetails?.roomQuantity}</span>
-                <input
-                  type="text"
-                  value={quantity}
-                  onChange={(e) => handleQuantityChange(e.target.value)}
-                  className="w-16 border border-gray-300 rounded px-2 py-1 text-right text-sm bg-white outline-none"
-                  inputMode="decimal"
-                />
-              </div>
+
               <div className="flex justify-between">
-                <span className="text-gray-600">{dict?.bookingDetails?.nights}</span>
+                <span className="text-gray-600">
+                  {dict?.bookingDetails?.nights}
+                </span>
                 <span className="font-semibold text-[#0F172B]">{nights}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">{dict?.bookingDetails?.guests}</span>
+                <span className="text-gray-600">
+                  {dict?.bookingDetails?.guests}
+                </span>
                 <span className="font-semibold text-[#0F172B]">
                   {adults} {dict?.bookingDetails?.adults}
-                  {children > 0 ? `, ${children} ${dict?.bookingDetails?.children}` : ""}
+                  {children > 0
+                    ? `, ${children} ${dict?.bookingDetails?.children}`
+                    : ""}
                 </span>
               </div>
+               <div className="flex justify-between items-center">
+                <span className="text-gray-600">
+                  {dict?.bookingDetails?.roomQuantity}
+                </span>
+               <input
+  type="number"
+  value={quantity}
+  onChange={(e) => handleQuantityChange(e.target.value)}
+  className={`block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] text-center ${
+    user_type === "Customer" ? "bg-gray-100 cursor-not-allowed opacity-70" : ""
+  }`}
+  inputMode="decimal"
+  disabled={user_type === "Customer" } //
+/>
+
+              </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-600">{dict?.bookingDetails?.roomPrice}</span>
+                <span className="text-gray-600">
+                  {dict?.bookingDetails?.roomPrice}
+                </span>
                 <div className="flex items-center gap-2">
                   <span>{getCurrencySymbol(currency)}</span>
-                  <input
-                    type="text"
-                    value={roomPrice}
-                    onChange={(e) => handleRoomPriceChange(e.target.value)}
-                    className="w-24 border border-gray-300 rounded px-2 py-1 text-right text-sm bg-white outline-none"
-                    inputMode="decimal"
-                  />
+                 <input
+  type="text"
+  value={roomPrice}
+  onChange={(e) => handleRoomPriceChange(e.target.value)}
+  className={`block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] ${
+    user_type === "Customer" ? "bg-gray-100 cursor-not-allowed opacity-70" : ""
+  }`}
+  inputMode="decimal"
+  disabled={user_type === "Customer"} // ✅ disable if Customer
+/>
+
                 </div>
               </div>
               <div className="flex justify-between items-center border-t border-gray-300 pt-3 mt-2">

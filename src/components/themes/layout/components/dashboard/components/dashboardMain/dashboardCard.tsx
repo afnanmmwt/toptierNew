@@ -1,5 +1,7 @@
 "use client";
 
+import useDictionary from "@hooks/useDict";
+import useLocale from "@hooks/useLocale";
 import React, { useState } from "react";
 
 // === Card data shape + mapper ===
@@ -80,6 +82,8 @@ export const toCardData = (b: any): BookingCardData => ({
 const DashboardCard = ({ data }: { data: BookingCardData }) => {
   const [open, setOpen] = useState(false);
   const ref = data?.booking_ref_no || data?.booking_id;
+  const { locale } = useLocale();
+  const { data: dict } = useDictionary(locale as any);
 
   // Name display: if too long, show only first name (with truncate via CSS)
   const fullName = `${(data.first_name || "").trim()} ${(
@@ -107,7 +111,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
       <div
         className="relative rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
         style={{ height: "320px" }}
-        onClick={() => setOpen(true)}
+      // onClick={() => setOpen(true)}
       >
         {/* Background Image */}
         <div className="absolute inset-0">
@@ -119,7 +123,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
             />
           ) : (
             <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-              No Image
+              {dict?.dashboardCard?.noimage}
             </div>
           )}
         </div>
@@ -152,7 +156,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                 setOpen(true);
               }}
             >
-              More Details
+              {dict?.dashboardCard?.moredetails}
             </button>
           </div>
         </div>
@@ -167,7 +171,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
           <div className="absolute inset-0 bg-black/50"></div>
 
           <div
-            className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-[90%] max-h-[630px] overflow-hidden"
+            className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-[90%] max-h-[535px] md:max-h-[650px] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Image */}
@@ -175,27 +179,27 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
               <img
                 src={data.hotel_img}
                 alt={data.hotel_name || "Hotel image"}
-                className="w-full h-56 object-cover"
+                className="w-full h-40 md:h-56 object-cover"
               />
             ) : (
               <div className="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
-                No Image
+                {dict?.dashboardCard?.noimage}
               </div>
             )}
 
             <div className="py-3 px-6">
-              <div className="flex justify-between mt-2 space-y-1">
-                <h3 className="text-2xl font-bold text-gray-900">
+              <div className="flex flex-col md:flex-row justify-between mt-1 md:mt-2 gap-0.5 md:gap-1">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900">
                   {data.hotel_name}
                 </h3>
-                <p className="text-sm text-gray-600">
-                  <span className="font-medium">Supplier:</span>{" "}
+                <p className="text-xs md:text-sm text-gray-600">
+                  <span className="font-medium">{dict?.dashboardCard?.supplier}</span>{" "}
                   {data.supplier?.toUpperCase?.() || "—"} (
                   {data.service?.toUpperCase?.() || "—"})
                 </p>
               </div>
 
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 {data.location} - {data.hotel_address} - {data.country}
               </p>
 
@@ -203,22 +207,22 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
               <div className="max-h-50 overflow-y-auto mt-4 space-y-4">
                 {/* Booking Details */}
                 <div>
-                  <h1 className="text-xl font-semibold">Booking Details</h1>
+                  <h1 className="text-xl font-semibold">{dict?.dashboardCard?.bookingdetails}</h1>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 py-2 px-4 rounded-lg border border-gray-200">
                     <div>
-                      <p className="text-xs text-gray-500">Booking reference</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.bookingreference}</p>
                       <p className="text-sm font-semibold">
                         {data.booking_ref_no}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Booking status</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.bookingstatus}</p>
                       <p className="text-sm font-semibold">
                         {data.booking_status}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Payment status</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.paymentstatus}</p>
                       <p className="text-sm font-semibold">
                         {data.payment_status}
                       </p>
@@ -228,11 +232,11 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                       <p className="text-sm font-semibold">{data.pnr}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Check-in</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.checkin}</p>
                       <p className="text-sm font-semibold">{data.checkin}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Check-out</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.checkout}</p>
                       <p className="text-sm font-semibold">{data.checkout}</p>
                     </div>
                   </div>
@@ -240,7 +244,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
 
                 {/* Guest Details */}
                 <div>
-                  <h1 className="text-xl font-semibold">Guest Details</h1>
+                  <h1 className="text-xl font-semibold">{dict?.dashboardCard?.guestdetails}</h1>
 
                   {(() => {
                     let guests: any[] = [];
@@ -260,7 +264,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                     if (!guests.length) {
                       return (
                         <div className="mt-2 py-4 px-4 rounded-lg border border-gray-200 text-gray-500 text-sm">
-                          No guest data available.
+                          {dict?.dashboardCard?.noguest}
                         </div>
                       );
                     }
@@ -301,7 +305,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
 
                     const NameCell = ({ guest }: { guest: any }) => (
                       <>
-                        <p className="text-xs text-gray-500">Name</p>
+                        <p className="text-xs text-gray-500">{dict?.dashboardCard?.name}</p>
                         <p className="text-sm font-semibold">
                           {guest?.title ? `${guest.title} ` : ""}
                           {guest?.first_name ||
@@ -318,7 +322,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
 
                     const TypeCell = ({ guest }: { guest: any }) => (
                       <>
-                        <p className="text-xs text-gray-500">Type</p>
+                        <p className="text-xs text-gray-500">{dict?.dashboardCard?.type}</p>
                         <p className="text-sm font-semibold capitalize">
                           {guest?.traveller_type ||
                             guest?.type ||
@@ -334,7 +338,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                         {adults.length > 0 && (
                           <div className="rounded-lg border border-gray-200 overflow-hidden">
                             <div className="bg-gray-50 px-4 py-2 text-sm font-semibold">
-                              Adults ({adults.length})
+                               {dict?.dashboardCard?.adults} ({adults.length})
                             </div>
                             <div className="divide-y divide-gray-100">
                               {adults.map((guest, i) => (
@@ -361,7 +365,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                         {children.length > 0 && (
                           <div className="rounded-lg border border-gray-200 overflow-hidden">
                             <div className="bg-gray-50 px-4 py-2 text-sm font-semibold">
-                              Children ({children.length})
+                               {dict?.dashboardCard?.childs} ({children.length})
                             </div>
                             <div className="divide-y divide-gray-100">
                               {children.map((guest, i) => {
@@ -379,7 +383,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                                     </div>
                                     <div>
                                       <p className="text-xs text-gray-500">
-                                        Age
+                                        {dict?.dashboardCard?.age}
                                       </p>
                                       <p className="text-sm font-semibold">
                                         {age || "—"}
@@ -397,7 +401,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                         {adults.length + children.length < guests.length && (
                           <div className="rounded-lg border border-amber-200 overflow-hidden">
                             <div className="bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800">
-                              Other Guests (
+                              {dict?.dashboardCard?.otherguests} (
                               {guests.length - adults.length - children.length})
                             </div>
                             <div className="divide-y divide-gray-100">
@@ -428,16 +432,16 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
 
                 {/* Room Details */}
                 <div>
-                  <h1 className="text-xl font-semibold">Room Details</h1>
+                  <h1 className="text-xl font-semibold">{dict?.dashboardCard?.roomdetails}</h1>
                   <div className="grid  grid-cols-2 md:grid-cols-3 gap-3 mt-2 py-2 px-4 rounded-lg border border-gray-200">
                     <div>
-                      <p className="text-xs text-gray-500">Room name</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomname}</p>
                       <p className="text-sm font-semibold">
                         {roomInfo?.room_name || "—"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Room price</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomprice}</p>
                       <p className="text-sm font-semibold">
                         $
                         {roomInfo?.room_price
@@ -446,19 +450,19 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Room qaunitity</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomqaunitity}</p>
                       <p className="text-sm font-semibold">
                         {roomInfo?.room_qaunitity || "—"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Adults </p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.adults}</p>
                       <p className="text-sm font-semibold">
                         {data?.adults || "—"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500">Childs</p>
+                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.childs}</p>
                       <p className="text-sm font-semibold">
                         {data?.childs || "—"}
                       </p>
@@ -466,7 +470,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                   </div>
                 </div>
               </div>
-              <div className="mt-3 flex justify-between gap-3">
+              <div className="mt-1 md:mt-3 flex justify-between gap-3">
                 <button
                   className="cursor-pointer px-4 py-2 rounded-lg bg-blue-900 text-white hover:bg-gray-950"
                   onClick={() => {
@@ -477,7 +481,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                       "";
 
                     if (!ref) {
-                      alert("Invoice reference not found");
+                      alert(dict?.dashboardCard?.invoicenotfound);
                       return;
                     }
 
@@ -485,14 +489,14 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                     window.location.href = invoiceUrl;
                   }}
                 >
-                  Invoice
+                  {dict?.dashboardCard?.invoice}
                 </button>
 
                 <button
                   onClick={() => setOpen(false)}
                   className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
                 >
-                  Close
+                  {dict?.dashboardCard?.close || "Close"}
                 </button>
               </div>
             </div>

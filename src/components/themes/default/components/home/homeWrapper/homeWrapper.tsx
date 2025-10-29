@@ -1,33 +1,27 @@
 "use client";
-// import React, { ReactElement } from "react";
-// import { Icon } from "@iconify/react";
 import {
   HeroSection,
   FeaturedDestinations,
   OfferSection,
   TestimonialSection,FeaturedHotels,NewsLatter,
-  // HotelsListing,
-  // HotelsListing
-
 } from "@components/themes/default";
-// import { baseUrl, token, siteUrl } from "@src/actions";
-
-// import { useAppSelector } from "@lib/redux/store";
-// import useLocale from "@hooks/useLocale";
-// import useDictionary from "@hooks/useDict";
 import useDirection from "@hooks/useDirection";
-// import { HotelsListing } from "../../modules/hotels/components/hotelsListing";
-// import Spinner from "@components/core/Spinner";
-
+import { useEffect } from "react";
+import { useRouter } from 'next/navigation';
+import Alert from '@src/components/core/alert';
+import { useUser } from '@src/hooks/use-user';
 export default function HomeWrapper({dict}:{dict:any}) {
-  // const { locale } = useLocale();
-  // const { data: dict, isLoading: dictLoading } = useDictionary(locale as any);
-  // const app = useAppSelector((state) => state?.appData?.data);
   const [direction] = useDirection();
+  const router = useRouter();
+  const { user } = useUser();
 
+  const lastRoute = sessionStorage.getItem('lastRoute') || '';
+  useEffect(() => {
+      if (lastRoute === "/bookings" && user) {
+        router.replace('/bookings');
+      }
+  }, [user, router, lastRoute]);
 
-
-  // const isFeaturesLoading = !dict ;
 
   return (
     <div className=" bg-white dark:bg-gray-800 min-h-full " dir={direction}>

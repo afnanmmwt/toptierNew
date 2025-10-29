@@ -15,7 +15,7 @@ type DashboardLayoutProps = CommonProps;
 
 const DashboardLayout = ({ children, }: DashboardLayoutProps) => {
     //   const expanded = useAppSelector((state) => state?.root.sidebarExpanded);
-    //   console.log('app', app);
+    
     //   const { locale } = useLocale();
         // const { data: dict, isLoading } = useDictionary(locale as any);
         // const [direction] = useDirection();
@@ -49,14 +49,14 @@ const DashboardLayout = ({ children, }: DashboardLayoutProps) => {
     return (
         <Main>
             <div className="flex min-h-screen  py-6 w-full mx-auto bg-[#DFE5EC] dark:bg-gray-800 dark:text-gray-50">
-                <div className='w-full max-w-[1200px] mx-auto h-full flex px-6  '>
+                <div className='w-full max-w-[1200px] mx-auto h-full flex md:px-6  '>
                 <div className='w-full h-full flex  gap-3.5 rounded-xl bg-[#DFE5EC] dark:bg-gray-800 dark:text-gray-50'>
                     {/* sidebar  */}
                     {/* <div className='   h-full'>
                         <DashboardSidebar  menuItems={navItems}/>
                     </div> */}
                     {/* main content  */}
-                    <div className='bg-white ms-10  md:ms-0 dark:bg-gray-900   overflow-hidden w-full h-full rounded-lg'>
+                    <div className='bg-white mx-6 md:mx-0 dark:bg-gray-900   overflow-hidden w-full h-full rounded-lg'>
                         {children}
                     </div>
                 </div>

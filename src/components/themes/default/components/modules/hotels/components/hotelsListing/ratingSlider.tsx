@@ -89,6 +89,6 @@ const  RatingSlider: React.FC<RatingSliderProps> = ({ value, onChange }) => {
 };
 export default RatingSlider;
 
-// ✅ Now you can use <RatingSlider /> inside your HotelSearchApp component
+//  Now you can use <RatingSlider /> inside your HotelSearchApp component
 // Example usage:
 // <RatingSlider value={filters.selectedRating} onChange={updateRatingFilter} />

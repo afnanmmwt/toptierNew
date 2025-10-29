@@ -10,7 +10,7 @@ export const setAppData = createAsyncThunk(
       const state = getState() as RootState;
       const language = state.root.locale;
       const currency = state.root.currency;
-     console.log("Language:", language, "Currency:", currency);
+    
      const payload : any={
       language:language,
       currency:currency

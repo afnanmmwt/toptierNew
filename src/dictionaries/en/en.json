@@ -81,6 +81,7 @@
     "no_amenities": "No amenities found",
     "book_now": "Book Now",
     "loading": "Loading...",
+    "cancelling": "Cancelling...",
     "per_night": "/night",
     "error_login_required": "User must be logged in to mark as favourite",
     "error_failed_fav": "Failed to update favourite",
@@ -111,20 +112,20 @@
     }
   },
   "header": {
-      "paymentStatus": "Payment Status:",
-      "bookingStatus": "Booking Status:",
-      "phone": "Phone:",
-      "email": "Email:",
-      "Agent": "Agent",
-      "Customer":"Customer",
-      "login":"Login",
-      "signup":"Signup",
-      "hotels":"Hotels",
-      "contact":"Contact",
-      "support":"Support",
-      "agents":"Agents",
-      "customers":"Customers"
-    },
+    "paymentStatus": "Payment Status:",
+    "bookingStatus": "Booking Status:",
+    "phone": "Phone:",
+    "email": "Email:",
+    "Agent": "Agent",
+    "Customer": "Customer",
+    "login": "Login",
+    "signup": "Signup",
+    "hotels": "Hotels",
+    "contact": "Contact",
+    "support": "Support",
+    "agents": "Agents",
+    "customers": "Customers"
+  },
   "footer": {
     "subheading": "Unlock extraordinary stays with our expert-curated hotels and exclusive access to the world's finest destinations.",
     "connect": "Stay Connected",
@@ -196,43 +197,6 @@
     "youmightAlsoLike": "You might also like"
   },
   "bookingForm": {
-    "personalInformation": {
-      "title": "Personal Information",
-      "subtitle": "Tell us the name of the person checking in.",
-      "firstNameLabel": "First Name",
-      "lastNameLabel": "Last Name",
-      "addressLabel": "Address"
-    },
-    "contactInformation": {
-      "title": "Contact Information",
-      "subtitle": "We'll send your confirmation to this email address.",
-      "emailLabel": "Email Address",
-      "nationalityLabel": "Nationality",
-      "currentCountryLabel": "Current Country",
-      "phoneCodeLabel": "Country Code",
-      "phoneNumberLabel": "Phone Number"
-    },
-    "travelersInformation": {
-      "title": "Travelers Information",
-      "subtitle": "Important details to complete your booking",
-      "adultTraveller": "Adult Traveller",
-      "childTraveller": "Child Traveller",
-      "titleLabel": "Title"
-    },
-    "paymentMethod": {
-      "title": "Payment Method",
-      "subtitle": "Safe, secure transactions. Your personal information is protected.",
-      "noPaymentMethods": "No payment methods available"
-    },
-    "cancellationPolicy": {
-      "title": "Cancellation Policy",
-      "acceptText": "I accept the cancellation policy for this booking and the",
-      "termsAndConditions": "Terms & Conditions"
-    },
-    "buttons": {
-      "confirmAndBook": "Confirm & Book",
-      "processing": "Processing..."
-    },
     "errors": {
       "firstNameRequired": "First name is required",
       "lastNameRequired": "Last name is required",
@@ -242,17 +206,60 @@
       "currentCountryRequired": "Current country is required",
       "countryCodeRequired": "Country code is required",
       "phoneNumberRequired": "Phone number is required",
-      "invalidPhoneNumber": "Enter a valid international phone number",
-      "atLeastOneTraveller": "At least one traveller is required",
       "titleRequired": "Title is required",
-      "paymentMethodRequired": "Please select a payment method",
-      "acceptPolicyRequired": "You must accept the cancellation policy"
+      "atLeastOneTraveller": "At least one traveller is required",
+      "acceptPolicyRequired": "You must accept the cancellation policy",
+      "cardNameRequired": "Cardholder name is required",
+      "invalidCardNumber": "Invalid card number",
+      "invalidCardExpiry": "Invalid expiration date (MM/YY)",
+      "invalidCardCvv": "Invalid CVV (3-4 digits)",
+      "invalidCardZip": "Invalid ZIP code"
     },
     "titles": {
       "mr": "Mr",
       "mrs": "Mrs",
       "ms": "Ms",
       "dr": "Dr"
+    },
+    "personalInformation": {
+      "title": "Personal Information",
+      "subtitle": "Please provide your personal details for the booking.",
+      "firstNameLabel": "First Name",
+      "lastNameLabel": "Last Name",
+      "addressLabel": "Address"
+    },
+    "contactInformation": {
+      "title": "Contact Information",
+      "subtitle": "We'll use this to send your booking confirmation.",
+      "emailLabel": "Email Address",
+      "nationalityLabel": "Nationality",
+      "currentCountryLabel": "Current Country",
+      "phoneCodeLabel": "Country Code",
+      "phoneNumberLabel": "Phone Number"
+    },
+    "travelersInformation": {
+      "title": "Traveller Information",
+      "subtitle": "Please provide details for all travellers.",
+      "adultTraveller": "Adult Traveller",
+      "childTraveller": "Child Traveller",
+      "titleLabel": "Title",
+      "ageLabel": "Child Age"
+    },
+    "paymentMethod": {
+      "title": "Payment Method",
+      "subtitle": "Safe & secure transaction. Your personal information is protected.",
+      "cardInformationTitle": "Card Information",
+      "cardholderNameLabel": "Cardholder Name",
+      "cardDetailsLabel": "Card Details"
+    },
+    "cancellationPolicy": {
+      "title": "Cancellation Policy",
+      "acceptText": "I accept the",
+      "termsAndConditions": "Terms & Conditions"
+    },
+    "buttons": {
+      "processing": "Processing...",
+      "confirmAndBook": "Confirm & Book"
     }
   },
   "bookingDetails": {
@@ -274,7 +281,6 @@
     "errors": {
       "noInvoiceFound": "No invoice details found."
     },
-
     "header": {
       "paymentStatus": "Payment Status:",
       "bookingStatus": "Booking Status:",
@@ -285,7 +291,6 @@
       "login": "Login",
       "signup": "Signup"
     },
-
     "bookingNote": "Cancellation request sent. we will update as soon as we change the status",
     "bookingInfo": {
       "bookingId": "Booking ID",
@@ -297,9 +302,10 @@
     },
     "travellers": {
       "title": "Travellers",
+      "travellerType": "Traveller Type",
       "table": {
-        "no": "No",
-        "sr": "SR",
+        "number": "Number",
+        "type": "Type",
         "name": "Name"
       }
     },
@@ -415,6 +421,7 @@
     "all": "All",
     "paid": "Paid",
     "unpaid": "Unpaid",
+    "refunded": "Refunded",
     "cancelled": "Cancelled",
     "search_placeholder": "Search...",
     "client_name": "Client Name",
@@ -447,5 +454,90 @@
     "children_label": "Children",
     "child_age_label": "Child Age",
     "years_label": "years"
+  },
+  "roomCard": {
+    "loginToFavorite": "User must be logged in to mark as favourite",
+    "favoriteUpdateFailed": "Something went wrong :x:",
+    "favoriteUpdated": "Updated favourites",
+    "favoriteUpdateError": "Failed to update favourites :x:",
+    "noAmenities": "No amenities listed",
+    "freeBreakfast": "Free breakfast",
+    "freeCancellation": "Free cancellation",
+    "reserve": "Reserve",
+    "moreOptions": "More Options",
+    "close": "Close"
+  },
+  "roomOption": {
+    "roomNamePlaceholder": "One Bedroom Apartment",
+    "roomImage": "Room Image",
+    "features": "Features",
+    "travellers": "Travellers",
+    "price": "Price",
+    "freeBreakfast": "Free breakfast",
+    "freeDinner": "Free Dinner",
+    "freeCancellation": "Free cancellation",
+    "notBookable": "Not Bookable",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "noFeatures": "N/A",
+    "adults": "Adults",
+    "children": "Children",
+    "bookNow": "Book Now"
+  },
+   "modal": {
+    "hotelImageAlt": "Hotel image",
+    "noImagePlaceholder": "No Image",
+    "supplierLabel": "Supplier:",
+    "serviceLabel": "—",
+    "bookingDetailsHeading": "Booking Details",
+    "bookingReferenceLabel": "Booking reference",
+    "bookingStatusLabel": "Booking status",
+    "paymentStatusLabel": "Payment status",
+    "pnrLabel": "PNR",
+    "checkInLabel": "Check-in",
+    "checkOutLabel": "Check-out",
+    "guestDetailsHeading": "Guest Details",
+    "noGuestDataMessage": "No guest data available.",
+    "adultsSectionTitle": "Adults",
+    "childrenSectionTitle": "Children",
+    "otherGuestsSectionTitle": "Other Guests",
+    "nameLabel": "Name",
+    "typeLabel": "Type",
+    "ageLabel": "Age",
+    "roomDetailsHeading": "Room Details",
+    "roomNameLabel": "Room name",
+    "roomPriceLabel": "Room price",
+    "roomQuantityLabel": "Room qaunitity",
+    "adultsLabel": "Adults",
+    "childrenLabel": "Childs",
+    "invoiceButton": "Invoice",
+    "closeButton": "Close",
+    "invoiceReferenceNotFound": "Invoice reference not found"
+  },
+  "dashboardCard":{
+    "noimage": "No Image",
+    "moredetails": "More Details",
+    "upplier": "Supplier",
+    "bookingdetails": "Booking Details",
+    "bookingreference": "Booking reference",
+    "bookingstatus":"Booking status",
+    "paymentstatus": "Payment status",
+    "checkin":"Check-in",
+    "checkout": "Check-out",
+    "guestdetails": "Guest Details",
+    "noguest":"No guest data available.",
+    "name": "Name",
+    "type": "Type",
+    "adults" : "Adults",
+    "age": "Age",
+    "otherguests" :"Other Guests",
+    "roomdetails":"Room Details",
+    "roomname":"Room name",
+    "roomprice":"Room price",
+    "roomqaunitity":"Room qaunitity",
+    "childs":"Childs",
+    "invoice":"Invoice",
+    "close":"Close",
+    "invoicenotfound":"Invoice reference not found"
   }
 }

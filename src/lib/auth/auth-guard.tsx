@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 import { useUser } from '@src/hooks/use-user';
 import Alert from '@components/core/alert';
@@ -13,8 +13,10 @@ export interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | null {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, error, isLoading } = useUser();
   const [isChecking, setIsChecking] = React.useState(true);
+
 
   React.useEffect(() => {
     if (!isLoading) {
@@ -24,13 +26,16 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
       }
 
       if (!user) {
+        //  Store the current route before redirecting to login
+        sessionStorage.setItem('lastRoute', pathname);
+
         router.replace('/auth/login');
-        return;
+      
       }
 
       setIsChecking(false);
     }
-  }, [user, error, isLoading, router]);
+  }, [user, error, isLoading, router, pathname]);
 
   const isReady = !isLoading && !isChecking;
 

@@ -17,8 +17,6 @@ export const generateMetadata = async (): Promise<Metadata> => {
   }
 
   const {  home_title, meta_description, favicon_img ,header_logo_img} = meta_data
-  // console.log('adfff', home_title,favicon_img,header_logo_img)
-  // console.log('apppp data object ----------------',meta_data)
 
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),

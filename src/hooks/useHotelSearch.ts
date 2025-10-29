@@ -109,7 +109,7 @@ const useHotelSearch = () => {
     children_ages: [], //  NEW
   });
   const hotelSearch_path = usePathname();
-  // console.log("hotelSearch_path", hotelSearch_path);
+
   const queryClient = useQueryClient();
     const {country, currency, locale}=useAppSelector((state)=>state.root)
 
@@ -126,7 +126,7 @@ const useHotelSearch = () => {
   // FIX 1: Add separate loading states
   const [isSearching, setIsSearching] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
-  //  console.log('use hotel search ',selectedHotel,selectedRomm)
+ 
   const listRef = useRef<HTMLDivElement | null>(null);
   const [page, setPage] = useState(1);
 
@@ -139,7 +139,7 @@ const useHotelSearch = () => {
   const router = useRouter();
   const allHotelsData = useAppSelector((state) => state.root.hotels);
   const dispatch = useDispatch();
-  // console.log('all hotel data',allHotelsData)
+
   const hotelModuleNames = useMemo(() => {
     return (
       modules
@@ -350,7 +350,7 @@ const useHotelSearch = () => {
         });
 
         localStorage.setItem("hotelSearchForm", JSON.stringify(form));
-      //  console.log('data range ===============', form)
+    
         const destinationSlug = form.destination.trim().replace(/\s+/g, "-");
 
         const url = `/hotel/${destinationSlug}/${params.get(
@@ -468,14 +468,14 @@ const useHotelSearch = () => {
     if (selectedNationality) {
        parsedFormData = JSON.parse(selectedNationality); // now it's an object
 
-      // console.log("Nationality:", nationality);
+    
     }
     //  construct URL
     const url = `/hotelDetails/${hotel.hotel_id}/${slugName}/${form.checkin}/${form.checkout}/${form.rooms}/${form.adults}/${parsedFormData.children}/${parsedFormData.nationality}`;
     dispatch(setSeletecHotel(hotel));
     //  navigate
     router.push(url);
-    // console.log("Book Now clicked for hotel ID:", hotel.hotel_id);
+   
   };
 
   // Other utility functions

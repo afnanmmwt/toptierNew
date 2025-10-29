@@ -659,9 +659,8 @@ body:is(.dark *) {
 }
 
 .hotelImage {
-  border:1px solid black;
-  width: 100%; /* ← Increased from 300px */
-  height: 100%;
+  width: 350px; /* ← Increased from 300px */
+  height: 290px;
   object-fit: cover;
 }
 

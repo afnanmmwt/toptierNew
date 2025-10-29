@@ -13,6 +13,7 @@ export default async function Page({ params }: {
   const dict = await getDictionary(lang)
 
 
+
   return (
     // <div>home page</div>
     <TransitionLayout>

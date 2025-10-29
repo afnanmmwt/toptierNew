@@ -6,7 +6,7 @@
       "check_in": "Giriş",
       "check_out": "Çıkış",
       "guests": "Misafirler",
-      "rooms": "Oda",
+      "rooms": "Odalar",
       "adults": "Yetişkinler",
       "children": "Çocuklar",
       "child_age": "Çocuk Yaşı",
@@ -20,7 +20,7 @@
   },
   "signup_form": {
     "heading": "Hesap Oluştur",
-    "already_account": "Zaten bir hesabınız mı var?",
+    "already_account": "Zaten bir hesabınız var mı?",
     "sign_in": "Giriş yap",
     "first_name": "Ad",
     "first_name_placeholder": "Adınızı girin",
@@ -35,7 +35,7 @@
     "password_label": "Şifre",
     "password_placeholder": "Şifre Girin",
     "human_label": "Ben bir insanım",
-    "agree_text": "Şunu kabul ediyorum:",
+    "agree_text": "Şunları kabul ediyorum:",
     "terms_of_use": "Kullanım Şartları",
     "and": "ve",
     "privacy_policy": "Gizlilik Politikası",
@@ -50,7 +50,7 @@
     "phone_number_invalid": "Geçerli bir uluslararası telefon numarası girin",
     "country_code_required": "Ülke kodu gerekli",
     "password_min_length": "Şifre en az 6 karakter olmalıdır",
-    "terms_required": "Şartları kabul etmelisiniz",
+    "terms_required": "Şartları ve koşulları kabul etmelisiniz",
     "human_required": "Lütfen insan olduğunuzu onaylayın"
   },
   "login_form": {
@@ -65,55 +65,71 @@
     "password": "Şifre",
     "password_placeholder": "Şifrenizi girin",
     "remember_me": "Beni hatırla",
-    "forgot_password": "Şifremi unuttum?",
+    "forgot_password": "Şifremi Unuttum?",
     "login_button": "Giriş Yap"
   },
   "featured_dest": {
-    "dest_heading": "Öne Çıkan Yerler",
+    "dest_heading": "Öne Çıkan Destinasyonlar",
     "dest_subheading": "Unutulmaz deneyimler için dünya çapında en etkileyici ve popüler seyahat noktalarını keşfedin.",
-    "no_featured_dest": "Öne çıkan yer yok",
+    "no_featured_dest": "Öne çıkan destinasyon yok",
     "dest_explore": "Şimdi Keşfet",
     "error": "Favorilere eklemek için giriş yapmalısınız"
   },
   "featured_hotels": {
     "heading": "Öne Çıkan Oteller",
-    "subheading": "Cennetin kalbinde dünya standartlarında konfor ve eşsiz misafirperverliği yaşayın.",
-    "no_amenities": "Olanak bulunamadı",
+    "subheading": "Cennetin kalbinde, eşsiz konfor ve misafirperverlik deneyimi yaşayın.",
+    "no_amenities": "Amenity bulunamadı",
     "book_now": "Şimdi Rezervasyon Yap",
     "loading": "Yükleniyor...",
+    "cancelling": "İptal Ediliyor...",
     "per_night": "/gece",
     "error_login_required": "Favorilere eklemek için giriş yapmalısınız",
     "error_failed_fav": "Favori güncellenemedi",
     "success_updated_fav": "Favoriler güncellendi",
-    "something_wrong": "Bir şeyler ters gitti"
+    "something_wrong": "Bir şeyler yanlış gitti"
   },
   "offer_sec": {
     "offer_heading": "Neden Bizi Tercih Etmelisiniz?",
-    "offer_subheading": "Memnuniyetiniz önceliğimiz olan, eşsiz seyahat hizmetlerini bizimle yaşayın."
+    "offer_subheading": "Memnuniyetinizin öncelikli hedefimiz olduğu, benzersiz seyahat hizmetleri deneyimi yaşayın."
   },
   "testi_sec": {
     "testi_see_room": "Odayı Gör",
     "testi_heading": "Misafirlerimiz ",
-    "testi_heading_2": "Ne Diyor?",
-    "testi_subheading": "Konfor, kolaylık ve unutulmaz konaklamalar hakkındaki gerçek yorumlarla neden bize güvendiğini görün",
+    "testi_heading_2": "Ne Diyor? ",
+    "testi_subheading": "Konfor, kolaylık ve unutulmaz konaklamalar hakkındaki gerçek yorumlarla neden bize güvendiğinizi görün",
     "testi_autoplay": "Otomatik oynatılıyor • Duraklatmak için dokunun"
   },
   "news_letter_sec": {
     "letter": "Bülten",
     "letter_name": "ad",
     "letter_name_placeholder": "Ad",
-    "letter_email": "e-posta",
+    "letter_email": "eposta",
     "letter_email_placeholder": "E-posta",
-    "letter_continue": "Devam Et",
+    "letter_continue": "Devam",
     "errors": {
       "name_too_short": "Ad en az 2 karakter olmalıdır",
       "email_invalid": "Geçersiz e-posta adresi"
     }
   },
+  "header": {
+    "paymentStatus": "Ödeme Durumu:",
+    "bookingStatus": "Rezervasyon Durumu:",
+    "phone": "Telefon:",
+    "email": "E-posta:",
+    "Agent": "Acenta",
+    "Customer": "Müşteri",
+    "login": "Giriş Yap",
+    "signup": "Kayıt Ol",
+    "hotels": "Oteller",
+    "contact": "İletişim",
+    "support": "Destek",
+    "agents": "Acenteler",
+    "customers": "Müşteriler"
+  },
   "footer": {
-    "subheading": "Uzmanlarımızca seçilmiş oteller ve dünyanın en iyi destinasyonlarına özel erişimle olağanüstü konaklamaların kilidini açın.",
+    "subheading": "Uzmanlarca seçilmiş otellerimiz ve dünyanın en iyi destinasyonlarına özel erişimimizle olağanüstü konaklamaların kilidini açın.",
     "connect": "Bağlı Kalın",
-    "subconnect": "Seyahat ipuçları, özel teklifler ve son güncellemeler için abone olun.",
+    "subconnect": "Seyahat ipuçları, özel teklifler ve en son güncellemeler için abone olun.",
     "email_placeholder": "E-postanızı girin",
     "subscribing": "Abone olunuyor...",
     "subscribe": "Abone Ol",
@@ -122,7 +138,7 @@
     "title_explore": "Keşfet",
     "title_support": "Destek",
     "title_company": "Şirket",
-    "title_downloads": "İndir"
+    "title_downloads": "İndirilenler"
   },
   "hotel_listing": {
     "advanced_search": "Gelişmiş Arama",
@@ -160,14 +176,14 @@
   "hotelDetails": {
     "hotelNamePlaceholder": "Otel Adı",
     "aboutThisProperty": "Bu Özellik Hakkında",
-    "noAmenities": "Olanak bulunamadı",
+    "noAmenities": "Amenity bulunamadı",
     "showMore": "Daha Fazla Göster",
     "chooseYourRoom": "Odanızı Seçin",
-    "noRoomsAvailable": "Seçtiğiniz tarihler için oda bulunamadı.",
+    "noRoomsAvailable": "Seçtiğiniz tarihler için oda bulunmamaktadır.",
     "theToptierWayToTravel": "Seyahat Etmek İçin En İyi Yol",
-    "noBrandStories": "Bu özellik için marka hikayesi mevcut değil.",
-    "needToKnowDetails": "Bilmeniz Gerekenler",
-    "frequentlyAskedQuestions": "Sıkça Sorulan Sorular",
+    "noBrandStories": "Bu özellik için marka hikayesi bulunmamaktadır.",
+    "needToKnowDetails": "Bilinmesi Gereken Detaylar",
+    "frequentlyAskedQuestions": "Sık Sorulan Sorular",
     "noSimilarHotels": "Benzer otel bulunamadı.",
     "readMore": "Daha Fazla Oku",
     "readLess": "Daha Az Oku",
@@ -177,67 +193,73 @@
     "map": "Harita",
     "unableToLoad": "Otel detayları yüklenemiyor",
     "pleaseTryAgain": "Lütfen daha sonra tekrar deneyin.",
-    "allAmenities": "Tüm Olanaklar",
+    "allAmenities": "Tüm Özellikler",
     "youmightAlsoLike": "Bunlar da ilginizi çekebilir"
   },
   "bookingForm": {
-    "personalInformation": {
-      "title": "Kişisel Bilgiler",
-      "subtitle": "Giriş yapan kişinin adını belirtin.",
-      "firstNameLabel": "Ad",
-      "lastNameLabel": "Soyad",
-      "addressLabel": "Adres"
-    },
-    "contactInformation": {
-      "title": "İletişim Bilgileri",
-      "subtitle": "Onayınızı bu e-posta adresine göndereceğiz.",
-      "emailLabel": "E-posta Adresi",
-      "nationalityLabel": "Uyruk",
-      "currentCountryLabel": "Bulunduğunuz Ülke",
-      "phoneCodeLabel": "Ülke Kodu",
-      "phoneNumberLabel": "Telefon Numarası"
-    },
-    "travelersInformation": {
-      "title": "Yolcu Bilgileri",
-      "subtitle": "Rezervasyonunuzu tamamlamak için önemli detaylar",
-      "adultTraveller": "Yetişkin Yolcu",
-      "childTraveller": "Çocuk Yolcu",
-      "titleLabel": "Unvan"
-    },
-    "paymentMethod": {
-      "title": "Ödeme Yöntemi",
-      "subtitle": "Güvenli ve korumalı işlemler. Kişisel bilgileriniz korunur.",
-      "noPaymentMethods": "Mevcut ödeme yöntemi yok"
-    },
-    "cancellationPolicy": {
-      "title": "İptal Politikası",
-      "acceptText": "Bu rezervasyonun iptal politikasını ve",
-      "termsAndConditions": "Şartlar ve Koşullar'ı kabul ediyorum"
-    },
-    "buttons": {
-      "confirmAndBook": "Onayla ve Rezervasyon Yap",
-      "processing": "İşleniyor..."
-    },
     "errors": {
       "firstNameRequired": "Ad gerekli",
       "lastNameRequired": "Soyad gerekli",
       "addressRequired": "Adres gerekli",
       "invalidEmail": "Geçersiz e-posta adresi",
       "nationalityRequired": "Uyruk gerekli",
-      "currentCountryRequired": "Bulunduğunuz ülke gerekli",
+      "currentCountryRequired": "Mevcut ülke gerekli",
       "countryCodeRequired": "Ülke kodu gerekli",
       "phoneNumberRequired": "Telefon numarası gerekli",
-      "invalidPhoneNumber": "Geçerli bir uluslararası telefon numarası girin",
+      "titleRequired": "Ünvan gerekli",
       "atLeastOneTraveller": "En az bir yolcu gerekli",
-      "titleRequired": "Unvan gerekli",
-      "paymentMethodRequired": "Lütfen bir ödeme yöntemi seçin",
-      "acceptPolicyRequired": "İptal politikasını kabul etmelisiniz"
+      "acceptPolicyRequired": "İptal politikasını kabul etmelisiniz",
+      "cardNameRequired": "Kart sahibi adı gerekli",
+      "invalidCardNumber": "Geçersiz kart numarası",
+      "invalidCardExpiry": "Geçersiz son kullanma tarihi (AA/YY)",
+      "invalidCardCvv": "Geçersiz CVV (3-4 hane)",
+      "invalidCardZip": "Geçersiz posta kodu"
     },
     "titles": {
       "mr": "Bay",
       "mrs": "Bayan",
       "ms": "Bayan",
       "dr": "Dr."
+    },
+    "personalInformation": {
+      "title": "Kişisel Bilgiler",
+      "subtitle": "Lütfen rezervasyon için kişisel bilgilerinizi girin.",
+      "firstNameLabel": "Ad",
+      "lastNameLabel": "Soyad",
+      "addressLabel": "Adres"
+    },
+    "contactInformation": {
+      "title": "İletişim Bilgileri",
+      "subtitle": "Rezervasyon onayınızı bu adrese göndereceğiz.",
+      "emailLabel": "E-posta Adresi",
+      "nationalityLabel": "Uyruk",
+      "currentCountryLabel": "Mevcut Ülke",
+      "phoneCodeLabel": "Ülke Kodu",
+      "phoneNumberLabel": "Telefon Numarası"
+    },
+    "travelersInformation": {
+      "title": "Yolcu Bilgileri",
+      "subtitle": "Lütfen tüm yolcuların bilgilerini girin.",
+      "adultTraveller": "Yetişkin Yolcu",
+      "childTraveller": "Çocuk Yolcu",
+      "titleLabel": "Ünvan",
+      "ageLabel": "Çocuk Yaşı"
+    },
+    "paymentMethod": {
+      "title": "Ödeme Yöntemi",
+      "subtitle": "Güvenli ve korumalı işlem. Kişisel bilgileriniz korunmaktadır.",
+      "cardInformationTitle": "Kart Bilgileri",
+      "cardholderNameLabel": "Kart Sahibinin Adı",
+      "cardDetailsLabel": "Kart Detayları"
+    },
+    "cancellationPolicy": {
+      "title": "İptal Politikası",
+      "acceptText": "Şunu kabul ediyorum:",
+      "termsAndConditions": "Şartlar ve Koşullar"
+    },
+    "buttons": {
+      "processing": "İşleniyor...",
+      "confirmAndBook": "Onayla ve Rezervasyon Yap"
     }
   },
   "bookingDetails": {
@@ -246,7 +268,7 @@
     "roomName": "Oda Adı",
     "checkinDate": "Giriş Tarihi",
     "checkoutDate": "Çıkış Tarihi",
-    "roomQuantity": "Oda Sayısı",
+    "roomQuantity": "Oda Adedi",
     "nights": "Gece",
     "guests": "Misafirler",
     "roomPrice": "Oda Fiyatı",
@@ -269,7 +291,7 @@
       "login": "Giriş Yap",
       "signup": "Kayıt Ol"
     },
-    "bookingNote": "İptal talebi gönderildi. Durum değiştiğinde sizi bilgilendireceğiz.",
+    "bookingNote": "İptal talebi gönderildi. Durum değiştiğinde sizi bilgilendireceğiz",
     "bookingInfo": {
       "bookingId": "Rezervasyon Kimliği",
       "bookingpnr": "PNR",
@@ -280,9 +302,10 @@
     },
     "travellers": {
       "title": "Yolcular",
+      "travellerType": "Yolcu Türü",
       "table": {
-        "no": "No",
-        "sr": "SR",
+        "number": "Numara",
+        "type": "Tür",
         "name": "Ad"
       }
     },
@@ -321,23 +344,23 @@
       "downloadPdf": "PDF İndir",
       "payNow": "Şimdi Öde",
       "sendToWhatsApp": "WhatsApp'a Gönder",
-      "requestCancellation": "İptal Talebi Gönder"
+      "requestCancellation": "İptal Talep Et"
     },
     "alert": {
-      "pdfNotImplemented": "PDF indirme özelliği daha sonra eklenecektir."
+      "pdfNotImplemented": "PDF indirme özelliği daha sonra uygulanacaktır."
     }
   },
   "support": {
     "heading": "Destek",
-    "p_1": "Biz,",
-    "p_3": ", dünyanın konfor ve güven içinde keşfedilmesine yardımcı olmaktan tutkulu bir şekilde memnuniyet duyarız. Desteğiniz, tüm seyahat edenlere en iyi seyahat deneyimlerini, otel tekliflerini ve ilhamı sunmaya devam etmemizi sağlar.",
+    "p_1": "Şirketimizde,",
+    "p_3": ", dünyanın konfor ve güven içinde keşfedilmesine yardımcı olmaktan büyük heyecan duyarız. Desteğiniz, her seyahatçiye en iyi seyahat deneyimlerini, otel tekliflerini ve ilhamı sunmaya devam etmemizi sağlar.",
     "contact_us": "Bize Ulaşın",
-    "empower_travelers": "Seyahat Edenleri Güçlendirin",
-    "empower_travelers_p": "Katkınız, seyahat edenlerin gizli hazineleri ve güvenilir destinasyonları keşfetmesine yardımcı olur.",
+    "empower_travelers": "Seyahatçileri Güçlendirin",
+    "empower_travelers_p": "Katkınız, seyahatçilerin gizli cennetleri ve güvenilir destinasyonları keşfetmesine yardımcı olur.",
     "sustain_quality": "Kaliteyi Sürdürün",
     "sustain_quality_p": "Hizmetlerimizi sürekli geliştiriyor ve herkes için daha iyi seyahat deneyimleri yaratıyoruz.",
-    "community_growth": "Topluluk Gelişimi",
-    "community_growth_p": "Dünyayı keşfetmeyi seven tutkulu seyahat edenlerden oluşan küresel bir topluluk kurma misyonumuza katılın."
+    "community_growth": "Topluluk Büyümesi",
+    "community_growth_p": "Keşfetmeyi seven, tutkulu bir küresel seyahatçi topluluğu kurma misyonumuza katılın."
   },
   "profilelabels": {
     "profileHeading": "Profil Bilgileri",
@@ -348,7 +371,7 @@
     "phoneCode": "Telefon Kodu",
     "phoneNumber": "Telefon Numarası",
     "country": "Ülke",
-    "state": "İl",
+    "state": "Eyalet",
     "city": "Şehir",
     "address1": "Adres 1",
     "address2": "Adres 2"
@@ -359,7 +382,7 @@
     "email": "E-posta Adresi",
     "password": "Yeni Şifre (mevcut şifreyi korumak için boş bırakın)",
     "phoneNumber": "Telefon Numarası (örn. 923483344559)",
-    "state": "İl",
+    "state": "Eyalet",
     "city": "Şehir",
     "address1": "Adres Satırı 1",
     "address2": "Adres Satırı 2",
@@ -392,13 +415,14 @@
     "wallet_balance": "Cüzdan Bakiyesi",
     "wallet_balance_sub": "Toplam Cüzdan Bakiyesi",
     "bookings": "Rezervasyonlar",
-    "bookings_sub": "Toplam Rezervasyon",
+    "bookings_sub": "Toplam Rezervasyonlar",
     "pending_invoices": "Bekleyen Faturalar",
     "pending_invoices_sub": "Bekleyen Faturalar",
     "all": "Tümü",
     "paid": "Ödenmiş",
     "unpaid": "Ödenmemiş",
-    "cancelled": "İptal Edilmiş",
+    "refunded": "İade Edildi",
+    "cancelled": "İptal Edildi",
     "search_placeholder": "Ara...",
     "client_name": "Müşteri Adı",
     "booking_id": "Rezervasyon Kimliği",
@@ -408,7 +432,7 @@
     "date": "Tarih",
     "price": "Fiyat",
     "no_bookings_found": "Rezervasyon bulunamadı.",
-    "showing": "Gösterilen",
+    "showing": "Gösteriliyor",
     "of": "/",
     "entries": "kayıt",
     "prev": "Önceki",
@@ -425,10 +449,95 @@
     "search_btnText": "Otelleri Ara",
     "searching": "Aranıyor...",
     "search_btnText_mobile": "Ara",
-    "rooms_label": "Oda",
+    "rooms_label": "Odalar",
     "adults_label": "Yetişkinler",
     "children_label": "Çocuklar",
     "child_age_label": "Çocuk Yaşı",
     "years_label": "yaş"
+  },
+  "roomCard": {
+    "loginToFavorite": "Favorilere eklemek için giriş yapmalısınız",
+    "favoriteUpdateFailed": "Bir şeyler ters gitti :x:",
+    "favoriteUpdated": "Favoriler güncellendi",
+    "favoriteUpdateError": "Favoriler güncellenemedi :x:",
+    "noAmenities": "Amenity listelenmedi",
+    "freeBreakfast": "Ücretsiz kahvaltı",
+    "freeCancellation": "Ücretsiz iptal",
+    "reserve": "Rezervasyon Yap",
+    "moreOptions": "Daha Fazla Seçenek",
+    "close": "Kapat"
+  },
+  "roomOption": {
+    "roomNamePlaceholder": "Tek Yatak Odalı Daire",
+    "roomImage": "Oda Resmi",
+    "features": "Özellikler",
+    "travellers": "Yolcular",
+    "price": "Fiyat",
+    "freeBreakfast": "Ücretsiz kahvaltı",
+    "freeDinner": "Ücretsiz akşam yemeği",
+    "freeCancellation": "Ücretsiz iptal",
+    "notBookable": "Rezervasyon Yapılamaz",
+    "showMore": "Daha Fazla Göster",
+    "showLess": "Daha Az Göster",
+    "noFeatures": "Yok",
+    "adults": "Yetişkinler",
+    "children": "Çocuklar",
+    "bookNow": "Şimdi Rezervasyon Yap"
+  },
+  "modal": {
+    "hotelImageAlt": "Otel resmi",
+    "noImagePlaceholder": "Resim Yok",
+    "supplierLabel": "Tedarikçi:",
+    "serviceLabel": "—",
+    "bookingDetailsHeading": "Rezervasyon Detayları",
+    "bookingReferenceLabel": "Rezervasyon referansı",
+    "bookingStatusLabel": "Rezervasyon durumu",
+    "paymentStatusLabel": "Ödeme durumu",
+    "pnrLabel": "PNR",
+    "checkInLabel": "Giriş",
+    "checkOutLabel": "Çıkış",
+    "guestDetailsHeading": "Misafir Detayları",
+    "noGuestDataMessage": "Misafir verisi mevcut değil.",
+    "adultsSectionTitle": "Yetişkinler",
+    "childrenSectionTitle": "Çocuklar",
+    "otherGuestsSectionTitle": "Diğer Misafirler",
+    "nameLabel": "Ad",
+    "typeLabel": "Tür",
+    "ageLabel": "Yaş",
+    "roomDetailsHeading": "Oda Detayları",
+    "roomNameLabel": "Oda adı",
+    "roomPriceLabel": "Oda fiyatı",
+    "roomQuantityLabel": "Oda adedi",
+    "adultsLabel": "Yetişkinler",
+    "childrenLabel": "Çocuklar",
+    "invoiceButton": "Fatura",
+    "closeButton": "Kapat",
+    "invoiceReferenceNotFound": "Fatura referansı bulunamadı"
+  },
+  "dashboardCard": {
+    "noimage": "Resim Yok",
+    "moredetails": "Daha Fazla Detay",
+    "upplier": "Tedarikçi",
+    "bookingdetails": "Rezervasyon Detayları",
+    "bookingreference": "Rezervasyon referansı",
+    "bookingstatus": "Rezervasyon durumu",
+    "paymentstatus": "Ödeme durumu",
+    "checkin": "Giriş",
+    "checkout": "Çıkış",
+    "guestdetails": "Misafir Detayları",
+    "noguest": "Misafir verisi mevcut değil.",
+    "name": "Ad",
+    "type": "Tür",
+    "adults": "Yetişkinler",
+    "age": "Yaş",
+    "otherguests": "Diğer Misafirler",
+    "roomdetails": "Oda Detayları",
+    "roomname": "Oda adı",
+    "roomprice": "Oda fiyatı",
+    "roomqaunitity": "Oda adedi",
+    "childs": "Çocuklar",
+    "invoice": "Fatura",
+    "close": "Kapat",
+    "invoicenotfound": "Fatura referansı bulunamadı"
   }
 }

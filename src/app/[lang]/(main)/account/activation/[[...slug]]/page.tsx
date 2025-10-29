@@ -10,7 +10,7 @@ interface Props {
 
 export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
     const { slug } = await params;
-    // console.log('slug',slug)
+    
     return {
         title: `Verify Email - ${slug[0] || 'User'}`,
         description: 'Verify your email to activate your account',

@@ -13,6 +13,7 @@ import getCurrencySymbol from "@src/utils/getCurrencySymbals";
 import { useState, useEffect } from "react";
 import { set } from "lodash";
 import { setSeletecRoom } from "@lib/redux/base";
+import { useUser } from "@hooks/use-user";
 
 export default function BookingDetails() {
   const selectedRoom = useAppSelector((state) => state.root.selectedRoom);
@@ -20,9 +21,13 @@ export default function BookingDetails() {
   const saveBookingData = curruntBooking ? JSON.parse(curruntBooking) : {};
   const router = useRouter();
   const { priceRateConverssion } = useCurrency();
+  const { user } = useUser();
+ const user_type = user?.user_type ?? "";    // ✅ Step 3: safely extract
+
   const { hotelDetails, room, option } = selectedRoom || {};
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
+
   const dispatch = useAppDispatch();
   const {
     checkin,
@@ -173,18 +178,7 @@ export default function BookingDetails() {
                 </span>
                 <span className="font-semibold text-[#0F172B]">{checkout}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">
-                  {dict?.bookingDetails?.roomQuantity}
-                </span>
-                <input
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => handleQuantityChange(e.target.value)}
-                  className="block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] text-center"
-                  inputMode="decimal"
-                />
-              </div>
+
               <div className="flex justify-between">
                 <span className="text-gray-600">
                   {dict?.bookingDetails?.nights}
@@ -202,19 +196,39 @@ export default function BookingDetails() {
                     : ""}
                 </span>
               </div>
+               <div className="flex justify-between items-center">
+                <span className="text-gray-600">
+                  {dict?.bookingDetails?.roomQuantity}
+                </span>
+               <input
+  type="number"
+  value={quantity}
+  onChange={(e) => handleQuantityChange(e.target.value)}
+  className={`block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] text-center ${
+    user_type === "Customer" ? "bg-gray-100 cursor-not-allowed opacity-70" : ""
+  }`}
+  inputMode="decimal"
+  disabled={user_type === "Customer" } //
+/>
+
+              </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">
                   {dict?.bookingDetails?.roomPrice}
                 </span>
                 <div className="flex items-center gap-2">
                   <span>{getCurrencySymbol(currency)}</span>
-                  <input
-                    type="text"
-                    value={roomPrice}
-                    onChange={(e) => handleRoomPriceChange(e.target.value)}
-                    className="block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C]"
-                    inputMode="decimal"
-                  />
+                 <input
+  type="text"
+  value={roomPrice}
+  onChange={(e) => handleRoomPriceChange(e.target.value)}
+  className={`block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] ${
+    user_type === "Customer" ? "bg-gray-100 cursor-not-allowed opacity-70" : ""
+  }`}
+  inputMode="decimal"
+  disabled={user_type === "Customer"} // ✅ disable if Customer
+/>
+
                 </div>
               </div>
               <div className="flex justify-between items-center border-t border-gray-300 pt-3 mt-2">

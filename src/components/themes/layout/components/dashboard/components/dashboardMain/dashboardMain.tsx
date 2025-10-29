@@ -68,8 +68,10 @@ export default function Dashboard() {
 
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-  const { user } = useUser();
+
   const router = useRouter();
+    const { user, isLoading: userLoading } = useUser(); // ✅ get user loading state
+  const [isVerifying, setIsVerifying] = useState(true); // ✅ new state
 
   // --- Debounce search -> push to backend filter ---
   useEffect(() => {
@@ -79,33 +81,87 @@ export default function Dashboard() {
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  // --- Verify / redirect (unchanged) ---
-  useEffect(() => {
-    if (!user) return;
-    (async () => {
+
+
+  // ===================== original verify block (kept commented) =====================
+//   React.useEffect(() => {
+//   if (user == null) return;
+//   const verifyAndRedirect = async () => {
+//     try {
+//       const verify_response = await verify_token();
+//       console.log("Token verification response:", verify_response);
+//       if (!verify_response?.status) {
+//         router.push("/auth/login");
+//         return;
+//       }
+//       const type = user.user_type;
+//       if (type === "Customer") {
+//          const token = await getAccessToken();
+//         //  console.log("Token fetched:", token);
+//         router.push("/dashboard");
+
+
+
+//       } else if (type === "Agent") {
+//        const token = await getAccessToken(); // ← must be a Server Action
+//           const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+//   window.location.href = url; // full redirect (bypasses SPA)
+//   return;
+//       } else {
+//         router.push("/auth/login");
+//       }
+//     } catch (error) {
+//       console.error("Token verification failed:", error);
+//       router.push("/auth/login");
+//     }
+//   };
+//   verifyAndRedirect();
+// }, [user, router]);
+useEffect(() => {
+    if (userLoading) return;
+
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
+
+    const handleRedirect = async () => {
       try {
         const verify_response = await verify_token();
         if (!verify_response?.status) {
           router.push("/auth/login");
           return;
         }
-        if (user.user_type === "Customer") {
-          router.push("/dashboard");
-        } else if (user.user_type === "Agent") {
+
+        if (user.user_type === "Agent") {
           const token = await getAccessToken();
-          const url = `http://localhost:3001/?token=${encodeURIComponent(
-            token
-          )}&user_id=${user.user_id}`;
-          window.location.href = url;
-        } else {
-          router.push("/auth/login");
+          const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+          window.location.href = url; // full redirect
+          return; // ⚠️ exit early — no further rendering
         }
-      } catch (e) {
-        // console.error("Token verification failed:", e);
+
+        // If Customer, allow render
+        setIsVerifying(false);
+      } catch (error) {
+        console.error("Verification failed:", error);
         router.push("/auth/login");
       }
-    })();
-  }, [user, router]);
+    };
+    handleRedirect();
+  }, [user, userLoading, router]);
+
+  // Show loading while deciding
+  if (userLoading || isVerifying) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-col gap-2">
+   <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-blue-900"></div>
+        <h2 className=" text-xl">Redirecting...</h2>
+        </div>
+
+      </div>
+    );
+  }
 
   // --- Infinite list: backend handles search + payment_status ---
   const {
@@ -121,22 +177,9 @@ export default function Dashboard() {
     initialPageParam: 1,
     queryFn: async ({ pageParam }): Promise<PageResult> => {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
-      if (filters.search.trim()) payload.search = filters.search.trim();
-
-      if (filters.payment_status)
-        payload.payment_status = filters.payment_status;
-
-      // If your API supports scoping, keep this; otherwise remove it (no harm if ignored):
-      payload.search_scope = "name,reference,booking_id";
-
-      const res = await fetch_dashboard_data(payload);
-      const total = Number(
-        (res as any).total_records ?? (res as any).total ?? 0
-      );
-      if (pageParam === 1) {
-      
-      }
-      return { ...res, page: Number(pageParam), limit: PAGE_SIZE, total };
+      if (filters.search?.trim()) payload.search = filters.search.trim();
+      const res = await fetch_dashboard_data(payload); // must return { data, total }
+      return { ...res, page: Number(pageParam), limit: PAGE_SIZE };
     },
     getNextPageParam: (last) => {
       const total = Number(last.total ?? 0);
@@ -370,7 +413,7 @@ export default function Dashboard() {
                     <div className="flex gap-4 justify-center py-6">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-3 border-blue-900"></div>
                       <div className="text-blue-900 text-xl font-bold">
-                        Loading
+                        {dict?.featured_hotels?.loading || "Loading..."}
                       </div>
                     </div>
                   )}

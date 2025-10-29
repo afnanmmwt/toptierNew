@@ -1007,7 +1007,9 @@ export const fetch_dashboard_data = async (payload: dashboardPayload) => {
   try {
      const userinfo = (await getSession()) as SessionUser | null;
     const user_id = userinfo?.user?.user_id ?? "";
+   
     const formData = new FormData();
+    
     // match exactly with API keys
     formData.append("api_key", api_key ?? "");
     formData.append("user_id",user_id );
@@ -1024,6 +1026,7 @@ export const fetch_dashboard_data = async (payload: dashboardPayload) => {
       },
     });
     const data = await response.json().catch(() => null);
+    console.log("dashboarddata", data);
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

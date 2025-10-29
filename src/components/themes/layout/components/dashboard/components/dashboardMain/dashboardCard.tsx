@@ -107,7 +107,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
       <div
         className="relative rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
         style={{ height: "320px" }}
-        onClick={() => setOpen(true)}
+        // onClick={() => setOpen(true)}
       >
         {/* Background Image */}
         <div className="absolute inset-0">

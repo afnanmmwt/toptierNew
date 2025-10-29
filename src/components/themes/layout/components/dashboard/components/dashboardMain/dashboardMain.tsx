@@ -35,8 +35,10 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-  const { user } = useUser();
+
   const router = useRouter();
+    const { user, isLoading: userLoading } = useUser(); // ✅ get user loading state
+  const [isVerifying, setIsVerifying] = useState(true); // ✅ new state
 
   // Debounce search -> updates filters.search after 500ms (useEffect, not useMemo)
   useEffect(() => {
@@ -49,36 +51,84 @@ export default function Dashboard() {
 
 
   // ===================== original verify block (kept commented) =====================
-  React.useEffect(() => {
-  if (user == null) return;
-  const verifyAndRedirect = async () => {
-    try {
-      const verify_response = await verify_token();
-      if (!verify_response?.status) {
-        router.push("/auth/login");
-        return;
-      }
-      const type = user.user_type;
-      if (type === "Customer") {
-         const token = await getAccessToken();
-        //  console.log("Token fetched:", token);
-        router.push("/dashboard");
+//   React.useEffect(() => {
+//   if (user == null) return;
+//   const verifyAndRedirect = async () => {
+//     try {
+//       const verify_response = await verify_token();
+//       console.log("Token verification response:", verify_response);
+//       if (!verify_response?.status) {
+//         router.push("/auth/login");
+//         return;
+//       }
+//       const type = user.user_type;
+//       if (type === "Customer") {
+//          const token = await getAccessToken();
+//         //  console.log("Token fetched:", token);
+//         router.push("/dashboard");
 
 
-      } else if (type === "Agent") {
-       const token = await getAccessToken(); // ← must be a Server Action
-          const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
-  window.location.href = url; // full redirect (bypasses SPA)
-      } else {
-        router.push("/auth/login");
-      }
-    } catch (error) {
-      console.error("Token verification failed:", error);
+
+//       } else if (type === "Agent") {
+//        const token = await getAccessToken(); // ← must be a Server Action
+//           const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+//   window.location.href = url; // full redirect (bypasses SPA)
+//   return;
+//       } else {
+//         router.push("/auth/login");
+//       }
+//     } catch (error) {
+//       console.error("Token verification failed:", error);
+//       router.push("/auth/login");
+//     }
+//   };
+//   verifyAndRedirect();
+// }, [user, router]);
+useEffect(() => {
+    if (userLoading) return;
+
+    if (!user) {
       router.push("/auth/login");
+      return;
     }
-  };
-  verifyAndRedirect();
-}, [user, router]);
+
+    const handleRedirect = async () => {
+      try {
+        const verify_response = await verify_token();
+        if (!verify_response?.status) {
+          router.push("/auth/login");
+          return;
+        }
+
+        if (user.user_type === "Agent") {
+          const token = await getAccessToken();
+          const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+          window.location.href = url; // full redirect
+          return; // ⚠️ exit early — no further rendering
+        }
+
+        // If Customer, allow render
+        setIsVerifying(false);
+      } catch (error) {
+        console.error("Verification failed:", error);
+        router.push("/auth/login");
+      }
+    };
+    handleRedirect();
+  }, [user, userLoading, router]);
+
+  // Show loading while deciding
+  if (userLoading || isVerifying) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-col gap-2">
+   <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-blue-900"></div>
+        <h2 className=" text-xl">Redirecting...</h2>
+        </div>
+
+      </div>
+    );
+  }
 
   // =============================================================================
 

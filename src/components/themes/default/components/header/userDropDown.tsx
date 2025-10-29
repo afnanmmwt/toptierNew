@@ -13,7 +13,7 @@ export default function ProfileDropdown() {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
   const { user, checkSession } = useUser();
-
+   console.log("user in dropdown",user);
   // close when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

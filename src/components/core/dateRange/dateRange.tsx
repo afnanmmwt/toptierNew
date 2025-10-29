@@ -29,6 +29,15 @@ export default function CustomDateRangePicker({
   const [isSelectingEndDate, setIsSelectingEndDate] = useState(false); // Track if user is selecting end date
   const pickerRef = useRef<HTMLDivElement>(null);
   const [direction] = useDirection();
+  const [isMdUp, setIsMdUp] = useState(false);
+
+  useEffect(() => {
+  const mq = window.matchMedia("(min-width: 768px)");
+  const apply = () => setIsMdUp(mq.matches);
+  apply(); // set initial
+  mq.addEventListener("change", apply);
+  return () => mq.removeEventListener("change", apply);
+}, []);
 
   const handleSelect = (ranges: RangeKeyDict) => {
     const newRange = ranges.selection as Range;
@@ -89,24 +98,25 @@ export default function CustomDateRangePicker({
       </button>
 
       {isOpen && (
-        <div
-          className={`absolute z-50 mt-2 bg-white rounded-xl shadow-lg w-auto overflow-hidden ${direction === 'rtl' ? 'right-0 rtl-date-picker' : 'left-0'
-            }`}
-          dir={direction}
-        >
-          <DateRangePicker
-            onChange={handleSelect}
-            ranges={state}
-            months={2}
-            direction="horizontal"
-            showDateDisplay={false}
-            showMonthAndYearPickers={true}
-            rangeColors={['#1e3a8a']}
-            staticRanges={[]}
-            inputRanges={[]}
-            minDate={new Date()}
-          />
-        </div>
+       <div
+  className={`absolute z-50 mt-2 bg-white rounded-xl shadow-lg overflow-hidden
+    ${direction === "rtl" ? "-left-6 rtl-date-picker" : "-left-6"}
+    w-[calc(100vw-2rem)] md:w-auto`}
+  dir={direction}
+>
+  <DateRangePicker
+    onChange={handleSelect}
+    ranges={state}
+    months={2}                                // keep 2 months
+    direction={isMdUp ? "horizontal" : "vertical"} // row on large, column on small
+    showDateDisplay={false}
+    showMonthAndYearPickers={true}
+    rangeColors={["#1e3a8a"]}
+    staticRanges={[]}
+    inputRanges={[]}
+    minDate={new Date()}
+  />
+</div>
       )}
     </div>
   );

@@ -175,6 +175,8 @@ export default function BookingForm({
   const { payment_gateways } = useAppSelector((state) => state.appData?.data);
   const selectedRoom = useAppSelector((state) => state.root.selectedRoom);
   const { option } = selectedRoom || {};
+  console.log(option);
+  
   const rootState = useAppSelector((state) => state.root);
   const stripe = useStripe();
   const elements = useElements();

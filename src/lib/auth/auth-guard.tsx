@@ -23,10 +23,11 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
         return;
       }
 
-      // if (!user) {
-      //   router.replace('/auth/login');
-      //   return;
-      // }
+      if (!user) {
+        router.replace('/auth/login');
+        return;
+      }
+
 
       setIsChecking(false);
     }

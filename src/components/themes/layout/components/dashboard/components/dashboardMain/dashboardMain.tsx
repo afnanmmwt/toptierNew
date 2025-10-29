@@ -369,7 +369,7 @@ export default function Dashboard() {
                     <div className="flex gap-4 justify-center py-6">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-3 border-blue-900"></div>
                       <div className="text-blue-900 text-xl font-bold">
-                        Loading
+                        {dict?.featured_hotels?.loading || "Loading..."}
                       </div>
                     </div>
                   )}

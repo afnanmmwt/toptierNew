@@ -72,9 +72,23 @@ const HeaderMenus = () => {
         {!(user ) ? <div className="hidden md:flex items-center gap-3">
 
            <Dropdown
+           className=""
+           buttonClassName="px-6   bg-white bg-gray-50 hover:bg-gray-100 border border-gray-100  rounded-full hover:text-black hover:bg-gray-100 transition-colors duration-200"
         label={
-          <div className="flex items-center gap-1.5">
-            <svg
+          <div className="flex items-center gap-1.5 ">
+
+            {dict?.header?.signup || "Signup"}
+            {/* <ChevronDown className="w-4 h-4" /> */}
+          </div>
+        }
+      >
+        <div className="flex flex-col w-auto">
+          <Link
+            href="/auth/signup"
+            target=""
+            className=" flex items-center  gap-1 text-sm font-medium rounded-xl px-4 py-2 text-gray-700 hover:bg-blue-50"
+          >
+            <span>   <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
               height="20"
@@ -90,36 +104,16 @@ const HeaderMenus = () => {
               <circle cx="9" cy="7" r="4"></circle>
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
               <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-            {dict?.header?.agents || "Agents"}
-            {/* <ChevronDown className="w-4 h-4" /> */}
-          </div>
-        }
-      >
-        <div className="flex flex-col">
-          <Link
-            href="https://toptier-agent-d-kwk7.vercel.app/login"
-            target=""
-            className="block text-sm font-medium rounded-xl px-4 py-2 text-gray-700 hover:bg-blue-50"
-          >
-            {dict?.header?.login || "Login"}
+            </svg></span>
+            <span>{dict?.header?.customers || "Agent Login"}</span>
           </Link>
           <Link
             href="https://toptier-agent-d-kwk7.vercel.app/signup"
             target=""
-            className="block text-sm font-medium rounded-xl px-4 py-2 text-gray-700 hover:bg-blue-50"
-          >
-            {dict?.header?.signup || "Signup"}
-          </Link>
-        </div>
-      </Dropdown>
+            className=" text-sm font-medium flex items-center gap-1 rounded-xl px-4 py-2 text-gray-700 hover:bg-blue-50"
+          ><span>
 
-      {/* ===== Customers Dropdown ===== */}
-      <Dropdown
-        buttonClassName=""
-        label={
-          <div className="flex items-center gap-1.5">
-            <svg
+              <svg
               stroke="#000"
               className="pe-1"
               xmlns="http://www.w3.org/2000/svg"
@@ -134,26 +128,23 @@ const HeaderMenus = () => {
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
-            {dict?.header?.customers || "Customers"}
-            {/* <ChevronDown className="w-4 h-4" /> */}
-          </div>
-        }
-      >
-        <div className="flex flex-col">
-          <Link
-            href="/auth/login"
-            className="block text-sm font-medium rounded-xl px-4 py-2 text-gray-700 hover:bg-blue-50"
-          >
-            {dict?.header?.login || "Login"}
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="block text-sm font-medium rounded-xl px-4 py-2 text-gray-700 hover:bg-blue-50"
-          >
-            {dict?.header?.signup || "Signup"}
+            </span>
+          <span>{dict?.header?.agent || "Agent"}</span>
           </Link>
         </div>
       </Dropdown>
+
+      {/* ===== Customers Dropdown ===== */}
+               <button
+                    onClick={() => window.location.href = '/auth/login'}
+                    className=" bg-[#163C8C] cursor-pointer hover:bg-gray-800 text-white
+                               py-2.5 px-10 text-sm sm:text-base md:text-sm lg:text-sm
+                               rounded-full transition-colors duration-200"
+                    style={{ fontFamily: "Inter, sans-serif" }}
+                  >
+                    {dict?.header?.login || "Explore Now"}
+                  </button>
+
         </div> :
         <div className="hidden md:block">
           <ProfileDropdown/>

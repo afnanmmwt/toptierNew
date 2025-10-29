@@ -75,7 +75,7 @@ export default function CustomerProfile() {
   // Populate form when user data loads
   useEffect(() => {
     // const usersession =  getSession();
-    // console.log('session user data', usersession);
+   
     if (user) {
       const u = user;
       reset({

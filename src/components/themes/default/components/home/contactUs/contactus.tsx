@@ -43,7 +43,7 @@ const app = useAppSelector((state) => state.appData?.data);
 
 
 
-console.log("App data in contact us:", app);
+
 
   return (
     <div className="appHorizantalSpacing max-w-[1200px] mx-auto">

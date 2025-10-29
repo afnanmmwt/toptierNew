@@ -28,7 +28,6 @@ const HotelsDetails = () => {
   const router = useRouter();
   const {country, currency, locale:language}=useAppSelector((state)=>state.root)
   const {user }=useUser();
-  console.log('user=============',user)
   const slugArr = (params?.slug as string[]) || [];
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
@@ -48,9 +47,9 @@ const HotelsDetails = () => {
     children: initialChildren,
     nationality: initialNationality,
   });
- const savedForm = localStorage.getItem("hotelSearchForm");
-        if (!savedForm) return;
-        const parsedForm: any = JSON.parse(savedForm);
+  const savedForm = localStorage.getItem("hotelSearchForm");
+  if (!savedForm) return;
+  const parsedForm: any = JSON.parse(savedForm);
   // Helper to update URL
   const updateUrl = useCallback((params: typeof searchParams, hotelName: string) => {
     const slugName = hotelName.toLowerCase().replace(/\s+/g, "-");
@@ -117,7 +116,7 @@ const HotelsDetails = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
-console.log('hotel details',hotelDetails)
+
   useEffect(() => {
     if (textRef.current && hotelDetails?.desc) {
       const { scrollHeight, clientHeight } = textRef.current;
@@ -136,34 +135,34 @@ console.log('hotel details',hotelDetails)
   // Get initial values from URL or fallback
 
 
- const amenityIcons: Record<string, string> = {
-  pool: "mdi:pool",
-  swimming: "mdi:pool",
-  fitness: "mdi:dumbbell",
-  gym: "mdi:dumbbell",
-  spa: "mdi:spa",
-  restaurant: "mdi:silverware-fork-knife",
-  bar: "mdi:glass-cocktail",
-  wifi: "mdi:wifi", // already present
-  tv: "mdi:television-classic", // ✅ added
-  aircondition: "mdi:air-conditioner", // ✅ added (use lowercase + no space)
-  "air conditioning": "mdi:air-conditioner", // optional: handle this variation too
+  const amenityIcons: Record<string, string> = {
+    pool: "mdi:pool",
+    swimming: "mdi:pool",
+    fitness: "mdi:dumbbell",
+    gym: "mdi:dumbbell",
+    spa: "mdi:spa",
+    restaurant: "mdi:silverware-fork-knife",
+    bar: "mdi:glass-cocktail",
+    wifi: "mdi:wifi", // already present
+    tv: "mdi:television-classic", // ✅ added
+    aircondition: "mdi:air-conditioner", // ✅ added (use lowercase + no space)
+    "air conditioning": "mdi:air-conditioner", // optional: handle this variation too
 
-  shuttle: "mdi:bus",
-  airport: "mdi:airplane",
-  non: "mdi:smoke-detector-off",
-  smoke: "mdi:smoke-detector-off",
-  coffee: "mdi:coffee",
-  tea: "mdi:coffee",
-  beach: "mdi:beach",
-  breakfast: "mdi:food-croissant",
-  room: "mdi:bed",
-  hair: "mdi:hair-dryer",
-  luxury: "mdi:crown",
-  dinner: "mdi:food-steak",
-  booking: "mdi:calendar-check",
-  board: "mdi:clipboard-list",
-};
+    shuttle: "mdi:bus",
+    airport: "mdi:airplane",
+    non: "mdi:smoke-detector-off",
+    smoke: "mdi:smoke-detector-off",
+    coffee: "mdi:coffee",
+    tea: "mdi:coffee",
+    beach: "mdi:beach",
+    breakfast: "mdi:food-croissant",
+    room: "mdi:bed",
+    hair: "mdi:hair-dryer",
+    luxury: "mdi:crown",
+    dinner: "mdi:food-steak",
+    booking: "mdi:calendar-check",
+    board: "mdi:clipboard-list",
+  };
 
 
   const getAmenityIcon = (amenity: string): string => {
@@ -218,8 +217,8 @@ console.log('hotel details',hotelDetails)
 
 
 
-// Update your HotelSuggestionSlider component call to pass the handler:
-// <HotelSuggestionSlider hotels={featured_hotels} onHotelClick={handleSuggestionClick} />
+  // Update your HotelSuggestionSlider component call to pass the handler:
+  // <HotelSuggestionSlider hotels={featured_hotels} onHotelClick={handleSuggestionClick} />
 
   const getFaqIcon = (question: string) => {
     const lowerQ = question.toLowerCase();
@@ -424,58 +423,58 @@ console.log('hotel details',hotelDetails)
 
 
             {/* Right Column: Amenities — show if hotelDetails exists (even if amenities are missing) */}
-       {hotelDetails && (
-  <div className="lg:col-span-4 col-span-12 lg:mt-0 mt-6 pl-8">
-    <h1 className="text-[22px] font-[700]">{dict?.hotelDetails?.aboutThisProperty}</h1>
+            {hotelDetails && (
+              <div className="lg:col-span-4 col-span-12 lg:mt-0 mt-6 pl-8">
+                <h1 className="text-[22px] font-[700]">{dict?.hotelDetails?.aboutThisProperty}</h1>
 
-    {(() => {
-      const defaultAmenities = ["Free Wi-Fi", "Room Cleaning"];
+                {(() => {
+                  const defaultAmenities = ["Free Wi-Fi", "Room Cleaning"];
 
-      // ✅ Filter out empty or whitespace-only strings
-      const validAmenities = Array.isArray(hotelDetails.amenities)
-        ? hotelDetails.amenities.filter((item:any) => item && item.trim() !== '')
-        : [];
+                  // ✅ Filter out empty or whitespace-only strings
+                  const validAmenities = Array.isArray(hotelDetails.amenities)
+                    ? hotelDetails.amenities.filter((item: any) => item && item.trim() !== '')
+                    : [];
 
-      const amenitiesToShow = validAmenities.length > 0
-        ? validAmenities.slice(0, 4)
-        : defaultAmenities;
+                  const amenitiesToShow = validAmenities.length > 0
+                    ? validAmenities.slice(0, 4)
+                    : defaultAmenities;
 
-      return (
-        <div className="grid grid-cols-2 gap-x-3 gap-y-6 mt-4">
-          {amenitiesToShow.map((amenity: string, idx: number) => (
-            <div key={idx} className="flex gap-3 items-start">
-              <div className="min-w-10 min-h-10 flex items-center justify-center rounded-lg bg-green-100 flex-shrink-0">
-                <Icon
-                  icon={getAmenityIcon(amenity)}
-                  className="text-gray-700"
-                  width={20}
-                  height={20}
-                />
+                  return (
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-6 mt-4">
+                      {amenitiesToShow.map((amenity: string, idx: number) => (
+                        <div key={idx} className="flex gap-3 items-start">
+                          <div className="min-w-10 min-h-10 flex items-center justify-center rounded-lg bg-green-100 flex-shrink-0">
+                            <Icon
+                              icon={getAmenityIcon(amenity)}
+                              className="text-gray-700"
+                              width={20}
+                              height={20}
+                            />
 
+                          </div>
+                          <p className="text-base font-[500] text-gray-700 break-words pt-2">
+                            {amenity}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+
+                {/* ✅ Show "Show More" only if real, valid amenities > 4 */}
+                {Array.isArray(hotelDetails.amenities) &&
+                  hotelDetails.amenities.filter((item: any) => item && item.trim() !== '').length > 4 && (
+                    <div className="mt-6 text-center">
+                      <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="text-[#163C8C] text-lg cursor-pointer rounded-full py-1.5 px-4 w-full max-w-xs mx-auto font-medium font-urbanist border border-[#163C8C] hover:bg-[#163C8C] hover:text-white transition-colors"
+                      >
+                        {dict?.hotelDetails?.showMore}
+                      </button>
+                    </div>
+                  )}
               </div>
-              <p className="text-base font-[500] text-gray-700 break-words pt-2">
-                {amenity}
-              </p>
-            </div>
-          ))}
-        </div>
-      );
-    })()}
-
-    {/* ✅ Show "Show More" only if real, valid amenities > 4 */}
-    {Array.isArray(hotelDetails.amenities) &&
-      hotelDetails.amenities.filter((item:any) => item && item.trim() !== '').length > 4 && (
-        <div className="mt-6 text-center">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="text-[#163C8C] text-lg cursor-pointer rounded-full py-1.5 px-4 w-full max-w-xs mx-auto font-medium font-urbanist border border-[#163C8C] hover:bg-[#163C8C] hover:text-white transition-colors"
-          >
-            {dict?.hotelDetails?.showMore}
-          </button>
-        </div>
-      )}
-  </div>
-)}
+            )}
 
           </div>
         ) : (
@@ -518,7 +517,7 @@ console.log('hotel details',hotelDetails)
                 onReserve={(room, option) => {
                   handleReserveRoom(room, option, hotelDetails);
 
-                 
+
                 }}
               />
             ))}
@@ -617,7 +616,8 @@ console.log('hotel details',hotelDetails)
           <div className="relative bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 cursor-pointer right-4 text-gray-500 hover:text-gray-700"
+              className={`absolute top-4 cursor-pointer ${document.dir === 'rtl' ? 'left-4' : 'right-4'
+                } text-gray-500 hover:text-gray-700`}
               aria-label="Close"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

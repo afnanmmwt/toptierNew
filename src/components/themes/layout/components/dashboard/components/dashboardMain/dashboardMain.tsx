@@ -1,26 +1,54 @@
 "use client";
 
-
-import React, { useState, useMemo, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetch_dashboard_data, get_profile, getAccessToken, verify_token } from "@src/actions";
-
-
+import {
+  fetch_dashboard_data,
+  get_profile,
+  getAccessToken,
+  verify_token,
+} from "@src/actions";
 import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
 import DashboardCard, { toCardData } from "./dashboardCard";
 import { useUser } from "@hooks/use-user";
 import { useRouter } from "next/navigation";
 
-const PAGE_SIZE = 6; // always load 6 more
+const PAGE_SIZE = 6;
 
 type Booking = {
-  staleTime?: string;
   booking_id?: string | number;
   reference?: string;
   pnr?: string;
-  payment_status?: "paid" | "unpaid" | "refunded" | string;
-  booking_status?: "cancelled" | string;
+  payment_status?: string;
+  booking_status?: string;
+  // probable name keys from your API—add/remove as needed:
+  name?: string;
+  customer_name?: string;
+  lead_pax_name?: string;
+  first_name?: string;
+  last_name?: string;
+  [k: string]: any;
+};
+
+type ApiCounts = {
+  total?: number;
+  paid?: number;
+  unpaid?: number;
+  refunded?: number;
+  canceled?: number; // US
+  cancelled?: number; // UK
+};
+
+type PageResult = {
+  status?: string;
+  message?: string;
+  data: Booking[];
+  page?: number;
+  limit?: number;
+  total?: number;
+  total_records?: number;
+  counts?: ApiCounts;
   [k: string]: any;
 };
 
@@ -28,11 +56,16 @@ export default function Dashboard() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const ioBusyRef = useRef(false);
   const lingerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [filters, setFilters] = useState<{
     search: string;
     payment_status: string;
-  }>({ search: "", payment_status: "" });
+  }>({
+    search: "",
+    payment_status: "",
+  });
   const [searchTerm, setSearchTerm] = useState("");
+
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
 
@@ -40,11 +73,11 @@ export default function Dashboard() {
     const { user, isLoading: userLoading } = useUser(); // ✅ get user loading state
   const [isVerifying, setIsVerifying] = useState(true); // ✅ new state
 
-  // Debounce search -> updates filters.search after 500ms (useEffect, not useMemo)
+  // --- Debounce search -> push to backend filter ---
   useEffect(() => {
     const t = setTimeout(() => {
-      setFilters((prev) => ({ ...prev, search: searchTerm }));
-    }, 500);
+      setFilters((p) => ({ ...p, search: searchTerm }));
+    }, 400);
     return () => clearTimeout(t);
   }, [searchTerm]);
 
@@ -130,15 +163,7 @@ useEffect(() => {
     );
   }
 
-  // =============================================================================
-
-  type PageResult = {
-    data: Booking[];
-    total: number;
-    page: number;
-    limit: number;
-  };
-
+  // --- Infinite list: backend handles search + payment_status ---
   const {
     data,
     isLoading,
@@ -148,11 +173,8 @@ useEffect(() => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery<PageResult>({
-    queryKey: ["dashboard", filters.search, PAGE_SIZE],
-
-    // v5: this is REQUIRED
+    queryKey: ["dashboard", filters.search, filters.payment_status, PAGE_SIZE],
     initialPageParam: 1,
-
     queryFn: async ({ pageParam }): Promise<PageResult> => {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
       if (filters.search?.trim()) payload.search = filters.search.trim();
@@ -163,42 +185,53 @@ useEffect(() => {
       const total = Number(last.total ?? 0);
       const page = Number(last.page ?? 1);
       const size = Number(last.limit ?? PAGE_SIZE);
-      if (Number.isFinite(total) && total > 0) {
-        return page * size < total ? page + 1 : undefined;
-      }
+      if (total > 0) return page * size < total ? page + 1 : undefined;
       const len = Array.isArray(last.data) ? last.data.length : 0;
       return len === size ? page + 1 : undefined;
     },
-
-    staleTime: Infinity, // keep cache fresh “forever”
-    gcTime: Infinity, // v5 cache retention
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
 
   const pages = data?.pages || [];
-  const bookings: Booking[] = pages.flatMap((p: any) => p?.data || []);
-  // Status counts based ONLY on items that are currently loaded (as requested)
-  const paidCount = bookings.filter((b) => b.payment_status === "paid").length;
-  const unpaidCount = bookings.filter(
-    (b) => b.payment_status === "unpaid"
-  ).length;
-  const refundedCount = bookings.filter(
-    (b) => b.payment_status === "refunded"
-  ).length;
-  const cancelledCount = bookings.filter(
-    (b) => b.booking_status === "cancelled"
-  ).length;
+  const bookings: Booking[] = pages.flatMap((p) => p?.data || []);
 
+  // ---------- SEARCH: Client-side match (instant UX) ----------
+  // We still send search to backend (above) so server-side paging is correct.
+  // This local filter just narrows what's already loaded for snappy feel.
+  const norm = (v?: any) => (v == null ? "" : String(v).toLowerCase());
+  const makeCardName = (b: Booking) => {
+    // pick whichever name fields your API returns:
+    const name =
+      b.name ??
+      b.customer_name ??
+      b.lead_pax_name ??
+      [b.first_name, b.last_name].filter(Boolean).join(" ");
+    return norm(name);
+  };
+  const searchNeedle = norm(filters.search);
 
-  // Client-side filtered view of the currently loaded items
   const visibleBookings = useMemo(() => {
-    if (!filters.payment_status) return bookings;
-    if (filters.payment_status === "cancelled") {
-      return bookings.filter((b) => b.booking_status === "cancelled");
-    }
-    return bookings.filter(
-      (b) => (b.payment_status || "").toLowerCase() === filters.payment_status
-    );
-  }, [bookings, filters.payment_status]);
+    if (!searchNeedle) return bookings;
+    return bookings.filter((b) => {
+      const byName = makeCardName(b).includes(searchNeedle);
+      const byRef = norm(b.reference).includes(searchNeedle);
+      const byId = norm(b.booking_id).includes(searchNeedle);
+      return byName || byRef || byId;
+    });
+  }, [bookings, searchNeedle]);
+
+  // ---------- COUNTS: always show API counts from first page ----------
+  const firstPage = pages[0] as PageResult | undefined;
+  const countsFromApi = (firstPage?.counts ?? {}) as ApiCounts;
+  const cancelledCount = countsFromApi.canceled ?? countsFromApi.cancelled ?? 0;
+  const totalAll =
+    countsFromApi.total ??
+    (countsFromApi.paid ?? 0) +
+      (countsFromApi.unpaid ?? 0) +
+      (countsFromApi.refunded ?? 0) +
+      (cancelledCount ?? 0) +
+      0;
 
   // Profile (unchanged)
   const { data: cartResults } = useQuery({
@@ -215,28 +248,23 @@ useEffect(() => {
     last_name = "",
   } = cartResults?.data?.[0] || {};
 
-  // IntersectionObserver sentinel
+  // IO sentinel (unchanged)
   useEffect(() => {
     if (!sentinelRef.current) return;
     const node = sentinelRef.current;
 
     const onEnter = () => {
       if (ioBusyRef.current || !hasNextPage || isFetchingNextPage) return;
-      // Linger: wait 700ms while intersecting
       lingerTimerRef.current = setTimeout(async () => {
         if (ioBusyRef.current || !hasNextPage || isFetchingNextPage) return;
         ioBusyRef.current = true;
         try {
           await fetchNextPage();
         } finally {
-          // Cooldown: 600ms between loads
-          setTimeout(() => {
-            ioBusyRef.current = false;
-          }, 600);
+          setTimeout(() => (ioBusyRef.current = false), 100);
         }
       }, 700);
     };
-
     const onLeave = () => {
       if (lingerTimerRef.current) {
         clearTimeout(lingerTimerRef.current);
@@ -250,7 +278,7 @@ useEffect(() => {
         if (e.isIntersecting) onEnter();
         else onLeave();
       },
-      { root: null, rootMargin: "250px 0px", threshold: 0 }
+      { root: null, rootMargin: "250px 250px", threshold: 0 }
     );
 
     io.observe(node);
@@ -258,7 +286,7 @@ useEffect(() => {
       io.disconnect();
       onLeave();
     };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage, visibleBookings.length]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="w-full max-w-[1200px] mx-auto bg-gray-50 py-4 md:py-10 appHorizantalSpacing">
@@ -292,38 +320,38 @@ useEffect(() => {
       </div>
 
       <div className="border border-gray-200 rounded-2xl bg-white shadow-md">
-        {/* Filters (pagination controls removed) */}
+        {/* Filters header */}
         <div className="flex flex-wrap md:flex-row items-center justify-between gap-4 p-4 border-b border-gray-100">
           <div className="flex flex-wrap md:flex-row gap-2">
             {[
               {
                 label: dict?.dashboard?.all || "All",
                 value: "",
-                count: bookings?.length,
+                count: totalAll || 0,
               },
               {
                 label: dict?.dashboard?.paid || "Paid",
                 value: "paid",
-                count: paidCount,
+                count: countsFromApi.paid ?? 0,
               },
               {
                 label: dict?.dashboard?.unpaid || "Unpaid",
                 value: "unpaid",
-                count: unpaidCount,
+                count: countsFromApi.unpaid ?? 0,
               },
               {
                 label: dict?.dashboard?.refunded || "Refunded",
                 value: "refunded",
-                count: refundedCount,
+                count: countsFromApi.refunded ?? 0,
               },
               {
                 label: dict?.dashboard?.cancelled || "Cancelled",
                 value: "cancelled",
-                count: cancelledCount,
+                count: cancelledCount ?? 0,
               },
             ].map((o) => (
               <button
-                key={o.value}
+                key={o.value || "all"}
                 onClick={() =>
                   setFilters((prev) => ({ ...prev, payment_status: o.value }))
                 }
@@ -342,14 +370,17 @@ useEffect(() => {
 
           <input
             type="text"
-            placeholder={dict?.dashboard?.search_placeholder}
+            placeholder={
+              dict?.dashboard?.search_placeholder ||
+              "Search by name, reference, ID"
+            }
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="border border-gray-200 hover:bg-gray-100 text-sm rounded-xl w-64 px-3 py-2 focus:outline-none focus:ring-0 focus:border-gray-200"
           />
         </div>
 
-        {/* Initial loading */}
+        {/* Loading */}
         {isLoading && (
           <div className="flex justify-center py-10 items-center w-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
@@ -378,37 +409,30 @@ useEffect(() => {
                     ))}
                   </div>
 
-                  {/* Bottom spinner appears immediately under the last visible card while loading more */}
                   {isFetchingNextPage && (
                     <div className="flex gap-4 justify-center py-6">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-3 border-blue-900"></div>
                       <div className="text-blue-900 text-xl font-bold">
-                        Loading
+                        {dict?.featured_hotels?.loading || "Loading..."}
                       </div>
                     </div>
                   )}
 
-                  {/* Sentinel triggers next page when it enters viewport */}
                   <div
                     ref={sentinelRef}
-                    className="h-1 w-full"
+                    className="h-5 w-full"
                     aria-hidden
                     data-sentinel
                   />
 
-                  {/* Fallback CTA if IntersectionObserver doesn't fire (e.g., older browsers or unusual layouts) */}
                   {hasNextPage && !isFetchingNextPage && (
                     <div className="flex justify-center py-4">
-                      <button
-                        onClick={() => fetchNextPage()}
-                        // className="px-4 py-2 text-sm rounded-lg border bg-gray-50 hover:bg-gray-100"
-                      >
+                      <button onClick={() => fetchNextPage()}>
                         {dict?.dashboard?.load_more || ""}
                       </button>
                     </div>
                   )}
 
-                  {/* No more results message */}
                   {!hasNextPage && bookings.length > 0 && (
                     <div className="text-center py-6 text-blue-950 text-lg font-medium">
                       {dict?.dashboard?.no_more_results ||
@@ -429,7 +453,7 @@ useEffect(() => {
   );
 }
 
-// Reusable Stat Card (unchanged)
+//  Reusable Stat Card (unchanged)
 function StatCard({
   label,
   value,
@@ -445,7 +469,6 @@ function StatCard({
     <div className="bg-white shadow rounded-2xl p-6 border border-[#F1F5F9]">
       <div className="flex flex-col gap-4">
         <div className="text-white flex items-center justify-center bg-blue-900 p-3 w-12 h-12 rounded-lg">
-          {/* your SVGs unchanged */}
           {/* SVG Icons remain unchanged */}
           {title === "wallet" ? (
             // wallet icon
@@ -503,7 +526,6 @@ function StatCard({
             </svg>
           ) : (
             // invoice icon
-
             <svg
               width="20"
               height="22"

@@ -124,7 +124,10 @@
     "contact": "İletişim",
     "support": "Destek",
     "agents": "Acenteler",
-    "customers": "Müşteriler"
+    "customers": "Müşteriler",
+    "myprofile": "Profilim",
+    "dashboard": "Kontrol Paneli",
+    "logout": "Çıkış Yap"
   },
   "footer": {
     "subheading": "Uzmanlarca seçilmiş otellerimiz ve dünyanın en iyi destinasyonlarına özel erişimimizle olağanüstü konaklamaların kilidini açın.",
@@ -432,6 +435,7 @@
     "date": "Tarih",
     "price": "Fiyat",
     "no_bookings_found": "Rezervasyon bulunamadı.",
+    "no_more_results": "Hepsini gördünüz.",
     "showing": "Gösteriliyor",
     "of": "/",
     "entries": "kayıt",

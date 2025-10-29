@@ -134,6 +134,7 @@ export default function Dashboard() {
         (res as any).total_records ?? (res as any).total ?? 0
       );
       if (pageParam === 1) {
+      console.log(pageParam);
       
       }
       return { ...res, page: Number(pageParam), limit: PAGE_SIZE, total };

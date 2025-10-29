@@ -124,7 +124,10 @@
     "contact": "Kontakt",
     "support": "Support",
     "agents": "Agenten",
-    "customers": "Kunden"
+    "customers": "Kunden",
+    "myprofile": "Mein Profil",
+    "dashboard": "Dashboard",
+    "logout": "Abmelden"
   },
   "footer": {
     "subheading": "Erleben Sie außergewöhnliche Aufenthalte mit unseren sorgfältig ausgewählten Hotels und exklusivem Zugang zu den besten Reisezielen der Welt.",
@@ -432,6 +435,7 @@
     "date": "Datum",
     "price": "Preis",
     "no_bookings_found": "Keine Buchungen gefunden.",
+    "no_more_results": "Sie sind auf dem neuesten Stand.",
     "showing": "Zeige",
     "of": "von",
     "entries": "Einträge",

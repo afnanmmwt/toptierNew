@@ -124,7 +124,10 @@
     "contact": "联系",
     "support": "支持",
     "agents": "代理商",
-    "customers": "客户"
+    "customers": "客户",
+    "myprofile": "我的资料",
+    "dashboard": "仪表盘",
+    "logout": "退出登录"
   },
   "footer": {
     "subheading": "通过我们精心挑选的酒店和全球顶级目的地的专属通道，开启非凡住宿体验。",
@@ -432,6 +435,7 @@
     "date": "日期",
     "price": "价格",
     "no_bookings_found": "未找到预订记录。",
+    "no_more_results": "您已查看全部内容。",
     "showing": "显示",
     "of": "/",
     "entries": "条记录",

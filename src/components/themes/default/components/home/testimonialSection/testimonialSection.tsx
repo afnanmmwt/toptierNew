@@ -23,7 +23,7 @@ const TestimonialSection = () => {
     </svg>
   );
 
-  
+
   const ChevronRight = () => (
     <svg
       width="11"
@@ -59,7 +59,6 @@ const TestimonialSection = () => {
   );
 
   const testimonials = useAppSelector((state) => state.appData?.data?.testimonials || []);
-  console.log("✅ Testimonials data:", testimonials);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);

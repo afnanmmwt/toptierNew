@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import {
-  fetch_dashboard_data,
-  get_profile /*, verify_token*/,
-} from "@src/actions";
+import { fetch_dashboard_data, get_profile, getAccessToken, verify_token } from "@src/actions";
+
+
 import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
 import DashboardCard, { toCardData } from "./dashboardCard";
@@ -47,26 +47,41 @@ export default function Dashboard() {
   }, [searchTerm]);
 
 
+
   // ===================== original verify block (kept commented) =====================
-  // useEffect(() => {
-  //   if (!user) return;
-  //   const checkToken = async () => {
-  //     try {
-  //       const verify_response = await verify_token();
-  //       console.log("verify_token response:", verify_response);
+  React.useEffect(() => {
+  if (user == null) return;
 
-  //       if (verify_response?.status) {
-  //         if (user.user_type === "customer") router.push("/dashboard");
-  //         else if (user.user_type === "Agent") window.location.href = "https://chat.qwen.ai/c/guest";
-  //         else router.push("/auth/login");
-  //       } else router.push("/auth/login");
-  //     } catch {
-  //       router.push("/auth/login");
-  //     }
-  //   };
-  //   checkToken();
+  const verifyAndRedirect = async () => {
+    try {
+      const verify_response = await verify_token();
+      if (!verify_response?.status) {
+        router.push("/auth/login");
+        return;
+      }
+      const type = user.user_type;
+      if (type === "Customer") {
+         const token = await getAccessToken();
+        //  console.log("Token fetched:", token);
+        // router.push("/dashboard");
+  //        const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+  // window.location.href = url; // full redirect (bypasses SPA)
 
-  // }, [user]);
+      } else if (type === "Agent") {
+       const token = await getAccessToken(); // ← must be a Server Action
+          const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+  window.location.href = url; // full redirect (bypasses SPA)
+      } else {
+        router.push("/auth/login");
+      }
+    } catch (error) {
+      console.error("Token verification failed:", error);
+      router.push("/auth/login");
+    }
+  };
+  verifyAndRedirect();
+}, [user, router]);
+
   // =============================================================================
 
   type PageResult = {
@@ -92,6 +107,7 @@ export default function Dashboard() {
 
     queryFn: async ({ pageParam }): Promise<PageResult> => {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
+
 
       if (filters.search?.trim()) payload.search = filters.search.trim();
       const res = await fetch_dashboard_data(payload); // must return { data, total }
@@ -126,6 +142,7 @@ export default function Dashboard() {
   const cancelledCount = bookings.filter(
     (b) => b.booking_status === "cancelled"
   ).length;
+
 
   // Client-side filtered view of the currently loaded items
   const visibleBookings = useMemo(() => {

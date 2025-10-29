@@ -6,12 +6,22 @@ import {
   TestimonialSection,FeaturedHotels,NewsLatter,
 } from "@components/themes/default";
 import useDirection from "@hooks/useDirection";
+import { useEffect } from "react";
+import { useRouter } from 'next/navigation';
+import Alert from '@src/components/core/alert';
+import { useUser } from '@src/hooks/use-user';
 export default function HomeWrapper({dict}:{dict:any}) {
   const [direction] = useDirection();
+  const router = useRouter();
+  const { user } = useUser();
 
+  const lastRoute = sessionStorage.getItem('lastRoute') || '';
+  useEffect(() => {
+      if (lastRoute === "/bookings" && user) {
+        router.replace('/bookings');
+      }
+  }, [user, router, lastRoute]);
 
-
-  // const isFeaturesLoading = !dict ;
 
   return (
     <div className=" bg-white dark:bg-gray-800 min-h-full " dir={direction}>

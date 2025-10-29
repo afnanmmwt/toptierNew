@@ -4,14 +4,9 @@ import { useEffect } from 'react';
 
 export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
     // useEffect(() => {
-    //    
+    //
     // }, [error]);
-    useEffect(() => {
 
-  if (error?.stack) {
-   
-  }
-}, [error]);
 
     return (
         <div className="flex flex-col justify-center items-center min-h-screen text-center px-4">

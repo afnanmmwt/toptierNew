@@ -16,31 +16,38 @@ interface Props {
 const HotelsListingMain = ({ slug }: Props) => {
   const dispatch = useDispatch();
   const { hotelModuleNames } = useHotelSearch();
+  const { currency, locale } = useAppSelector((state) => state.root);
 
   const slugArr = Array.isArray(slug) ? slug : [];
   const city = slugArr[0]?.replace(/-/g, " ") ?? "";
   const isSlugValid = slugArr.length === 7 && slugArr.every(Boolean);
-  const { currency, locale } = useAppSelector((state) => state.root);
 
-  //  Move localStorage logic inside component render, but AFTER hooks
-  const [savedForm, setSavedForm] = useState<string | null>(null);
+  const enabled = isSlugValid && !!hotelModuleNames?.length;
 
+  // ✅ State for form data parsed from localStorage
+  const [parsedForm, setParsedForm] = useState<any>(null);
+
+  // ✅ Read from localStorage inside useEffect (safe for SSR)
   useEffect(() => {
-    //  Client-side only: safe to access localStorage here
-    const form = localStorage.getItem("hotelSearchForm");
-    setSavedForm(form);
+    try {
+      const savedForm = localStorage.getItem("hotelSearchForm");
+      if (savedForm) {
+        setParsedForm(JSON.parse(savedForm));
+      }
+    } catch (err) {
+      console.error("Error parsing hotelSearchForm:", err);
+      setParsedForm(null);
+    }
   }, []);
 
-  
+  // ✅ Only enable query when both form and slug are ready
+  const queryEnabled = enabled && !!parsedForm;
 
-  const enabled = savedForm && isSlugValid && !!hotelModuleNames?.length;
-
-  const parsedForm = savedForm ? JSON.parse(savedForm) : null;
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["hotels", ...slugArr],
     queryFn: async () => {
-      if (!parsedForm) return [];
+
       const result = await hotel_search_multi(
         {
           destination: city,
@@ -56,16 +63,21 @@ const HotelsListingMain = ({ slug }: Props) => {
           rating: "",
           language: locale,
           currency: currency,
-          child_age: parsedForm.children_ages || [],
+
+          child_age: parsedForm?.children_ages || [],
+
         },
         hotelModuleNames
       );
       return result?.success ?? [];
     },
     staleTime: 1000 * 60 * 5,
-    enabled: !!enabled,
+
+    enabled: queryEnabled,
+
   });
 
+  // ✅ Sync hotels with Redux store
   useEffect(() => {
     if (Array.isArray(data)) {
       dispatch(setHotels(data));
@@ -74,10 +86,6 @@ const HotelsListingMain = ({ slug }: Props) => {
     }
   }, [data, dispatch]);
 
-  
-  if (!savedForm) {
-    return null; 
-  }
 
   if (!slugArr.length) return null;
   if (error) return <div>Error loading hotels</div>;

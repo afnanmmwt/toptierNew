@@ -22,7 +22,6 @@ type Booking = {
   pnr?: string;
   payment_status?: string;
   booking_status?: string;
-  // probable name keys from your API—add/remove as needed:
   name?: string;
   customer_name?: string;
   lead_pax_name?: string;
@@ -36,8 +35,8 @@ type ApiCounts = {
   paid?: number;
   unpaid?: number;
   refunded?: number;
-  canceled?: number; // US
-  cancelled?: number; // UK
+  canceled?: number;
+  cancelled?: number;
 };
 
 type PageResult = {
@@ -53,14 +52,12 @@ type PageResult = {
 };
 
 export default function Dashboard() {
+  // ✅ ALL HOOKS MUST BE AT THE TOP — NO EXCEPTIONS
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const ioBusyRef = useRef(false);
   const lingerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [filters, setFilters] = useState<{
-    search: string;
-    payment_status: string;
-  }>({
+  const [filters, setFilters] = useState({
     search: "",
     payment_status: "",
   });
@@ -68,10 +65,11 @@ export default function Dashboard() {
 
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-  const { user } = useUser();
   const router = useRouter();
+  const { user, isLoading: userLoading } = useUser();
+  const [isVerifying, setIsVerifying] = useState(true);
 
-  // --- Debounce search -> push to backend filter ---
+  // --- Debounce search
   useEffect(() => {
     const t = setTimeout(() => {
       setFilters((p) => ({ ...p, search: searchTerm }));
@@ -79,35 +77,41 @@ export default function Dashboard() {
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  // --- Verify / redirect (unchanged) ---
+  // --- Auth redirect logic
   useEffect(() => {
-    if (!user) return;
-    (async () => {
+    if (userLoading) return;
+
+    if (!user) {
+      router.push("/auth/login");
+      return;
+    }
+
+    const handleRedirect = async () => {
       try {
         const verify_response = await verify_token();
         if (!verify_response?.status) {
           router.push("/auth/login");
           return;
         }
-        if (user.user_type === "Customer") {
-          router.push("/dashboard");
-        } else if (user.user_type === "Agent") {
+
+        if (user.user_type === "Agent") {
           const token = await getAccessToken();
-          const url = `http://localhost:3001/?token=${encodeURIComponent(
-            token
-          )}&user_id=${user.user_id}`;
+          const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
           window.location.href = url;
-        } else {
-          router.push("/auth/login");
+          return;
         }
-      } catch (e) {
-        // console.error("Token verification failed:", e);
+
+        setIsVerifying(false);
+      } catch (error) {
+        console.error("Verification failed:", error);
         router.push("/auth/login");
       }
-    })();
-  }, [user, router]);
+    };
 
-  // --- Infinite list: backend handles search + payment_status ---
+    handleRedirect();
+  }, [user, userLoading, router]);
+
+  // ✅ Now call data-fetching hooks — unconditionally
   const {
     data,
     isLoading,
@@ -119,25 +123,13 @@ export default function Dashboard() {
   } = useInfiniteQuery<PageResult>({
     queryKey: ["dashboard", filters.search, filters.payment_status, PAGE_SIZE],
     initialPageParam: 1,
-    queryFn: async ({ pageParam }): Promise<PageResult> => {
+    queryFn: async ({ pageParam }) => {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
-      if (filters.search.trim()) payload.search = filters.search.trim();
-
-      if (filters.payment_status)
-        payload.payment_status = filters.payment_status;
-
-      // If your API supports scoping, keep this; otherwise remove it (no harm if ignored):
-      payload.search_scope = "name,reference,booking_id";
-
+      if (filters.search?.trim()) payload.search = filters.search.trim();
       const res = await fetch_dashboard_data(payload);
-      const total = Number(
-        (res as any).total_records ?? (res as any).total ?? 0
-      );
-      if (pageParam === 1) {
-      console.log(pageParam);
-      
-      }
-      return { ...res, page: Number(pageParam), limit: PAGE_SIZE, total };
+
+      return { ...res, page: Number(pageParam), limit: PAGE_SIZE };
+
     },
     getNextPageParam: (last) => {
       const total = Number(last.total ?? 0);
@@ -154,12 +146,10 @@ export default function Dashboard() {
   const pages = data?.pages || [];
   const bookings: Booking[] = pages.flatMap((p) => p?.data || []);
 
-  // ---------- SEARCH: Client-side match (instant UX) ----------
-  // We still send search to backend (above) so server-side paging is correct.
-  // This local filter just narrows what's already loaded for snappy feel.
   const norm = (v?: any) => (v == null ? "" : String(v).toLowerCase());
+
+  // ✅ Define makeCardName BEFORE useMemo
   const makeCardName = (b: Booking) => {
-    // pick whichever name fields your API returns:
     const name =
       b.name ??
       b.customer_name ??
@@ -167,6 +157,7 @@ export default function Dashboard() {
       [b.first_name, b.last_name].filter(Boolean).join(" ");
     return norm(name);
   };
+
   const searchNeedle = norm(filters.search);
 
   const visibleBookings = useMemo(() => {
@@ -177,9 +168,8 @@ export default function Dashboard() {
       const byId = norm(b.booking_id).includes(searchNeedle);
       return byName || byRef || byId;
     });
-  }, [bookings, searchNeedle]);
+  }, [bookings, searchNeedle, makeCardName]); // ✅ include makeCardName
 
-  // ---------- COUNTS: always show API counts from first page ----------
   const firstPage = pages[0] as PageResult | undefined;
   const countsFromApi = (firstPage?.counts ?? {}) as ApiCounts;
   const cancelledCount = countsFromApi.canceled ?? countsFromApi.cancelled ?? 0;
@@ -188,16 +178,15 @@ export default function Dashboard() {
     (countsFromApi.paid ?? 0) +
       (countsFromApi.unpaid ?? 0) +
       (countsFromApi.refunded ?? 0) +
-      (cancelledCount ?? 0) +
-      0;
+      (cancelledCount ?? 0);
 
-  // Profile (unchanged)
   const { data: cartResults } = useQuery({
     queryKey: ["profile"],
     queryFn: get_profile,
     staleTime: Infinity,
     gcTime: Infinity,
   });
+
   const {
     total_bookings = "0",
     pending_bookings = "0",
@@ -206,7 +195,7 @@ export default function Dashboard() {
     last_name = "",
   } = cartResults?.data?.[0] || {};
 
-  // IO sentinel (unchanged)
+  // IO sentinel
   useEffect(() => {
     if (!sentinelRef.current) return;
     const node = sentinelRef.current;
@@ -223,6 +212,7 @@ export default function Dashboard() {
         }
       }, 700);
     };
+
     const onLeave = () => {
       if (lingerTimerRef.current) {
         clearTimeout(lingerTimerRef.current);
@@ -245,6 +235,20 @@ export default function Dashboard() {
       onLeave();
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // ✅ NOW it's safe to have early return
+  if (userLoading || isVerifying) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="flex flex-col gap-2">
+          <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-blue-900"></div>
+          <h2 className="text-xl">Redirecting...</h2>
+        </div>
+      </div>
+    );
+  }
+
+
 
   return (
     <div className="w-full max-w-[1200px] mx-auto bg-gray-50 py-4 md:py-10 appHorizantalSpacing">

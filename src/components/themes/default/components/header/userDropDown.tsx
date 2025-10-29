@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { signOut } from "@src/actions";
 import { useUser } from "@hooks/use-user";
 import { Icon } from "@iconify/react";
+import useLocale from "@hooks/useLocale";
+import useDictionary from "@hooks/useDict";
 
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
@@ -14,6 +16,8 @@ export default function ProfileDropdown() {
   const router = useRouter();
   const { user, checkSession } = useUser();
   const [isRTL, setIsRTL] = useState(false);
+  const { locale } = useLocale();
+    const { data: dict } = useDictionary(locale as any);
 
   //   useEffect(() => {
   //   try {
@@ -110,7 +114,7 @@ export default function ProfileDropdown() {
                     className="h-6 w-6 rounded-full object-cover"
                   />
                   <span className="text-[15px] font-base font-medium">
-                    My Profile
+                    {dict?.header?.myprofile || "My Profile"}
                   </span>
                 </Link>
               </li>
@@ -129,7 +133,7 @@ export default function ProfileDropdown() {
                   height="24"
                 />
                 <span className="text-[15px] font-base font-medium">
-                  Dashbaord
+                   {dict?.header?.dashboard || "Dashboard"}
                 </span>
               </Link>
             </li>
@@ -158,7 +162,7 @@ export default function ProfileDropdown() {
                 </svg>
 
                 <span className="text-[15px] font-base font-medium">
-                  Logout
+                  {dict?.header?.logout || "Logout"}
                 </span>
               </button>
             </li>

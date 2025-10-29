@@ -21,6 +21,7 @@ const HotelsListingMain = ({ slug }: Props) => {
   const slugArr = Array.isArray(slug) ? slug : [];
   const city = slugArr[0]?.replace(/-/g, " ") ?? "";
   const isSlugValid = slugArr.length === 7 && slugArr.every(Boolean);
+
   const enabled = isSlugValid && !!hotelModuleNames?.length;
 
   // ✅ State for form data parsed from localStorage
@@ -42,9 +43,11 @@ const HotelsListingMain = ({ slug }: Props) => {
   // ✅ Only enable query when both form and slug are ready
   const queryEnabled = enabled && !!parsedForm;
 
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["hotels", ...slugArr],
     queryFn: async () => {
+
       const result = await hotel_search_multi(
         {
           destination: city,
@@ -60,15 +63,18 @@ const HotelsListingMain = ({ slug }: Props) => {
           rating: "",
           language: locale,
           currency: currency,
+
           child_age: parsedForm?.children_ages || [],
+
         },
         hotelModuleNames
       );
-
       return result?.success ?? [];
     },
     staleTime: 1000 * 60 * 5,
+
     enabled: queryEnabled,
+
   });
 
   // ✅ Sync hotels with Redux store
@@ -79,6 +85,7 @@ const HotelsListingMain = ({ slug }: Props) => {
       dispatch(setHotels([]));
     }
   }, [data, dispatch]);
+
 
   if (!slugArr.length) return null;
   if (error) return <div>Error loading hotels</div>;

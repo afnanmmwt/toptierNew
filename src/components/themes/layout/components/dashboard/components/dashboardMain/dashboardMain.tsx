@@ -127,7 +127,9 @@ export default function Dashboard() {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
       if (filters.search?.trim()) payload.search = filters.search.trim();
       const res = await fetch_dashboard_data(payload);
+
       return { ...res, page: Number(pageParam), limit: PAGE_SIZE };
+
     },
     getNextPageParam: (last) => {
       const total = Number(last.total ?? 0);

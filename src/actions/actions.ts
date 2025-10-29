@@ -21,4 +21,24 @@ export const fetchDict = async (lang: string) => {
 };
 
 
+export const getIpAddress = async () => {
+  try {
+    const response = await fetch(`/api/getipaddress`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+    const data = await response.json().catch(() => null);
+    console.log("data get ip",data);
+    if (!response.ok || data?.status === false) {
+      return { error: data?.message || "Something went wrong" };
+    }
+    return data;
+  } catch (error) {
+    return { error: (error as Error).message || "An error occurred" };
+  }
+};
+
+
 

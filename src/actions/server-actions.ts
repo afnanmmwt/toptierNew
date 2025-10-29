@@ -344,7 +344,6 @@ export const signOut = async () => {
     const formData = new FormData();
     formData.append('user_id', String(userId)); //always a string
     // formData.append('token', String(token));
-
     const response = await fetch(`${baseUrl}/logout`, {
       method: 'POST',
       body: formData,

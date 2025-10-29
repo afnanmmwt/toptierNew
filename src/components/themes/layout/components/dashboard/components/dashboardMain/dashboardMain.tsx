@@ -51,7 +51,6 @@ export default function Dashboard() {
   // ===================== original verify block (kept commented) =====================
   React.useEffect(() => {
   if (user == null) return;
-
   const verifyAndRedirect = async () => {
     try {
       const verify_response = await verify_token();
@@ -63,9 +62,8 @@ export default function Dashboard() {
       if (type === "Customer") {
          const token = await getAccessToken();
         //  console.log("Token fetched:", token);
-        // router.push("/dashboard");
-  //        const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
-  // window.location.href = url; // full redirect (bypasses SPA)
+        router.push("/dashboard");
+
 
       } else if (type === "Agent") {
        const token = await getAccessToken(); // ← must be a Server Action
@@ -107,13 +105,10 @@ export default function Dashboard() {
 
     queryFn: async ({ pageParam }): Promise<PageResult> => {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
-
-
       if (filters.search?.trim()) payload.search = filters.search.trim();
       const res = await fetch_dashboard_data(payload); // must return { data, total }
       return { ...res, page: Number(pageParam), limit: PAGE_SIZE };
     },
-
     getNextPageParam: (last) => {
       const total = Number(last.total ?? 0);
       const page = Number(last.page ?? 1);

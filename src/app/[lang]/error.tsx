@@ -4,12 +4,12 @@ import { useEffect } from 'react';
 
 export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
     // useEffect(() => {
-    //     console.error('error caught:', error);
+    //    
     // }, [error]);
     useEffect(() => {
-//   console.error('error caught:', error);
+
   if (error?.stack) {
-    // console.error('stack trace:', error.stack);
+   
   }
 }, [error]);
 

@@ -15,7 +15,7 @@ type DashboardLayoutProps = CommonProps;
 
 const DashboardLayout = ({ children, }: DashboardLayoutProps) => {
     //   const expanded = useAppSelector((state) => state?.root.sidebarExpanded);
-    //   console.log('app', app);
+    
     //   const { locale } = useLocale();
         // const { data: dict, isLoading } = useDictionary(locale as any);
         // const [direction] = useDirection();

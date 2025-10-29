@@ -23,7 +23,7 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
         setIsChecking(false);
         return;
       }
-        // router.replace('/');
+
 
       setIsChecking(false);
     };

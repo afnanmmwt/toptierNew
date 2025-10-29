@@ -21,12 +21,13 @@ import { useHotelDetails } from "@hooks/useHotelDetails";
 import Spinner from "@components/core/Spinner";
 import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
+import { useUser } from "@hooks/use-user";
 
 const HotelsDetails = () => {
   const params = useParams();
   const router = useRouter();
-  const { country, currency, locale: language } = useAppSelector((state) => state.root)
-
+  const {country, currency, locale:language}=useAppSelector((state)=>state.root)
+  const {user }=useUser();
   const slugArr = (params?.slug as string[]) || [];
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
@@ -515,7 +516,8 @@ const HotelsDetails = () => {
                 getAmenityIcon={getAmenityIcon}
                 onReserve={(room, option) => {
                   handleReserveRoom(room, option, hotelDetails);
-                  router.push(`/hotel/booking`);
+
+
                 }}
               />
             ))}

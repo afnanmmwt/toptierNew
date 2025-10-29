@@ -31,8 +31,10 @@ export default function ProfileDropdown() {
       setIsRTL(
         d.toLowerCase() === "rtl" || lang.toLowerCase().startsWith("ar")
       );
-    } catch {}
-  },[]);
+    } catch {
+      setIsRTL(false);
+    }
+  }, []);
 
   // close when clicking outside
   useEffect(() => {

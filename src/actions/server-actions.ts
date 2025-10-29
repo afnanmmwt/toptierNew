@@ -871,7 +871,6 @@ export const prapare_payment = async (payload: payment1_payload) => {
     });
 
     const data = await response.json().catch(() => null);
-    // console.log("hotel_details_result", data);
 
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
@@ -902,7 +901,6 @@ export const processed_payment = async (payload: processedPay_payload) => {
     });
 
     const data = await response.json().catch(() => null);
-    // console.log("hotel_details_result", data);
 
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
@@ -926,7 +924,7 @@ export const cancel_payment = async (booking_ref_no:string) => {
     });
 
     const data = await response.json().catch(() => null);
-    // console.log("hotel_details_result", data);
+     
 
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
@@ -1026,7 +1024,7 @@ export const fetch_dashboard_data = async (payload: dashboardPayload) => {
       },
     });
     const data = await response.json().catch(() => null);
-    console.log("dashboarddata", data);
+   
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

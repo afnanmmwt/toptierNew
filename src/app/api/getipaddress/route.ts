@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-    console.log("Request Headers:", req.headers);
+
   try {
     const xff = req.headers["x-forwarded-for"] as string | undefined;
     let ip = "";

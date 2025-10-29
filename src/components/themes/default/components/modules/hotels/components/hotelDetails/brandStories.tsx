@@ -3,7 +3,7 @@ const BrandStories = (story:any) => {
   if (!story?.story?.desc_text && !story?.story?.picture) {
     return null;
   }
-    // console.log("brand stories",story);
+  
     const {picture, desc_text} = story?.story || {};
   return (
      <section className="way-to-travel my-10 max-w-[1200px] mx-auto appHorizantalSpacing">

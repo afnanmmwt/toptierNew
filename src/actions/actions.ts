@@ -30,7 +30,6 @@ export const getIpAddress = async () => {
       },
     });
     const data = await response.json().catch(() => null);
-    console.log("data get ip",data);
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

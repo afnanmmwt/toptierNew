@@ -115,7 +115,7 @@ const HotelsDetails = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isClamped, setIsClamped] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
-console.log('hotel details',hotelDetails)
+
   useEffect(() => {
     if (textRef.current && hotelDetails?.desc) {
       const { scrollHeight, clientHeight } = textRef.current;

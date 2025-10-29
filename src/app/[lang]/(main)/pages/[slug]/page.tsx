@@ -21,7 +21,7 @@ export const generateMetadata = async ({
   }
   const response = await cms_pages_content(payload);
   const page_data = response?.data;
-  console.log("page data", page_data)
+  
   return {
     title: page_data?.page_name ? `${page_data.page_name} - Page Details` : 'Page Details',
     description: page_data?.short_description

@@ -19,7 +19,7 @@ const variants = {
 
 const HeroSection = () => {
   const app = useAppSelector((state) => state?.appData?.data);
-  // console.log('heor app data ', app)
+ 
  const { homepage_text } = app?.app ?? {};
 
 
@@ -33,7 +33,7 @@ const HeroSection = () => {
       : defaultImage;
 
   const [bgError, setBgError] = useState(false);
-// console.log('img',)
+
   return (
     // Animate the entire section
     <motion.section
@@ -56,7 +56,7 @@ const HeroSection = () => {
 <div className="absolute inset-0 bg-black/40 bg-opacity-50 z-0 pointer-events-none" />
       {/* Content Container */}
      {/* Content Container */}
-<div className="relative max-w-[1200px] w-full mx-auto  z-10 min-h-[500px] flex items-center justify-center flex-col text-center px-4 gap-4 pt-6 ">
+<div className="relative max-w-[1200px] w-full mx-auto  z-10 min-h-[600px] md:min-h-[500px] flex items-center justify-center flex-col text-center px-4 gap-4 pt-6 ">
   <p className="text-4xl lg:text-5xl font-extrabold text-white  max-w-3xs lg:max-w-[38%] leading-tight">
     {homepage_text || "Discover the World's Hidden Treasures"}
   </p>

@@ -4,7 +4,6 @@ import useDirection from "@hooks/useDirection";
 import Input from "@components/core/input";
 import { z as zod } from "zod";
 import { useForm, Controller } from "react-hook-form";
-import Select from "@components/core/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Checkbox from "@components/core/checkbox";
 import { useState, useCallback } from "react";
@@ -20,13 +19,9 @@ import { useAppSelector } from "@lib/redux/store";
 import { mode as selectMode } from "@lib/redux/base/selectors";
 import useDarkMode from "@hooks/useDarkMode";
 import useCountries from "@hooks/useCountries";
-import type {
-  StylesConfig,
-  ControlProps,
-  OptionProps,
-  SingleValueProps,
-  CSSObjectWithLabel,
-} from "react-select";
+
+// ✅ Import the new NationalitySelect component
+import NationalitySelect from "./NationalitySelect";
 
 export default function SignUpForm() {
   const { lang } = useParams();
@@ -37,16 +32,12 @@ export default function SignUpForm() {
   const [loading, setLoading] = useState(false);
   const [isDarkMode] = useDarkMode();
   const mode = useAppSelector(selectMode);
-  const { countries, isLoading: isCountriesLoading } = useCountries();
+  const { countries } = useCountries();
 
-  // ✅ Zod Schema with dictionary-based error messages
+  // ✅ Zod schema
   const schema = zod.object({
-    first_name: zod
-      .string()
-      .min(1, { message: dict?.errors?.first_name_required }),
-    last_name: zod
-      .string()
-      .min(1, { message: dict?.errors?.last_name_required }),
+    first_name: zod.string().min(1, { message: dict?.errors?.first_name_required }),
+    last_name: zod.string().min(1, { message: dict?.errors?.last_name_required }),
     email: zod.string().email({ message: dict?.errors?.email_invalid }),
     phone: zod
       .string()
@@ -54,12 +45,8 @@ export default function SignUpForm() {
       .regex(/^\+?[1-9]\d{7,14}$/, {
         message: dict?.errors?.phone_number_invalid,
       }),
-    phone_country_code: zod
-      .string()
-      .min(1, { message: dict?.errors?.country_code_required }),
-    password: zod
-      .string()
-      .min(6, { message: dict?.errors?.password_min_length }),
+    phone_country_code: zod.string().min(1, { message: dict?.errors?.country_code_required }),
+    password: zod.string().min(6, { message: dict?.errors?.password_min_length }),
     terms: zod.boolean().refine((val) => val === true, {
       message: dict?.errors?.terms_required,
     }),
@@ -97,15 +84,10 @@ export default function SignUpForm() {
     onSuccess: (data) => {
       if (data.error) {
         const message = data.error;
-        if (message.toLowerCase().includes("password")) {
-          setError("password", { type: "manual", message });
-        } else if (message.toLowerCase().includes("email")) {
-          setError("email", { type: "manual", message });
-        } else if (message.toLowerCase().includes("phone")) {
-          setError("phone", { type: "manual", message });
-        } else {
-          setError("root", { type: "manual", message });
-        }
+        if (message.toLowerCase().includes("password")) setError("password", { type: "manual", message });
+        else if (message.toLowerCase().includes("email")) setError("email", { type: "manual", message });
+        else if (message.toLowerCase().includes("phone")) setError("phone", { type: "manual", message });
+        else setError("root", { type: "manual", message });
         setLoading(false);
         return;
       }
@@ -129,32 +111,6 @@ export default function SignUpForm() {
     [router, setError, mutate]
   );
 
-  // ✅ Country select style
-  const customStyles: StylesConfig<any, false> = {
-    control: (base) => ({
-      ...base,
-      width: "100%",
-      height: "2.9rem",
-      fontSize: "0.875rem",
-      borderRadius: "0.5rem",
-      color: isDarkMode ? "#F9FAFB" : "#1F2937",
-      backgroundColor: isDarkMode ? "#1F2937" : "#fff",
-      borderColor: isDarkMode ? "#4B5563" : "#D1D5DB",
-      boxShadow: "none",
-      transition: "all 0.2s",
-      "&:hover": {
-        backgroundColor: isDarkMode ? "#374151" : "#F3F4F6",
-      },
-    }),
-  };
-
-
-  const countryOptions = (countries || []).map((country: any) => ({
-    label: country.label || country.name,
-    value: country.value || country.id,
-    icon: country.icon,
-  }));
-
   return (
     <div className="relative w-full min-h-screen flex flex-col lg:flex-row border-t border-gray-300">
       <div className="w-full flex items-center justify-center p-4 sm:p-6 md:p-10 bg-white dark:bg-gray-900">
@@ -165,26 +121,15 @@ export default function SignUpForm() {
             </h2>
             <p className="text-base text-gray-500 mt-1">
               {dict?.signup_form?.already_account}{" "}
-              <Link
-                href="/auth/login"
-                className="text-blue-900 hover:underline"
-              >
+              <Link href="/auth/login" className="text-blue-900 hover:underline">
                 {dict?.signup_form?.sign_in}
               </Link>
             </p>
           </div>
 
-          <form
-            className="space-y-4 sm:space-y-6"
-            onSubmit={handleSubmit(onSubmit)}
-            noValidate
-          >
+          <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit(onSubmit)} noValidate>
             {errors.root && (
-              <Alert
-                showIcon
-                className="my-2 font-medium text-sm"
-                type="danger"
-              >
+              <Alert showIcon className="my-2 font-medium text-sm" type="danger">
                 {errors.root.message}
               </Alert>
             )}
@@ -200,12 +145,7 @@ export default function SignUpForm() {
                   control={control}
                   render={({ field }) => (
                     <div className="relative flex flex-col gap-2">
-                      <Input
-                        {...field}
-                        placeholder={dict?.signup_form?.first_name_placeholder}
-                        size="lg"
-                        invalid={!!errors.first_name}
-                      />
+                      <Input {...field} placeholder={dict?.signup_form?.first_name_placeholder} size="lg" invalid={!!errors.first_name} />
                       {errors.first_name && (
                         <p className="text-red-500 text-xs flex items-center gap-1">
                           <Icon icon="mdi:warning-circle" width="15" height="15" />
@@ -226,12 +166,7 @@ export default function SignUpForm() {
                   control={control}
                   render={({ field }) => (
                     <div className="relative flex flex-col gap-2">
-                      <Input
-                        {...field}
-                        placeholder={dict?.signup_form?.last_name_placeholder}
-                        size="lg"
-                        invalid={!!errors.last_name}
-                      />
+                      <Input {...field} placeholder={dict?.signup_form?.last_name_placeholder} size="lg" invalid={!!errors.last_name} />
                       {errors.last_name && (
                         <p className="text-red-500 text-xs flex items-center gap-1">
                           <Icon icon="mdi:warning-circle" width="15" height="15" />
@@ -244,37 +179,28 @@ export default function SignUpForm() {
               </div>
             </div>
 
-            {/* Country */}
+            {/* ✅ Nationality (replaces country select) */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100">
-                {dict?.signup_form?.country_label}
-              </label>
-              < Controller
+              <Controller
                 name="phone_country_code"
                 control={control}
                 render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={countryOptions}
-                    value={countryOptions.find((option: any) => option.value === field.value)}
-                    onChange={(option) => field.onChange(option?.value)}
-                    // placeholder={dict?.signup_form?.fields?.country?.placeholder}
-                    placeholder={dict?.signup_form?.country_placeholder}
-                    size="lg"
-                    styles={customStyles}
-                    isSearchable
-                    isLoading={isCountriesLoading}
-                  />
+                  <div className="flex flex-col gap-2">
+                    <NationalitySelect
+                      label={dict?.signup_form?.country_label || "Country Code"}
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                    {errors.phone_country_code && (
+                      <p className="text-red-500 text-xs flex items-center gap-1">
+                        <Icon icon="mdi:warning-circle" width="15" height="15" />
+                        {errors.phone_country_code.message}
+                      </p>
+                    )}
+                  </div>
                 )}
               />
-              {errors.phone_country_code && (
-                <p className="text-red-500 text-xs flex items-center gap-1 mt-1">
-                  <Icon icon="mdi:warning-circle" width="15" height="15" />
-                  {errors.phone_country_code.message}
-                </p>
-              )}
             </div>
-
 
             {/* Phone */}
             <div>
@@ -286,12 +212,7 @@ export default function SignUpForm() {
                 control={control}
                 render={({ field }) => (
                   <div className="relative flex flex-col gap-2">
-                    <Input
-                      {...field}
-                      placeholder={dict?.signup_form?.phone_placeholder}
-                      size="lg"
-                      invalid={!!errors.phone}
-                    />
+                    <Input {...field} placeholder={dict?.signup_form?.phone_placeholder} size="lg" invalid={!!errors.phone} />
                     {errors.phone && (
                       <p className="text-red-500 text-xs flex items-center gap-1">
                         <Icon icon="mdi:warning-circle" width="15" height="15" />
@@ -313,14 +234,7 @@ export default function SignUpForm() {
                 control={control}
                 render={({ field }) => (
                   <div className="relative flex flex-col gap-2">
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder={dict?.signup_form?.email_placeholder}
-                      size="lg"
-                      invalid={!!errors.email}
-
-                    />
+                    <Input {...field} type="email" placeholder={dict?.signup_form?.email_placeholder} size="lg" invalid={!!errors.email} />
                     {errors.email && (
                       <p className="text-red-500 text-xs flex items-center gap-1">
                         <Icon icon="mdi:warning-circle" width="15" height="15" />
@@ -342,27 +256,19 @@ export default function SignUpForm() {
                 control={control}
                 render={({ field }) => (
                   <div className="relative flex flex-col gap-2">
-                    <Input
-                      {...field}
-                      type={showPassword ? "text" : "password"}
-                      placeholder={dict?.signup_form?.password_placeholder}
-                      size="lg"
-                      invalid={!!errors.password}
-                      suffix={
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          <Icon
-                            icon={
-                              showPassword ? "mdi:eye-off" : "mdi:eye"
-                            }
-                            width="20"
-                            height="20"
-                          />
-                        </button>
-                      }
-                    />
+                      <Input
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                        placeholder={dict?.signup_form?.password_placeholder}
+                        size="lg"
+                        // className=" input"
+                        invalid={!!errors.password}
+                        suffix={
+                          <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                            <Icon icon={showPassword ? "mdi:eye-off" : "mdi:eye"} width="20" height="20" />
+                          </button>
+                        }
+                      />
                     {errors.password && (
                       <p className="text-red-500 text-xs flex items-center gap-1">
                         <Icon icon="mdi:warning-circle" width="15" height="15" />
@@ -381,11 +287,7 @@ export default function SignUpForm() {
                   name="human"
                   control={control}
                   render={({ field }) => (
-                    <Checkbox
-                      {...field}
-                      checked={field.value}
-                      onChange={(value: boolean) => field.onChange(value)}
-                    />
+                    <Checkbox {...field} checked={field.value} onChange={(value: boolean) => field.onChange(value)} />
                   )}
                 />
                 <label className="text-sm text-gray-600 dark:text-gray-100 cursor-pointer">
@@ -404,28 +306,16 @@ export default function SignUpForm() {
                   name="terms"
                   control={control}
                   render={({ field }) => (
-                    <Checkbox
-                      {...field}
-                      checked={field.value}
-                      onChange={(value: boolean) => field.onChange(value)}
-                    />
+                    <Checkbox {...field} checked={field.value} onChange={(value: boolean) => field.onChange(value)} />
                   )}
                 />
                 <label className="text-sm text-gray-600 dark:text-gray-100 cursor-pointer flex-1">
                   {dict?.signup_form?.agree_text}{" "}
-                  <a
-                    href="/terms-and-conditions"
-                    className="text-blue-900 hover:text-blue-800 font-medium"
-                    target="_blank"
-                  >
+                  <a href="/terms-and-conditions" className="text-blue-900 hover:text-blue-800 font-medium" target="_blank">
                     {dict?.signup_form?.terms_of_use}
                   </a>{" "}
                   {dict?.signup_form?.and}{" "}
-                  <a
-                    href="/privacy-policy"
-                    className="text-blue-900 hover:text-blue-800 font-medium"
-                    target="_blank"
-                  >
+                  <a href="/privacy-policy" className="text-blue-900 hover:text-blue-800 font-medium" target="_blank">
                     {dict?.signup_form?.privacy_policy}
                   </a>
                 </label>
@@ -442,13 +332,7 @@ export default function SignUpForm() {
             <Button
               size="lg"
               {...(loading && {
-                icon: (
-                  <Icon
-                    icon="line-md:loading-twotone-loop"
-                    width="24"
-                    height="24"
-                  />
-                ),
+                icon: <Icon icon="line-md:loading-twotone-loop" width="24" height="24" />,
               })}
               disabled={loading || !watch("terms") || !watch("human")}
               className="bg-blue-900 hover:bg-blue-700 w-full flex gap-2 justify-center text-white rounded-lg py-3 font-medium"

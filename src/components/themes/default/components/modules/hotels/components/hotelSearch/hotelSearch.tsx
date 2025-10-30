@@ -207,7 +207,7 @@ export default function HotelSearch() {
                 {dict?.home_page?.hero_section?.check_in || "Check in"} {"|"} {dict?.home_page?.hero_section?.check_out || "Check out"}
               </label>
               <CustomDateRangePicker
-
+              
                 initialStartDate={
                   form.checkin
                     ? new Date(form.checkin)

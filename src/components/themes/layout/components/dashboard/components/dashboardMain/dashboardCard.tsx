@@ -124,35 +124,36 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
           )}
         </div>
 
-       {/* Status Badge */}
-<div className="absolute top-4 left-4">
-  {(() => {
-    const raw = String(data.booking_status || "").toLowerCase().trim();
-    const status =
-      raw === "canceled" ? "cancelled" : raw; // normalize US→UK spelling
+        {/* Status Badge */}
+        <div className="absolute top-4 left-4">
+          {(() => {
+            const raw = String(data.booking_status || "")
+              .toLowerCase()
+              .trim();
+            const status = raw === "canceled" ? "cancelled" : raw; // normalize US→UK spelling
 
-    const color =
-      status === "confirmed"
-        ? "bg-green-600"
-        : status === "pending"
-        ? "bg-orange-600"
-        : status === "cancelled"
-        ? "bg-red-600"
-        : "bg-gray-500";
+            const color =
+              status === "confirmed"
+                ? "bg-green-600"
+                : status === "pending"
+                ? "bg-orange-600"
+                : status === "cancelled"
+                ? "bg-red-600"
+                : "bg-gray-500";
 
-    const label = status
-      ? status.charAt(0).toUpperCase() + status.slice(1)
-      : "Unknown";
+            const label = status
+              ? status.charAt(0).toUpperCase() + status.slice(1)
+              : "Unknown";
 
-    return (
-      <span
-        className={`${color} text-white text-xs font-semibold px-3 py-1.5 rounded-full ring-1 ring-black/10`}
-      >
-        {label}
-      </span>
-    );
-  })()}
-</div>
+            return (
+              <span
+                className={`${color} text-white text-xs font-semibold px-3 py-1.5 rounded-full ring-1 ring-black/10`}
+              >
+                {label}
+              </span>
+            );
+          })()}
+        </div>
 
         {/* Content with dark gradient at bottom (same design) */}
         <div className="absolute bg-gradient-to-b from-transparent via-black to-black bottom-0 left-0 right-0 px-5 py-3 text-white">

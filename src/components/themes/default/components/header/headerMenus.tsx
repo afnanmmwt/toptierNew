@@ -2,14 +2,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-// import Button from "@components/core/button";
 import HeaderLogo from "@components/themes/layout/components/common/headerLogo";
 import { useUser } from "@hooks/use-user";
-// import Alert from "@components/core/alert";
-// import { signOut } from "@src/actions";
-// import { Router } from "next/router";
 import Dropdown from "@components/core/Dropdown";
-
 import ProfileDropdown from "./userDropDown";
 import useDictionary from "@hooks/useDict";
 import useLocale from "@hooks/useLocale";
@@ -21,13 +16,28 @@ const HeaderMenus = () => {
 
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any) as any;
-  // const router=Router()
-  const { cms, modules } = useAppSelector((state) => state.appData?.data);
-  const headerPages = cms?.filter((page: any) => page.name === "Header");
-  const filteredModules = modules.filter(
-    (item: any, index: number, self: any) =>
-      index === self.findIndex((m: any) => m.type === item.type)
-  );
+
+  const { cms, modules } = useAppSelector((state) => state.appData?.data || ({} as any));
+
+  // Safe guards
+  const headerPages = Array.isArray(cms) ? cms.filter((page: any) => page.name === "Header") : [];
+
+  const filteredModules = Array.isArray(modules)
+    ? modules.filter((item: any, index: number, self: any) => index === self.findIndex((m: any) => m.type === item.type))
+    : [];
+
+  // ------------ Helpers ------------
+  const capitalize = (s?: string) =>
+    s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+
+  // Translate module label by key; fallbacks preserve UX
+  const moduleLabel = (type: string) =>
+    dict?.modules?.[type] ||
+    dict?.header?.[type] || // optional secondary lookup
+    capitalize(type);
+
+  // Map module type -> href path (align with your PHP switch where "extra" = blog)
+  const moduleHref = (type: string) => (type === "extra" ? "blogs" : type);
 
   return (
     <header className="w-full  max-w-[1200px] mx-auto overflow-visible">
@@ -38,22 +48,23 @@ const HeaderMenus = () => {
           <Link href="/" className="text-xl font-bold pt-1.5 text-blue-800">
             <HeaderLogo imgClass="w-32" />
           </Link>
+
           {/* Desktop Menu */}
           <nav className="text-[16px] pt-1.5">
             <div className="hidden md:flex items-center gap-8 text-gray-700 ">
               {filteredModules?.map((item: any, index: number) => (
                 <Link
                   key={index}
-                  href={`/${item.type}`}
+                  href={`/${moduleHref(String(item.type))}`}
                   target={""}
                   className="text-[#11223399] text-base hover:text-blue-700 transition-colors duration-200 ease-in-out"
                 >
                   <h3 className="text-base font-medium text-gray-800 mb-4">
-                    {String(item.type).charAt(0).toUpperCase() +
-                      String(item.type).slice(1)}
+                    {moduleLabel(String(item.type))}
                   </h3>
                 </Link>
               ))}
+
               {headerPages?.map((item: any, index: number) => (
                 <Link
                   key={index}
@@ -62,14 +73,14 @@ const HeaderMenus = () => {
                   className="text-[#11223399] text-base hover:text-blue-700 transition-colors duration-200 ease-in-out"
                 >
                   <h3 className="text-base font-medium text-gray-800 mb-4">
-                    {String(item.page_name).charAt(0).toUpperCase() +
-                      String(item.page_name).slice(1)}
+                    {capitalize(String(item.page_name))}
                   </h3>
                 </Link>
               ))}
             </div>
           </nav>
         </div>
+
         {/* Right: Auth Buttons - Desktop Only */}
         {!user ? (
           <div className="hidden md:flex items-center gap-3">
@@ -79,7 +90,6 @@ const HeaderMenus = () => {
               label={
                 <div className="flex items-center gap-1.5 ">
                   {dict?.header?.signup || "Signup"}
-                  {/* <ChevronDown className="w-4 h-4" /> */}
                 </div>
               }
             >
@@ -90,7 +100,6 @@ const HeaderMenus = () => {
                   className=" flex items-center  gap-1 text-sm font-medium rounded-xl px-4 py-2 text-gray-700 hover:bg-blue-50"
                 >
                   <span>
-                    {" "}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -138,7 +147,6 @@ const HeaderMenus = () => {
               </div>
             </Dropdown>
 
-            {/* ===== Customers Dropdown ===== */}
             <button
               onClick={() => (window.location.href = "/auth/login")}
               className={`
@@ -165,11 +173,7 @@ const HeaderMenus = () => {
           className="md:hidden text-gray-700 cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
         >
-          <Icon
-            icon={isOpen ? "mdi:close" : "mdi:menu"}
-            width={28}
-            height={28}
-          />
+          <Icon icon={isOpen ? "mdi:close" : "mdi:menu"} width={28} height={28} />
         </button>
       </div>
 
@@ -199,17 +203,16 @@ const HeaderMenus = () => {
             {filteredModules?.map((item: any, index: number) => (
               <Link
                 key={index}
-                href={`/${item.type}`}
+                href={`/${moduleHref(String(item.type))}`}
                 target={""}
                 className="text-[#11223399] text-base hover:text-blue-700 transition-colors duration-200 ease-in-out"
               >
-                {/* {String(item.page_name).charAt(0).toUpperCase() + String(item.page_name).slice(1)} */}
                 <h3 className="text-base font-medium text-gray-800 px-4">
-                  {String(item.type).charAt(0).toUpperCase() +
-                    String(item.type).slice(1)}
+                  {moduleLabel(String(item.type))}
                 </h3>
               </Link>
             ))}
+
             {headerPages?.map((item: any, index: number) => (
               <Link
                 key={index}
@@ -218,8 +221,7 @@ const HeaderMenus = () => {
                 className="text-[#11223399] text-base hover:text-blue-700 transition-colors duration-200 ease-in-out"
               >
                 <h3 className="text-base font-medium text-gray-800 px-4">
-                  {String(item.page_name).charAt(0).toUpperCase() +
-                    String(item.page_name).slice(1)}
+                  {capitalize(String(item.page_name))}
                 </h3>
               </Link>
             ))}
@@ -233,7 +235,6 @@ const HeaderMenus = () => {
                   label={
                     <div className="flex items-center gap-1.5 ">
                       {dict?.header?.signup || "Signup"}
-                      {/* <ChevronDown className="w-4 h-4" /> */}
                     </div>
                   }
                 >
@@ -244,7 +245,6 @@ const HeaderMenus = () => {
                       className=" flex items-center  gap-1 text-sm font-medium rounded-xl px-4 py-2 text-gray-700 hover:bg-blue-50"
                     >
                       <span>
-                        {" "}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
@@ -291,7 +291,7 @@ const HeaderMenus = () => {
                     </Link>
                   </div>
                 </Dropdown>
-                {/* ===== Customers Dropdown ===== */}
+
                 <button
                   onClick={() => (window.location.href = "/auth/login")}
                   className=" bg-[#163C8C] cursor-pointer hover:bg-gray-800 text-white

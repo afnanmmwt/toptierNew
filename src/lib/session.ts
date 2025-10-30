@@ -1,6 +1,8 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+
 import { NextRequest, NextResponse } from "next/server";
+
 
 const secret = process.env.JWT_PASSWORD;
 const key = new TextEncoder().encode(secret);
@@ -53,6 +55,7 @@ export async function createSession(user: any) {
 }
 
 export async function logout() {
+
   (await cookies()).set("access-token", "", { expires: new Date(0) });
 
 }

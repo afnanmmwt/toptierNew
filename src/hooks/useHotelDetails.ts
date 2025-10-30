@@ -7,6 +7,7 @@ import useHotelSearch from './useHotelSearch';
 import { useAppDispatch } from '@lib/redux/store';
 import { setSeletecRoom } from '@lib/redux/base';
 import { toast } from 'react-toastify';
+import { useUser } from './use-user';
 
 // ✅ Updated: Add children_ages
 export interface HotelForm {
@@ -86,7 +87,7 @@ export const useHotelDetails = ({
 const storedForm = typeof window !== "undefined"
   ? localStorage.getItem("hotelSearchForm")
   : null;
-
+const {user}=useUser()
 let initialForm: HotelForm = {
 
   checkin: defaultCheckin,
@@ -259,6 +260,8 @@ const [form, setForm] = useState<HotelForm>(initialForm);
       option,
     };
     dispatch(setSeletecRoom(roomData));
+    router.push(`/bookings`);
+
   };
 
   const resetForm = useCallback(() => {

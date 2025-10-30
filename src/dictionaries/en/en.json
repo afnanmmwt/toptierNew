@@ -124,7 +124,10 @@
     "contact": "Contact",
     "support": "Support",
     "agents": "Agents",
-    "customers": "Customers"
+    "customers": "Customers",
+    "myprofile": "My Profile",
+    "dashboard": "Dashboard",
+    "logout": "Logout"
   },
   "footer": {
     "subheading": "Unlock extraordinary stays with our expert-curated hotels and exclusive access to the world's finest destinations.",
@@ -421,6 +424,7 @@
     "all": "All",
     "paid": "Paid",
     "unpaid": "Unpaid",
+    "refunded": "Refunded",
     "cancelled": "Cancelled",
     "search_placeholder": "Search...",
     "client_name": "Client Name",
@@ -431,6 +435,7 @@
     "date": "Date",
     "price": "Price",
     "no_bookings_found": "No bookings found.",
+    "no_more_results": "You’re all caught up.",
     "showing": "Showing",
     "of": "of",
     "entries": "entries",
@@ -483,7 +488,7 @@
     "children": "Children",
     "bookNow": "Book Now"
   },
-   "modal": {
+  "modal": {
     "hotelImageAlt": "Hotel image",
     "noImagePlaceholder": "No Image",
     "supplierLabel": "Supplier:",
@@ -512,5 +517,39 @@
     "invoiceButton": "Invoice",
     "closeButton": "Close",
     "invoiceReferenceNotFound": "Invoice reference not found"
+  },
+  "dashboardCard": {
+    "noimage": "No Image",
+    "moredetails": "More Details",
+    "upplier": "Supplier",
+    "bookingdetails": "Booking Details",
+    "bookingreference": "Booking reference",
+    "bookingstatus": "Booking status",
+    "paymentstatus": "Payment status",
+    "checkin": "Check-in",
+    "checkout": "Check-out",
+    "guestdetails": "Guest Details",
+    "noguest": "No guest data available.",
+    "name": "Name",
+    "type": "Type",
+    "adults": "Adults",
+    "age": "Age",
+    "otherguests": "Other Guests",
+    "roomdetails": "Room Details",
+    "roomname": "Room name",
+    "roomprice": "Room price",
+    "roomqaunitity": "Room qaunitity",
+    "childs": "Childs",
+    "invoice": "Invoice",
+    "close": "Close",
+    "invoicenotfound": "Invoice reference not found"
+  },
+  "headermodule": {
+    "hotels": "Hotelsssssss",
+    "flights": "Flights",
+    "tours": "Tours",
+    "cars": "Cars",
+    "visa": "Visa",
+    "extra": "Blog"
   }
 }

@@ -13,7 +13,7 @@ import { Icon } from '@iconify/react';
 export default function PusherClient() {
       const [notification, setNotification] = useState<any | null>(null);
   useEffect(() => {
-    Pusher.logToConsole = process.env.NODE_ENV !== 'production';
+    // Pusher.logToConsole = process.env.NODE_ENV !== 'production';
     const pusher = new Pusher('de441f2de3ea4cc57f04', {
       cluster: 'ap2',
     });

@@ -15,7 +15,7 @@ import Link from "next/link";
 import { toast } from 'react-toastify';
 import useDirection from "@hooks/useDirection";
 import { useFormState } from "react-dom";
-import { signIn, SignInState } from "@src/actions"; //  Import Server Action
+import { signIn, SignInState } from "@src/actions"; // ✅ Import Server Action
 
 const Login = ({ dict }: { dict?: any }) => {
   const { lang } = useParams();
@@ -44,7 +44,7 @@ const Login = ({ dict }: { dict?: any }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  //  useFormState
+  // ✅ useFormState
   const initialState: SignInState = { success: false, error: '' };
   const [state, formAction] = useFormState(signIn, initialState);
 
@@ -101,7 +101,7 @@ const Login = ({ dict }: { dict?: any }) => {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
                 {dict?.login_form?.email || "Email *"}
               </label>
               <Controller
@@ -119,7 +119,7 @@ const Login = ({ dict }: { dict?: any }) => {
                 )}
               />
               {errors.email && (
-                <div className="text-red-500 flex items-center gap-1 text-xs pt-1 mb-3">
+                <div className="text-red-500 flex items-center gap-1 text-xs">
                   <Icon icon="mdi:warning-circle" width="15" height="15" />
                   <span>{errors.email.message}</span>
                 </div>
@@ -128,14 +128,13 @@ const Login = ({ dict }: { dict?: any }) => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-1 mt-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
                 {dict?.login_form?.password || "Password *"}
               </label>
               <Controller
                 name="password"
                 control={control}
                 render={({ field }) => (
-
                   <Input
                     {...field}
                     type={showPassword ? "text" : "password"}
@@ -144,8 +143,6 @@ const Login = ({ dict }: { dict?: any }) => {
                     invalid={!!errors.password}
                     suffix={
                       <button type="button" onClick={() => setShowPassword(!showPassword)}>
-
-
                         {showPassword ? (
                           <Icon icon="mdi:eye-off" width="20" height="20" />
                         ) : (
@@ -157,14 +154,14 @@ const Login = ({ dict }: { dict?: any }) => {
                 )}
               />
               {errors.password && (
-                <div className="text-red-500 flex items-center gap-1 pt-1 mb-4 text-xs">
+                <div className="text-red-500 flex items-center gap-1 text-xs">
                   <Icon icon="mdi:warning-circle" width="15" height="15" />
                   <span>{errors.password.message}</span>
                 </div>
               )}
             </div>
 
-            <div className="flex items-center justify-between mt-8">
+            <div className="flex items-center justify-between mt-2.5">
               <Controller
                 name="keep_logged_in"
                 control={control}
@@ -178,25 +175,28 @@ const Login = ({ dict }: { dict?: any }) => {
                   />
                 )}
               />
-              <Link href={`/${lang}/auth/forget-password`} className="text-blue-950 hover:text-blue-900 font-medium">
-                <span className="text-blue-900 dark:text-blue-100 hover:text-blue-900 text-sm">
+              <Link href={`/${lang}/auth/forget-password`} className="text-blue-900 hover:text-blue-800 font-medium">
+                <span className="text-blue-900 dark:text-blue-100 hover:text-blue-600 text-sm">
                   {dict?.login_form?.forgot_password || "Forgot Password?"}
                 </span>
               </Link>
             </div>
 
-             <Button size="lg"
-
-              {...(loading && {
-                icon: <Icon icon="line-md:loading-twotone-loop" width="24" height="24" />
-              })}
-
-              disabled={loading} className={`w-full bg-blue-900 mt-7 text-white hover:bg-gray-900 hover:text-white border-none hover:border-none flex gap-2 justify-center rounded-lg py-3 font-medium  ${isDarkMode ? "hover:bg-gray-600" : "hover:bg-[#101828]"}`} type="submit">
-              <span>{dict?.login_form?.login_button || "Login"}</span>
+            <Button
+              size="lg"
+              disabled={loading}
+              className={`w-full bg-blue-900 text-white hover:bg-blue-800 ...`}
+              type="submit"
+            >
+              {loading ? (
+                <Icon icon="line-md:loading-twotone-loop" width="24" height="24" />
+              ) : (
+                <span>{dict?.login_form?.login_button || "Login"}</span>
+              )}
             </Button>
           </form>
 
-          {/*  Hidden form to trigger Server Action */}
+          {/* ✅ Hidden form to trigger Server Action */}
           <form id="hidden-login-form" action={formAction} className="hidden">
             <input name="email" defaultValue="" />
             <input name="password" defaultValue="" />

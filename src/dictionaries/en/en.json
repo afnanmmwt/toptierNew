@@ -124,7 +124,10 @@
     "contact": "Contact",
     "support": "Support",
     "agents": "Agents",
-    "customers": "Customers"
+    "customers": "Customers",
+    "myprofile": "My Profile",
+    "dashboard":"Dashboard",
+    "logout":"Logout"
   },
   "footer": {
     "subheading": "Unlock extraordinary stays with our expert-curated hotels and exclusive access to the world's finest destinations.",
@@ -432,6 +435,7 @@
     "date": "Date",
     "price": "Price",
     "no_bookings_found": "No bookings found.",
+    "no_more_results":"You’re all caught up.",
     "showing": "Showing",
     "of": "of",
     "entries": "entries",

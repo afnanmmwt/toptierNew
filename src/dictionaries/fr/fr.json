@@ -124,7 +124,10 @@
     "contact": "Contact",
     "support": "Assistance",
     "agents": "Agents",
-    "customers": "Clients"
+    "customers": "Clients",
+    "myprofile": "Mon profil",
+    "dashboard": "Tableau de bord",
+    "logout": "Déconnexion"
   },
   "footer": {
     "subheading": "Accédez à des séjours exceptionnels grâce à nos hôtels soigneusement sélectionnés et à un accès exclusif aux plus belles destinations du monde.",
@@ -432,6 +435,7 @@
     "date": "Date",
     "price": "Prix",
     "no_bookings_found": "Aucune réservation trouvée.",
+    "no_more_results": "Vous êtes à jour.",
     "showing": "Affichage de",
     "of": "sur",
     "entries": "résultats",

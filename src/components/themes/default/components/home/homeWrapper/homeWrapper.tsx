@@ -22,7 +22,7 @@ export default function HomeWrapper({dict}:{dict:any}) {
       }
   }, [user, router, lastRoute]);
 
-
+// conole kflsjfskfjsfj
   return (
     <div className=" bg-white dark:bg-gray-800 min-h-full " dir={direction}>
       {/* HERO SECTION */}

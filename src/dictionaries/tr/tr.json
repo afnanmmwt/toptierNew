@@ -543,5 +543,13 @@
     "invoice": "Fatura",
     "close": "Kapat",
     "invoicenotfound": "Fatura referansı bulunamadı"
+  },
+  "headermodule": {
+    "hotels": "Oteller",
+    "flights": "Uçuşlar",
+    "tours": "Turlar",
+    "cars": "Arabalar",
+    "visa": "Vize",
+    "extra": "Blog"
   }
 }

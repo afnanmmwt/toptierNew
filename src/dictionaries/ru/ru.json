@@ -543,5 +543,13 @@
     "invoice": "Счет",
     "close": "Закрыть",
     "invoicenotfound": "Ссылка на счет не найдена"
+  },
+  "headermodule": {
+    "hotels": "Отели",
+    "flights": "Рейсы",
+    "tours": "Туры",
+    "cars": "Автомобили",
+    "visa": "Виза",
+    "extra": "Блог"
   }
 }

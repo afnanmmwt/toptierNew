@@ -543,5 +543,13 @@
     "invoice": "Facture",
     "close": "Fermer",
     "invoicenotfound": "Référence de facture introuvable"
+  },
+  "headermodule": {
+    "hotels": "Hôtels",
+    "flights": "Vols",
+    "tours": "Circuits",
+    "cars": "Voitures",
+    "visa": "Visa",
+    "extra": "Blog"
   }
 }

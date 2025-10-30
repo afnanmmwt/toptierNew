@@ -543,5 +543,13 @@
     "invoice": "Rechnung",
     "close": "Schließen",
     "invoicenotfound": "Rechnungsreferenz nicht gefunden"
+  },
+  "headermodule": {
+    "hotels": "Hotels",
+    "flights": "Flüge",
+    "tours": "Touren",
+    "cars": "Autos",
+    "visa": "Visum",
+    "extra": "Blog"
   }
 }

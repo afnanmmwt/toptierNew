@@ -23,18 +23,16 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
         setIsChecking(false);
         return;
       }
-
-
+      if (user) {
+        sessionStorage.removeItem('lastRoute');
+      }
       setIsChecking(false);
     };
-
     verifyGuestAccess().catch(console.error);
   }, [user, error, isLoading, router]);
-
   if (isLoading || isChecking) {
     return <GlobalLoadingOverlay />;
   }
-
   if (error) {
     return (
       <Alert type="danger">

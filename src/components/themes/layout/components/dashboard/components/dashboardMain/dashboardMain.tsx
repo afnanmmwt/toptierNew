@@ -51,7 +51,7 @@ type PageResult = {
   [k: string]: any;
 };
 
-export default function Dashboard() {
+export default  function Dashboard() {
   // ✅ ALL HOOKS MUST BE AT THE TOP — NO EXCEPTIONS
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const ioBusyRef = useRef(false);
@@ -68,7 +68,7 @@ export default function Dashboard() {
   const router = useRouter();
   const { user, isLoading: userLoading } = useUser();
   const [isVerifying, setIsVerifying] = useState(true);
-
+ const token =  getAccessToken();
   // --- Debounce search
   useEffect(() => {
     const t = setTimeout(() => {
@@ -89,6 +89,8 @@ export default function Dashboard() {
     const handleRedirect = async () => {
       try {
         const verify_response = await verify_token();
+                // console.log("verify_response =============>lkdf ", verify_response);
+
         if (!verify_response?.status) {
           router.push("/auth/login");
           return;
@@ -100,10 +102,15 @@ export default function Dashboard() {
           window.location.href = url;
           return;
         }
+        // if (user.user_type === "Customer") {
+        //   router.push("/customer");
+        //   return;
+        // }
 
         setIsVerifying(false);
       } catch (error) {
         console.error("Verification failed:", error);
+        console.error("current token", token);
         router.push("/auth/login");
       }
     };

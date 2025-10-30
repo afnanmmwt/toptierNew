@@ -45,6 +45,7 @@ class AuthClient {
   async signOut(): Promise<{ error?: string }> {
     sessionStorage.removeItem('lastRoute');
     await signOut();
+  
 
     return {};
   }

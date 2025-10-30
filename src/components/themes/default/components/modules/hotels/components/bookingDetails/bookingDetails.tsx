@@ -22,7 +22,7 @@ export default function BookingDetails() {
   const router = useRouter();
   const { priceRateConverssion } = useCurrency();
   const { user } = useUser();
- const user_type = user?.user_type ?? "";    // ✅ Step 3: safely extract
+ const user_type = user?.user_type ?? "";    //  Step 3: safely extract
 
   const { hotelDetails, room, option } = selectedRoom || {};
   const { locale } = useLocale();

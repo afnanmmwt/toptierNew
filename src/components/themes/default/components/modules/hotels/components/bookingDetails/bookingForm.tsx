@@ -174,6 +174,7 @@ export default function BookingForm({
   const { countries: rawCountries } = useCountries();
   const { payment_gateways } = useAppSelector((state) => state.appData?.data);
   const selectedRoom = useAppSelector((state) => state.root.selectedRoom);
+    const hasAutoSaved = useRef(false);
   const { option } = selectedRoom || {};
   console.log(option);
   
@@ -280,8 +281,119 @@ export default function BookingForm({
 
   // Auto save booking
   // Add this useEffect right after defaultValues and before useForm
-  useEffect(() => {
-    if (!user) return; // Only run if user data exists
+  // useEffect(() => {
+  //   if (!user) return; // Only run if user data exists
+
+  //   const {
+  //     firstName,
+  //     lastName,
+  //     address,
+  //     nationality,
+  //     currentCountry,
+  //     email,
+  //     phoneCountryCode,
+  //     phoneNumber,
+  //   } = defaultValues;
+
+  //   // Get travelers count from localStorage (same as in original code)
+  //   const curruntBooking = localStorage.getItem('hotelSearchForm');
+  //   const saveBookingData = curruntBooking ? JSON.parse(curruntBooking) : {};
+  //   const { adults = 0, children = 0 } = saveBookingData;
+  //   const travelers = adults + children;
+
+  //   // Build guest payload (same logic as onSubmit)
+  //   const guestPayload = Array.from({ length: travelers }, (_, index) => ({
+  //     traveller_type: index < adults ? 'adults' : 'child',
+  //     title: dict?.bookingForm?.titles?.mr || 'Mr',
+  //     first_name: '',
+  //     last_name: '',
+  //     nationality: nationality || '',
+  //     age: '',
+  //     dob_day: '',
+  //     dob_month: '',
+  //     dob_year: '',
+  //   }));
+
+  //   // Build booking payload (same structure as onSubmit)
+  //   const bookingPayload = {
+  //     booking_ref_no: bookingReference,
+  //     price_original: price || 0,
+  //     price_markup: total || 0,
+  //     vat: 0,
+  //     tax: 0,
+  //     gst: 0,
+  //     first_name: firstName || '',
+  //     last_name: lastName || '',
+  //     email: email || '',
+  //     address: address || '',
+  //     phone_country_code: phoneCountryCode || '+92',
+  //     phone: phoneNumber || '000-000-000',
+  //     country: hotel_country || 'UNITED ARAB EMIRATES',
+  //     stars: stars || 0,
+  //     hotel_id: hotel_id || '',
+  //     hotel_name: hotel_name || '',
+  //     hotel_phone: hotel_phone || '',
+  //     hotel_email: hotel_email || '',
+  //     hotel_website: hotel_website || '',
+  //     hotel_address: hotel_address || '',
+  //     room_data: [
+  //       {
+  //         room_id: option_id,
+  //         room_name: selectedRoom?.room?.name,
+  //         room_price: markup_price_per_night,
+  //         room_quantity: quantity,
+  //         room_extrabed_price: extrabed_price,
+  //         room_extrabed: extrabeds_quantity,
+  //         room_actual_price: price,
+  //       },
+  //     ],
+  //     location: hotel_location || '',
+  //     location_cords: hotel_address || '',
+  //     hotel_img: hotel_image?.[0] || '',
+  //     checkin: checkin || '10-10-2025',
+  //     checkout: checkout || '14-10-2025',
+  //     adults: adults || 0,
+  //     childs: children || 0,
+  //     child_ages: '',
+  //     currency_original: booking_currency || 'USD',
+  //     currency_markup: booking_currency || 'USD',
+  //     booking_data: modified_booking_data,
+  //     supplier: supplier_name || '',
+  //     user_id: '',
+  //     guest: guestPayload,
+  //     nationality: nationality || '',
+  //     user_data: {
+  //       first_name: firstName || '',
+  //       last_name: lastName || '',
+  //       address: address || '',
+  //       email: email || '',
+  //       phone: phoneNumber || '',
+  //       nationality: nationality || 'pk',
+  //       country_code: nationality || 'pk',
+  //     },
+  //     card: {
+  //       name: '',
+  //       number: '',
+  //       expiry: '',
+  //       cvv: '',
+  //       zip: '',
+  //     },
+  //   };
+
+  //   // Hit the API
+  //   hotel_booking(bookingPayload as any)
+  //     .then(response => {
+  //       setBookingReference(response.booking_ref_no);
+  //       // You can store response if needed
+  //     })
+  //     .catch(error => {
+  //       console.error('Pre-booking API failed:', error);
+  //     });
+  // }, []); // Dependencies: user data, dict, and booking ref
+// clout code
+ useEffect(() => {
+    // Guard: Only run once, only if user exists, and only if not already saved
+    if (!user || hasAutoSaved.current) return;
 
     const {
       firstName,
@@ -294,13 +406,7 @@ export default function BookingForm({
       phoneNumber,
     } = defaultValues;
 
-    // Get travelers count from localStorage (same as in original code)
-    const curruntBooking = localStorage.getItem('hotelSearchForm');
-    const saveBookingData = curruntBooking ? JSON.parse(curruntBooking) : {};
-    const { adults = 0, children = 0 } = saveBookingData;
-    const travelers = adults + children;
-
-    // Build guest payload (same logic as onSubmit)
+    // Build guest payload
     const guestPayload = Array.from({ length: travelers }, (_, index) => ({
       traveller_type: index < adults ? 'adults' : 'child',
       title: dict?.bookingForm?.titles?.mr || 'Mr',
@@ -313,7 +419,7 @@ export default function BookingForm({
       dob_year: '',
     }));
 
-    // Build booking payload (same structure as onSubmit)
+    // Build booking payload
     const bookingPayload = {
       booking_ref_no: bookingReference,
       price_original: price || 0,
@@ -379,17 +485,21 @@ export default function BookingForm({
       },
     };
 
+    // ✅ FIX: Mark as saved BEFORE API call to prevent race conditions
+    hasAutoSaved.current = true;
+
     // Hit the API
     hotel_booking(bookingPayload as any)
       .then(response => {
+        console.log('✅ Auto-save successful:', response.booking_ref_no);
         setBookingReference(response.booking_ref_no);
-        // You can store response if needed
       })
       .catch(error => {
-        console.error('Pre-booking API failed:', error);
+        console.error('❌ Pre-booking API failed:', error);
+        // Reset flag on error so it can retry
+        hasAutoSaved.current = false;
       });
-  }, [user, dict, bookingReference]); // Dependencies: user data, dict, and booking ref
-
+  }, [user]); // ✅ FIX:
   const onSubmit = async (data: BookingFormValues) => {
     if (!data) return;
 

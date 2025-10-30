@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { signOut } from "@src/actions";
 import { useUser } from "@hooks/use-user";
 import { Icon } from "@iconify/react";
+import useLocale from "@hooks/useLocale";
+import useDictionary from "@hooks/useDict";
+import { toast } from "react-toastify";
 
 export default function ProfileDropdown() {
   const [open, setOpen] = useState(false);
@@ -14,6 +17,8 @@ export default function ProfileDropdown() {
   const router = useRouter();
   const { user, checkSession } = useUser();
   const [isRTL, setIsRTL] = useState(false);
+  const { locale } = useLocale();
+    const { data: dict } = useDictionary(locale as any);
 
   //   useEffect(() => {
   //   try {
@@ -31,8 +36,10 @@ export default function ProfileDropdown() {
       setIsRTL(
         d.toLowerCase() === "rtl" || lang.toLowerCase().startsWith("ar")
       );
-    } catch {}
-  },[]);
+    } catch {
+      setIsRTL(false);
+    }
+  }, []);
 
   // close when clicking outside
   useEffect(() => {
@@ -51,7 +58,8 @@ export default function ProfileDropdown() {
   const handleLogout = async () => {
     await signOut();
     await checkSession?.();
-    router.refresh();
+    toast.success("Logged out successfully");
+    router.push("/auth/login");
   };
 
   const defaultImage =
@@ -108,7 +116,7 @@ export default function ProfileDropdown() {
                     className="h-6 w-6 rounded-full object-cover"
                   />
                   <span className="text-[15px] font-base font-medium">
-                    My Profile
+                    {dict?.header?.myprofile || "My Profile"}
                   </span>
                 </Link>
               </li>
@@ -127,7 +135,7 @@ export default function ProfileDropdown() {
                   height="24"
                 />
                 <span className="text-[15px] font-base font-medium">
-                  Dashbaord
+                   {dict?.header?.dashboard || "Dashboard"}
                 </span>
               </Link>
             </li>
@@ -156,7 +164,7 @@ export default function ProfileDropdown() {
                 </svg>
 
                 <span className="text-[15px] font-base font-medium">
-                  Logout
+                  {dict?.header?.logout || "Logout"}
                 </span>
               </button>
             </li>

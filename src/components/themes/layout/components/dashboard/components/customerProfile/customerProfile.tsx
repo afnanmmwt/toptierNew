@@ -14,19 +14,21 @@ import { profile_update } from "@src/actions";
 import { useRouter } from "next/navigation";
 import useDictionary from "@hooks/useDict";
 import useLocale from "@hooks/useLocale";
+import { Icon } from "@iconify/react";
 
 const profileSchema = zod.object({
   first_name: zod.string().optional(),
   last_name: zod.string().optional(),
   email: zod.string().email("Invalid email address").optional(),
-  phone: zod.string()
+  phone: zod
+    .string()
     .regex(/^\+?[1-9]\d{7,14}$/, "Enter a valid international phone number")
     .optional(),
   phone_country_code: zod.string().optional(),
-   password: zod
+  password: zod
     .string()
     .optional()
-    .transform(val => (val === "" ? undefined : val)), // ✅ key fix
+    .transform((val) => (val === "" ? undefined : val)),
   country_code: zod.string().optional(),
   state: zod.string().optional(),
   city: zod.string().optional(),
@@ -36,19 +38,16 @@ const profileSchema = zod.object({
 
 type ProfileFormValues = zod.infer<typeof profileSchema>;
 
-// Define user shape to fix TypeScript errors
-
-
-
-
 export default function CustomerProfile() {
   const { locale } = useLocale();
   const { data: dict, isLoading: dictLoading, isError, error } = useDictionary(locale as any);
- const { user } = useUser() as { user: any | null };
+  const { user } = useUser() as { user: any | null };
   const { countries } = useCountries();
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCountryOpen, setIsCountryOpen] = useState(false);
+  const [isPhoneCodeOpen, setIsPhoneCodeOpen] = useState(false);
 
   const {
     control,
@@ -74,8 +73,6 @@ export default function CustomerProfile() {
 
   // Populate form when user data loads
   useEffect(() => {
-    // const usersession =  getSession();
-   
     if (user) {
       const u = user;
       reset({
@@ -92,63 +89,61 @@ export default function CustomerProfile() {
       });
     }
   }, [user, reset]);
+
+  // Prepare country and phone code options with ISO and flag support
   const countryOptions = (countries || []).map((c: any) => ({
     value: c.iso || c.code,
     label: c.nicename || c.name,
     iso: c.iso,
     phonecode: c.phonecode?.toString() || "0",
   }));
-const phoneCodeOptions = (countries || []).map((c: any) => ({
-  value: c.iso || c.code,
-  label: `+${c.phonecode}`, // e.g., "+1", "+44"
-  iso: c.iso,
-  phonecode: c.phonecode?.toString() || "0",
-}));
- const onSubmit = async (data: any) => {
-  if (!user) {
-    toast.error(dict?.profiletoasts?.unauthorized || "User not authenticated");
-    return;
-  }
 
-  const currentUser = user;
+  const phoneCodeOptions = (countries || []).map((c: any) => ({
+    value: c.iso || c.code,
+    label: `+${c.phonecode}`,
+    iso: c.iso,
+    phonecode: c.phonecode?.toString() || "0",
+  }));
 
-  setIsSubmitting(true);
-  try {
-    //  Build a payload that satisfies ProfileUpdatePayload
-    const payload: any = {
-      user_id: currentUser.user_id,
-      first_name: data.first_name?.trim() || currentUser.first_name || "",
-      last_name: data.last_name?.trim() || currentUser.last_name || "",
-      email: data.email?.trim() || currentUser.email || "",
-      phone: data.phone?.trim() || currentUser.phone || "",
-      phone_country_code: data.phone_country_code?.trim() || currentUser.phone_country_code?.toString() || "",
-      password: data.password, // optional — can be undefined
-      country_code: data.country_code?.trim() || currentUser.country_code?.toString() || "",
-      state: data.state?.trim() || currentUser.state || "",
-      city: data.city?.trim() || currentUser.city || "",
-      address1: data.address1?.trim() || currentUser.address1 || "",
-      address2: data.address2?.trim() || currentUser.address2 || "",
-    };
-
-    const result = await profile_update(payload);
-
-    if (result?.error) {
-      throw new Error(result.error);
+  const onSubmit = async (data: any) => {
+    if (!user) {
+      toast.error(dict?.profiletoasts?.unauthorized || "User not authenticated");
+      return;
     }
 
-    toast.success(dict?.profiletoasts?.success || "Profile updated successfully!");
-    router.refresh();
+    const currentUser = user;
 
-  } catch (err: any) {
-    toast.error(
-      err.message ||
-      dict?.profiletoasts?.error ||
-      "Failed to update profile"
-    );
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    setIsSubmitting(true);
+    try {
+      const payload: any = {
+        user_id: currentUser.user_id,
+        first_name: data.first_name?.trim() || currentUser.first_name || "",
+        last_name: data.last_name?.trim() || currentUser.last_name || "",
+        email: data.email?.trim() || currentUser.email || "",
+        phone: data.phone?.trim() || currentUser.phone || "",
+        phone_country_code: data.phone_country_code?.trim() || currentUser.phone_country_code?.toString() || "",
+        password: data.password,
+        country_code: data.country_code?.trim() || currentUser.country_code?.toString() || "",
+        state: data.state?.trim() || currentUser.state || "",
+        city: data.city?.trim() || currentUser.city || "",
+        address1: data.address1?.trim() || currentUser.address1 || "",
+        address2: data.address2?.trim() || currentUser.address2 || "",
+      };
+
+      const result = await profile_update(payload);
+
+      if (result?.error) {
+        throw new Error(result.error);
+      }
+
+      toast.success(dict?.profiletoasts?.success || "Profile updated successfully!");
+      router.refresh();
+    } catch (err: any) {
+      toast.error(err.message || dict?.profiletoasts?.error || "Failed to update profile");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Loading states
   if (dictLoading) {
@@ -179,16 +174,19 @@ const phoneCodeOptions = (countries || []).map((c: any) => ({
   if (!user) {
     return (
       <div className="bg-gray-50 flex justify-center items-center min-h-screen">
-        <p className="text-gray-600">
-          {dict?.profilemessages?.loginRequired || "Please log in to view your profile."}
-        </p>
-      </div>
-    );
-  }
+      <p className="text-gray-600">
+        {dict?.profilemessages?.loginRequired || "Please log in to view your profile."}
+      </p>
+    </div>
+  );
+}
+
+
+
 
   return (
     <div className="bg-gray-50 flex justify-center">
-      <div className="bg-white shadow-md rounded-xl px-8 py-5  w-full max-w-6xl">
+      <div className="bg-white shadow-md rounded-xl px-8 py-5 w-full max-w-6xl">
         <h2 className="text-2xl font-semibold mb-6">
           {dict?.profilelabels?.profileHeading || "Profile Information"}
         </h2>
@@ -294,7 +292,7 @@ const phoneCodeOptions = (countries || []).map((c: any) => ({
             )}
           </div>
 
-          {/* Phone Code */}
+          {/* Phone Code — WITH FLAG */}
           <div className="flex flex-col gap-1.5">
             <label className="block text-gray-600 text-sm mb-1">
               {dict?.profilelabels?.phoneCode || "Phone Code"}
@@ -305,15 +303,59 @@ const phoneCodeOptions = (countries || []).map((c: any) => ({
               render={({ field }) => (
                 <Select
                   {...field}
-                    options={phoneCodeOptions}
-      value={phoneCodeOptions.find((c:any) => c.value === field.value)}
-      onChange={(option) => field.onChange(option?.value)}
-      placeholder={dict?.profileplaceholders?.selectCountryCode || "Select Country Code"}
-      size="lg"
+                  options={phoneCodeOptions}
+                  value={phoneCodeOptions.find((opt:any) => opt.value === field.value) || null}
+                  onChange={(option) => field.onChange(option?.value || "")}
+                  placeholder={dict?.profileplaceholders?.selectCountryCode || "Select Country Code"}
                   isSearchable
+                  onMenuOpen={() => setIsPhoneCodeOpen(true)}
+                  onMenuClose={() => setIsPhoneCodeOpen(false)}
                   classNames={{
                     control: () =>
-                      'border border-gray-300 cursor-pointer rounded-lg px-3 py-0 flex items-center min-h-[44px] text-base focus:ring-1 focus:ring-[#163C8C] focus:border-[#163C8C] shadow-none'
+                      "border border-gray-300 cursor-pointer rounded-lg px-3 py-0 flex items-center min-h-[44px] text-base focus:ring-1 focus:ring-[#163C8C] focus:border-[#163C8C] shadow-none",
+                    valueContainer: () => "flex items-center gap-2 px-1",
+                    singleValue: () => "flex items-center gap-2 text-gray-800 font-medium truncate",
+                    placeholder: () => "text-gray-400 font-normal",
+                    indicatorsContainer: () =>
+                      locale?.startsWith("ar") ? "absolute left-4" : "absolute right-4",
+                  }}
+                  components={{
+                    Option: ({ data, ...props }) => (
+                      <div
+                        {...props.innerProps}
+                        className="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-gray-100"
+                      >
+                        <Icon
+                          icon={`flagpack:${data.iso?.toLowerCase()}`}
+                          width="22"
+                          height="16"
+                          className="rounded-sm"
+                        />
+                        <span>+{data.phonecode}</span>
+                      </div>
+                    ),
+                    SingleValue: ({ data }) => (
+                      <div className="flex items-center gap-2 truncate">
+                        <Icon
+                          icon={`flagpack:${data.iso?.toLowerCase()}`}
+                          width="22"
+                          height="16"
+                          className="rounded-sm"
+                        />
+                        <span>+{data.phonecode}</span>
+                      </div>
+                    ),
+                    DropdownIndicator: () => (
+                      <Icon
+                        icon="mdi:keyboard-arrow-down"
+                        width="24"
+                        height="24"
+                        className={`text-gray-600 transition duration-100 ease-in-out ${
+                          isPhoneCodeOpen ? "rotate-180" : "rotate-0"
+                        }`}
+                      />
+                    ),
+                    IndicatorSeparator: () => null,
                   }}
                 />
               )}
@@ -350,7 +392,7 @@ const phoneCodeOptions = (countries || []).map((c: any) => ({
             )}
           </div>
 
-          {/* Country */}
+          {/* Country — WITH FLAG */}
           <div className="flex flex-col gap-1.5">
             <label className="block text-gray-600 text-sm mb-1">
               {dict?.profilelabels?.country || "Country"}
@@ -362,14 +404,58 @@ const phoneCodeOptions = (countries || []).map((c: any) => ({
                 <Select
                   {...field}
                   options={countryOptions}
-                  value={countryOptions.find((c: any) => c.value === field.value)}
-                  onChange={(option) => field.onChange(option?.value)}
+                  value={countryOptions.find((opt:any) => opt.value === field.value) || null}
+                  onChange={(option) => field.onChange(option?.value || "")}
                   placeholder={dict?.profileplaceholders?.selectCountry || "Select Country"}
-                  size="lg"
                   isSearchable
+                  onMenuOpen={() => setIsCountryOpen(true)}
+                  onMenuClose={() => setIsCountryOpen(false)}
                   classNames={{
                     control: () =>
-                      'border border-gray-300 cursor-pointer rounded-lg px-3 py-0 flex items-center min-h-[44px] text-base focus:ring-1 focus:ring-[#163C8C] focus:border-[#163C8C] shadow-none'
+                      "border border-gray-300 cursor-pointer rounded-lg px-3 py-0 flex items-center min-h-[44px] text-base focus:ring-1 focus:ring-[#163C8C] focus:border-[#163C8C] shadow-none",
+                    valueContainer: () => "flex items-center gap-2 px-1",
+                    singleValue: () => "flex items-center gap-2 text-gray-800 font-medium truncate",
+                    placeholder: () => "text-gray-400 font-normal",
+                    indicatorsContainer: () =>
+                      locale?.startsWith("ar") ? "absolute left-4" : "absolute right-4",
+                  }}
+                  components={{
+                    Option: ({ data, ...props }) => (
+                      <div
+                        {...props.innerProps}
+                        className="px-3 py-2 cursor-pointer flex items-center gap-2 hover:bg-gray-100"
+                      >
+                        <Icon
+                          icon={`flagpack:${data.iso?.toLowerCase()}`}
+                          width="22"
+                          height="16"
+                          className="rounded-sm"
+                        />
+                        <span>{data.label}</span>
+                      </div>
+                    ),
+                    SingleValue: ({ data }) => (
+                      <div className="flex items-center gap-2 truncate">
+                        <Icon
+                          icon={`flagpack:${data.iso?.toLowerCase()}`}
+                          width="22"
+                          height="16"
+                          className="rounded-sm"
+                        />
+                        <span>{data.label}</span>
+                      </div>
+                    ),
+                    DropdownIndicator: () => (
+                      <Icon
+                        icon="mdi:keyboard-arrow-down"
+                        width="24"
+                        height="24"
+                        className={`text-gray-600 transition duration-100 ease-in-out ${
+                          isCountryOpen ? "rotate-180" : "rotate-0"
+                        }`}
+                      />
+                    ),
+                    IndicatorSeparator: () => null,
                   }}
                 />
               )}
@@ -452,13 +538,13 @@ const phoneCodeOptions = (countries || []).map((c: any) => ({
             />
           </div>
 
-          {/*  Submit Button — INSIDE the form */}
+          {/* Submit Button */}
           <div className="lg:col-span-3 flex justify-center mt-6">
             <Button
               size="lg"
               disabled={isSubmitting}
-              className={`w-full  hover:text-white bg-blue-900 text-center flex justify-center text-white ${
-                isSubmitting ? 'opacity-60 cursor-not-allowed' : ''
+              className={`w-full hover:text-white bg-blue-900 text-center flex justify-center text-white ${
+                isSubmitting ? "opacity-60 cursor-not-allowed" : ""
               }`}
               type="submit"
             >

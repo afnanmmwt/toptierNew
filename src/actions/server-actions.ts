@@ -5,6 +5,7 @@ import { decodeBearerToken } from "@src/utils/decodeToken";
 import { cookies, headers } from "next/headers";
 import { userInfo } from "os";
 import { z } from 'zod';
+import { json } from "stream/consumers";
 // console.log("base",baseUrl);
 
 
@@ -17,7 +18,6 @@ export async function getHeaders(contentType: string = "application/x-www-form-u
     // Authorization: `Bearer ${token}`,
 
   };
-
   if (contentType) {
     headers["Content-Type"] = contentType;
   }
@@ -56,7 +56,6 @@ export const fetchAppData = async (payload: appDataPayload) => {
     if (user_id) {
       formData.append("user_id", user_id);
     }
-
     const response = await fetch(`${baseUrl}/app`, {
       method: "POST",
       body: formData,
@@ -64,13 +63,10 @@ export const fetchAppData = async (payload: appDataPayload) => {
         Accept: "application/json, text/plain, */*",
       },
     });
-
     const data = await response.json().catch(() => null);
-
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }
-
     return data;
   } catch (error) {
     return { error: (error as Error).message || "An error occurred" };
@@ -334,16 +330,18 @@ export async function signIn(
 }
 export const signOut = async () => {
    const userinfo = (await getSession()) as any | null;
+
   try {
     //  Ensure user_id is always a string
     const userId =
       typeof userinfo === 'object' && userinfo !== null
         ? (userinfo.user_id || userinfo?.user?.user_id || '')
         : '';
-
+ const cookie = await cookies();
+  const token = cookie.get('access-token')?.value || '';
     const formData = new FormData();
     formData.append('user_id', String(userId)); //always a string
-    // formData.append('token', String(token));
+    formData.append('token', String(token));
     const response = await fetch(`${baseUrl}/logout`, {
       method: 'POST',
       body: formData,
@@ -358,8 +356,6 @@ export const signOut = async () => {
     return { error: (error as Error).message || 'An error occurred' };
   }
 };
-
-
 export const getUser = async () => {
   const session = await getSession();
   return session?.user;
@@ -399,6 +395,7 @@ export const verify_token = async () => {
    const userinfo = (await getSession()) as any | null;
   const cookie = await cookies();
   const token = cookie.get('access-token')?.value || '';
+
   try {
     //  Ensure user_id is always a string
     const userId =
@@ -409,20 +406,19 @@ export const verify_token = async () => {
     const formData = new FormData();
     formData.append('user_id', String(userId)); // ✅ always a string
     formData.append('token', String(token));
-
+   console.log("verifying token for user server action:", formData);
     const response = await fetch(`${baseUrl}/verify_token`, {
       method: 'POST',
       body: formData,
     });
-
     const data = await response.json().catch(() => null);
-    if (!response.ok || data?.status === false) {
-      return { error: data?.message || 'Something went wrong' };
-    }
 
+    if (!response.ok || data?.status === false) {
+      return { error: data || 'Something went wrong' };
+    }
     return data;
   } catch (error) {
-    return { error: (error as Error).message || 'An error occurred' };
+    return { error: error || 'An error occurred' };
   }
 };
 export const getAccessToken = async () => {
@@ -557,7 +553,6 @@ export const hotel_search = async (payload: HotelSearchPayload & { modules: stri
     formData.append("child_age", "[]"); // send empty array if no children
   }
 
-
   try {
     const response = await fetch(`${baseUrl}/hotel_search`, {
       method: "POST",
@@ -594,7 +589,7 @@ export const hotel_search_multi = async (
 
   // Use allSettled to avoid one failure breaking all
   const results = await Promise.allSettled(promises);
-
+// console.log('successful hotels', JSON.parse(results));
   // console.log('multi search result ', results)
   const successful = results
     .map((result) => {
@@ -608,6 +603,7 @@ export const hotel_search_multi = async (
     })
     .filter(Boolean) // remove nulls
     .flat(); // flatten into single array
+
   return {
     success: successful,
     total: successful.length,
@@ -802,9 +798,18 @@ export const hotel_booking = async (payload: BookingPayload) => {
     formData.append("currency_original", payload.currency_original);
     formData.append("currency_markup", payload.currency_markup);
     formData.append("supplier", payload.supplier);
+    formData.append("supplier_cost",  String(payload.price_original));
     formData.append("nationality", payload.nationality);
     formData.append("payment_gateway", payload.payment_gateway ?? "");
     formData.append("user_id", user_id ?? "");
+
+    // hardcoded fields
+    formData.append("supplier_id", "");
+    formData.append("agent_fee", "0");
+    // agent_fee= price_markup - price_original
+    formData.append("net_profit", String(payload.price_markup - payload.price_original));
+    // if user is agent logged as agent
+    formData.append("agent_id", api_key ?? "");
 
 
     // Append JSON fields (must stringify)
@@ -924,7 +929,7 @@ export const cancel_payment = async (booking_ref_no:string) => {
     });
 
     const data = await response.json().catch(() => null);
-     
+
 
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
@@ -1005,9 +1010,9 @@ export const fetch_dashboard_data = async (payload: dashboardPayload) => {
   try {
      const userinfo = (await getSession()) as SessionUser | null;
     const user_id = userinfo?.user?.user_id ?? "";
-   
+
     const formData = new FormData();
-    
+
     // match exactly with API keys
     formData.append("api_key", api_key ?? "");
     formData.append("user_id",user_id );
@@ -1024,7 +1029,7 @@ export const fetch_dashboard_data = async (payload: dashboardPayload) => {
       },
     });
     const data = await response.json().catch(() => null);
-   
+
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

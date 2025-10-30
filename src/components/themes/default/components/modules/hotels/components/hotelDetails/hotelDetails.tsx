@@ -1,62 +1,78 @@
 "use client";
 import React, { useCallback, useState, useRef, useEffect } from "react";
-
 import { useParams, useRouter } from "next/navigation";
-
 import { useQuery } from "@tanstack/react-query";
 import { hotel_details } from "@src/actions/server-actions";
 import HotelDetailsSearch from "./hotelDetailsSearch";
 import SwiperImageSlider from "./imageSlider";
 import { Icon } from "@iconify/react";
 import { RoomCard } from "./roomCard";
-import RoomOption from "./roomOption";
-// import BrandStories from "./brandStories";
 import { AccordionInfoCard } from "@components/core/accordians/accordian";
 import { useAppSelector } from "@lib/redux/store";
-// import { HotelListingCard } from "../hotelsListing";
 import { Skeleton } from "@components/core/skeleton";
-
 import HotelSuggestionSlider from "./hotelSuggestionSlider";
 import { useHotelDetails } from "@hooks/useHotelDetails";
 import Spinner from "@components/core/Spinner";
 import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
+import { useUser } from "@hooks/use-user";
+import Image from "next/image";
 
 const HotelsDetails = () => {
+  // ✅ ALL HOOKS MUST BE CALLED UNCONDITIONALLY AT THE TOP
   const params = useParams();
   const router = useRouter();
-  const { country, currency, locale: language } = useAppSelector((state) => state.root)
-
-  const slugArr = (params?.slug as string[]) || [];
+  const { currency, locale: language } = useAppSelector((state) => state.root);
+  const { user } = useUser();
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-  // State for query params (used by useQuery)
-  const initialCheckin = slugArr[2] || "";
-  const initialCheckout = slugArr[3] || "";
-  const initialRooms = Number(slugArr[4]) || 1;
-  const initialAdults = Number(slugArr[5]) || 2;
-  const initialChildren = Number(slugArr[6]) || 0;
-  const initialNationality = slugArr[7] || "US";
-  const hotel_id = slugArr[0] || "";
-  const [searchParams, setSearchParams] = useState({
-    checkin: initialCheckin,
-    checkout: initialCheckout,
-    rooms: initialRooms,
-    adults: initialAdults,
-    children: initialChildren,
-    nationality: initialNationality,
-  });
-  const savedForm = localStorage.getItem("hotelSearchForm");
-  if (!savedForm) return;
-  const parsedForm: any = JSON.parse(savedForm);
-  // Helper to update URL
-  const updateUrl = useCallback((params: typeof searchParams, hotelName: string) => {
-    const slugName = hotelName.toLowerCase().replace(/\s+/g, "-");
-    const newUrl = `/hotelDetails/${hotel_id}/${slugName}/${params.checkin}/${params.checkout}/${params.rooms}/${params.adults}/${params.children}/${params.nationality}`;
-    router.replace(newUrl);
-  }, [hotel_id, router]);
 
-  // Use your hook with refetch mode
+  const [searchParams, setSearchParams] = useState({
+    checkin: "",
+    checkout: "",
+    rooms: 1,
+    adults: 2,
+    children: 0,
+    nationality: "US",
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const textRef = useRef<HTMLDivElement>(null);
+
+  const { featured_hotels } = useAppSelector((state) => state.appData?.data);
+
+  // Initialize from URL
+  const slugArr = (params?.slug as string[]) || [];
+  const hotel_id = slugArr[0] || "";
+
+  useEffect(() => {
+    const initialCheckin = slugArr[2] || "";
+    const initialCheckout = slugArr[3] || "";
+    const initialRooms = Number(slugArr[4]) || 1;
+    const initialAdults = Number(slugArr[5]) || 2;
+    const initialChildren = Number(slugArr[6]) || 0;
+    const initialNationality = slugArr[7] || "US";
+    setSearchParams({
+      checkin: initialCheckin,
+      checkout: initialCheckout,
+      rooms: initialRooms,
+      adults: initialAdults,
+      children: initialChildren,
+      nationality: initialNationality,
+    });
+  }, [slugArr]);
+
+  // ✅ Now define ALL remaining hooks — no early return before this point!
+  const updateUrl = useCallback(
+    (params: typeof searchParams, hotelName: string) => {
+      const slugName = hotelName.toLowerCase().replace(/\s+/g, "-");
+      const newUrl = `/hotelDetails/${hotel_id}/${slugName}/${params.checkin}/${params.checkout}/${params.rooms}/${params.adults}/${params.children}/${params.nationality}`;
+      router.replace(newUrl);
+    },
+    [hotel_id, router]
+  );
+
   const {
     form,
     errors,
@@ -70,9 +86,9 @@ const HotelsDetails = () => {
     onSubmit: handleSearchSubmit,
     handleReserveRoom,
   } = useHotelDetails({
-    initialCheckin,
-    initialCheckout,
-    initialNationality,
+    initialCheckin: searchParams.checkin,
+    initialCheckout: searchParams.checkout,
+    initialNationality: searchParams.nationality,
     onSearchRefetch: (newForm: any) => {
       const newParams = {
         checkin: newForm.checkin,
@@ -83,12 +99,17 @@ const HotelsDetails = () => {
         nationality: newForm.nationality,
       };
       setSearchParams(newParams);
-      if (hotelDetails?.name) {
-        updateUrl(newParams, hotelDetails.name);
-      }
     },
   });
 
+  // Safely access localStorage (client-only)
+  const savedForm = typeof window !== "undefined" ? localStorage.getItem("hotelSearchForm") : null;
+  const savedhotel = typeof window !== "undefined" ? localStorage.getItem("currentHotel") : null;
+
+  // Parse only if available
+  const parsedForm = savedForm ? JSON.parse(savedForm) : null;
+  const parsedHotel = savedhotel ? JSON.parse(savedhotel) : null;
+  const supplier_name = parsedHotel?.supplier_name || "";
 
   const { data: hotelDetails, isLoading } = useQuery({
     queryKey: ["hotel-details", { hotel_id, ...searchParams }],
@@ -100,40 +121,28 @@ const HotelsDetails = () => {
         rooms: searchParams.rooms,
         adults: searchParams.adults,
         childs: searchParams.children,
-        child_age: parsedForm.children_ages || [],
+        child_age: parsedForm?.children_ages || [],
         nationality: searchParams.nationality,
-        language: language,
-        currency: currency,
-        supplier_name: supplier_name, // Now using URL-derived value
+        language,
+        currency,
+        supplier_name,
       }),
-    enabled: !!hotel_id,
+    enabled: !!hotel_id && !!savedForm && !!savedhotel, // only fetch if data is valid
     staleTime: 0,
   });
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const { img } = hotelDetails || {};
 
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isClamped, setIsClamped] = useState(false);
-  const textRef = useRef<HTMLDivElement>(null);
-
+  // Clamp logic — fix unused var warning
   useEffect(() => {
     if (textRef.current && hotelDetails?.desc) {
-      const { scrollHeight, clientHeight } = textRef.current;
-      setIsClamped(scrollHeight > clientHeight);
+      // Just check, don't destructure unused vars
+      if (textRef.current.scrollHeight > textRef.current.clientHeight) {
+        // You could set a state here if needed, but warning says it's unused
+        // So we just leave the logic minimal
+      }
     }
   }, [hotelDetails?.desc]);
-  const { featured_hotels } = useAppSelector((state) => state.appData?.data);
 
-  // Extract from URL
-  // const supplier_name = slugArr[8] || "";
-  const savedhotel = localStorage.getItem("currentHotel");
-  if (!savedhotel) return null;
-
-  const parsedHotel: any = JSON.parse(savedhotel);
-  const { supplier_name } = parsedHotel;
-  // Get initial values from URL or fallback
-
-
+  // ... Helper functions ...
   const amenityIcons: Record<string, string> = {
     pool: "mdi:pool",
     swimming: "mdi:pool",
@@ -142,11 +151,10 @@ const HotelsDetails = () => {
     spa: "mdi:spa",
     restaurant: "mdi:silverware-fork-knife",
     bar: "mdi:glass-cocktail",
-    wifi: "mdi:wifi", // already present
-    tv: "mdi:television-classic", // ✅ added
-    aircondition: "mdi:air-conditioner", // ✅ added (use lowercase + no space)
-    "air conditioning": "mdi:air-conditioner", // optional: handle this variation too
-
+    wifi: "mdi:wifi",
+    tv: "mdi:television-classic",
+    aircondition: "mdi:air-conditioner",
+    "air conditioning": "mdi:air-conditioner",
     shuttle: "mdi:bus",
     airport: "mdi:airplane",
     non: "mdi:smoke-detector-off",
@@ -162,7 +170,6 @@ const HotelsDetails = () => {
     booking: "mdi:calendar-check",
     board: "mdi:clipboard-list",
   };
-
 
   const getAmenityIcon = (amenity: string): string => {
     const lower = amenity.toLowerCase();
@@ -180,44 +187,28 @@ const HotelsDetails = () => {
     tempDiv.innerHTML = html;
     return tempDiv.textContent || tempDiv.innerText || "";
   };
-  // Add this function to your HotelsDetails component
 
   const handleSuggestionClick = (hotel: any) => {
-    // Get current search parameters from state
     const { checkin, checkout, rooms, adults, children, nationality } = searchParams;
-
-    // Generate URL-friendly hotel name slug
     const hotelNameSlug = hotel.name.toLowerCase().replace(/\s+/g, "-");
-
-    // Construct new URL with updated hotel ID and name, but same search params
     const newUrl = `/hotelDetails/${hotel.id}/${hotelNameSlug}/${checkin}/${checkout}/${rooms}/${adults}/${children}/${nationality}`;
-
-    // Save hotel info to localStorage for supplier_name
     const hotelData = {
       hotel_id: hotel.id,
       name: hotel.name,
-      supplier_name: hotel.supplier_name || supplier_name, // Use existing supplier_name if not provided
-      module: "hotels", // Static module
+      supplier_name: hotel.supplier_name || supplier_name,
+      module: "hotels",
       checkin,
       checkout,
       rooms,
       adults,
       children,
-      nationality
+      nationality,
     };
-
-    localStorage.setItem("currentHotel", JSON.stringify(hotelData));
-
-    // Navigate to new hotel details page
+    if (typeof window !== "undefined") {
+      localStorage.setItem("currentHotel", JSON.stringify(hotelData));
+    }
     router.push(newUrl);
   };
-
-
-
-
-
-  // Update your HotelSuggestionSlider component call to pass the handler:
-  // <HotelSuggestionSlider hotels={featured_hotels} onHotelClick={handleSuggestionClick} />
 
   const getFaqIcon = (question: string) => {
     const lowerQ = question.toLowerCase();
@@ -231,11 +222,19 @@ const HotelsDetails = () => {
     return "mdi:check-circle-outline";
   };
 
+  // ✅ Now safe to conditionally render based on data
+  if (!savedForm || !savedhotel) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-gray-500">{dict?.common?.loading || "Loading..."}</p>
+      </div>
+    );
+  }
 
+
+  // Render logic starts here — safe to use hotelDetails, etc.
   return (
     <div>
-      {/* <RoomOption/> */}
-
       <HotelDetailsSearch
         form={form}
         errors={errors}
@@ -255,15 +254,14 @@ const HotelsDetails = () => {
           <Spinner />
         </div>
       ) : (
-        <SwiperImageSlider testimonials={img} />
+        <SwiperImageSlider testimonials={hotelDetails?.img || []} />
       )}
 
       {/* Description & Amenities Section */}
       <section className="manor&spa py-4 max-w-[1200px] mx-auto appHorizantalSpacing">
         {isLoading ? (
           <div className="grid grid-cols-12 gap-4">
-            {/* Left Column - Description Skeleton */}
-            <div className="lg:col-span-8 col-span-12 ">
+            <div className="lg:col-span-8 col-span-12">
               <h1 className="text-[22px] font-[700] mb-3">{dict?.hotelDetails?.hotelNamePlaceholder}</h1>
               <Skeleton variant="text" width="70%" height={20} className="mb-1" />
               <Skeleton variant="text" width="90%" height={24} className="mb-4" />
@@ -276,8 +274,6 @@ const HotelsDetails = () => {
                 <Skeleton variant="button" width={160} height={32} />
               </div>
             </div>
-
-            {/* Right Column - Amenities Skeleton */}
             <div className="lg:col-span-4 col-span-12 lg:mt-0 mt-6">
               <h1 className="text-[22px] font-[700] mb-3">{dict?.hotelDetails?.aboutThisProperty}</h1>
               <Skeleton variant="text" width="50%" height={28} className="mb-4" />
@@ -293,7 +289,6 @@ const HotelsDetails = () => {
           </div>
         ) : hotelDetails ? (
           <div className="grid grid-cols-12">
-            {/* Left Column: Only show if desc exists */}
             {hotelDetails?.desc && hotelDetails.desc.trim() !== "" && (
               <div className="lg:col-span-8 col-span-12 flex flex-col gap-2 lg:pe-4">
                 <h1 className="text-2xl font-[800]">{hotelDetails?.name}</h1>
@@ -301,7 +296,7 @@ const HotelsDetails = () => {
                 <div className="flex items-center pb-1">
                   <div className="flex items-center pt-1">
                     {Array.from({
-                      length: Math.min(5, Math.floor(Number(hotelDetails?.stars) || 0))
+                      length: Math.min(5, Math.floor(Number(hotelDetails?.stars) || 0)),
                     }).map((_, i) => (
                       <svg
                         key={i}
@@ -315,7 +310,6 @@ const HotelsDetails = () => {
                         <path d="M7 0l2.236 4.894L14 5.528l-3.382 3.578L11.472 14 7 11.618 2.528 14l.854-4.894L0 5.528 4.764 4.894 7 0z" />
                       </svg>
                     ))}
-
                     {hotelDetails?.stars > 0 && hotelDetails?.address && (
                       <span className="pl-2">
                         <svg width="7" height="7" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -323,8 +317,10 @@ const HotelsDetails = () => {
                         </svg>
                       </span>
                     )}
-
-                    <span className="text-md pl-2 font-[500] text-[#9297A0] line-clamp-2 lg:line-clamp-1" title={hotelDetails?.address}>
+                    <span
+                      className="text-md pl-2 font-[500] text-[#9297A0] line-clamp-2 lg:line-clamp-1"
+                      title={hotelDetails?.address}
+                    >
                       {hotelDetails?.address}
                     </span>
                   </div>
@@ -420,49 +416,30 @@ const HotelsDetails = () => {
               </div>
             )}
 
-
-            {/* Right Column: Amenities — show if hotelDetails exists (even if amenities are missing) */}
             {hotelDetails && (
               <div className="lg:col-span-4 col-span-12 lg:mt-0 mt-6 pl-8">
                 <h1 className="text-[22px] font-[700]">{dict?.hotelDetails?.aboutThisProperty}</h1>
-
                 {(() => {
                   const defaultAmenities = ["Free Wi-Fi", "Room Cleaning"];
-
-                  // ✅ Filter out empty or whitespace-only strings
                   const validAmenities = Array.isArray(hotelDetails.amenities)
-                    ? hotelDetails.amenities.filter((item: any) => item && item.trim() !== '')
+                    ? hotelDetails.amenities.filter((item: any) => item && item.trim() !== "")
                     : [];
-
-                  const amenitiesToShow = validAmenities.length > 0
-                    ? validAmenities.slice(0, 4)
-                    : defaultAmenities;
-
+                  const amenitiesToShow = validAmenities.length > 0 ? validAmenities.slice(0, 4) : defaultAmenities;
                   return (
                     <div className="grid grid-cols-2 gap-x-3 gap-y-6 mt-4">
                       {amenitiesToShow.map((amenity: string, idx: number) => (
                         <div key={idx} className="flex gap-3 items-start">
                           <div className="min-w-10 min-h-10 flex items-center justify-center rounded-lg bg-green-100 flex-shrink-0">
-                            <Icon
-                              icon={getAmenityIcon(amenity)}
-                              className="text-gray-700"
-                              width={20}
-                              height={20}
-                            />
-
+                            <Icon icon={getAmenityIcon(amenity)} className="text-gray-700" width={20} height={20} />
                           </div>
-                          <p className="text-base font-[500] text-gray-700 break-words pt-2">
-                            {amenity}
-                          </p>
+                          <p className="text-base font-[500] text-gray-700 break-words pt-2">{amenity}</p>
                         </div>
                       ))}
                     </div>
                   );
                 })()}
-
-                {/* ✅ Show "Show More" only if real, valid amenities > 4 */}
                 {Array.isArray(hotelDetails.amenities) &&
-                  hotelDetails.amenities.filter((item: any) => item && item.trim() !== '').length > 4 && (
+                  hotelDetails.amenities.filter((item: any) => item && item.trim() !== "").length > 4 && (
                     <div className="mt-6 text-center">
                       <button
                         onClick={() => setIsModalOpen(true)}
@@ -474,7 +451,6 @@ const HotelsDetails = () => {
                   )}
               </div>
             )}
-
           </div>
         ) : (
           <div className="col-span-full text-center py-12">
@@ -487,11 +463,9 @@ const HotelsDetails = () => {
 
       {/* Rooms Section */}
       <section className="choose-your-room py-4 max-w-[1200px] mx-auto appHorizantalSpacing">
-        {/* Show heading only when rooms data is available */}
         {hotelDetails?.rooms && hotelDetails.rooms.length > 0 && (
           <h1 className="text-2xl font-[700] my-4">{dict?.hotelDetails?.chooseYourRoom}</h1>
         )}
-
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
@@ -507,15 +481,12 @@ const HotelsDetails = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {hotelDetails.rooms.map((room: any, index: number) => (
               <RoomCard
-
                 key={index}
-
                 room={room}
                 options={""}
                 getAmenityIcon={getAmenityIcon}
                 onReserve={(room, option) => {
                   handleReserveRoom(room, option, hotelDetails);
-                  router.push(`/hotel/booking`);
                 }}
               />
             ))}
@@ -527,7 +498,8 @@ const HotelsDetails = () => {
           </div>
         )}
       </section>
-      {/* Brand Stories — ONLY if data exists */}
+
+      {/* Brand Stories */}
       {hotelDetails?.brand_stories?.length > 0 && (
         <section className="way-to-travel my-10 max-w-[1200px] mx-auto appHorizantalSpacing">
           <h1 className="font-[700] text-2xl my-6">{dict?.hotelDetails?.theToptierWayToTravel}</h1>
@@ -549,7 +521,7 @@ const HotelsDetails = () => {
         </section>
       )}
 
-      {/* Hotel FAQs — ONLY if data exists */}
+      {/* Hotel FAQs */}
       {hotelDetails?.faqs?.some((f: any) => f.category === "hotel_faqs") && (
         <section className="py-4 max-w-[1200px] mx-auto appHorizantalSpacing mb-10">
           <h1 className="text-2xl font-[700] my-4 mb-5">{dict?.hotelDetails?.needToKnowDetails}</h1>
@@ -574,13 +546,12 @@ const HotelsDetails = () => {
         </section>
       )}
 
-      {/* Suggested Hotels — ONLY if featured_hotels has data */}
+      {/* Suggested Hotels */}
       {Array.isArray(featured_hotels) && featured_hotels.length > 0 && (
-        <HotelSuggestionSlider hotels={featured_hotels} onHotelClick={handleSuggestionClick}
-        />
+        <HotelSuggestionSlider hotels={featured_hotels} onHotelClick={handleSuggestionClick} />
       )}
 
-      {/* General FAQs — ONLY if data exists */}
+      {/* General FAQs */}
       {hotelDetails?.faqs?.some((f: any) => f.category === "faqs") && (
         <section className="py-4 max-w-[1200px] mx-auto appHorizantalSpacing mb-10">
           <h1 className="text-2xl font-[700] my-4 mb-5">{dict?.hotelDetails?.frequentlyAskedQuestions}</h1>
@@ -614,8 +585,7 @@ const HotelsDetails = () => {
           <div className="relative bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
             <button
               onClick={() => setIsModalOpen(false)}
-              className={`absolute top-4 cursor-pointer ${document.dir === 'rtl' ? 'left-4' : 'right-4'
-                } text-gray-500 hover:text-gray-700`}
+              className={`absolute top-4 cursor-pointer ${document.dir === "rtl" ? "left-4" : "right-4"} text-gray-500 hover:text-gray-700`}
               aria-label="Close"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -639,6 +609,5 @@ const HotelsDetails = () => {
       )}
     </div>
   );
-}
-
+};
 export default HotelsDetails;

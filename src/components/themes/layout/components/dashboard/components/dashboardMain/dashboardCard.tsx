@@ -10,7 +10,7 @@ type RoomItem = {
 
   [k: string]: unknown;
 };
- 
+
 type BookingCardData = {
   first_name?: string;
   last_name?: string;
@@ -124,12 +124,35 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
           )}
         </div>
 
-        {/* Status Badge */}
-        <div className="absolute top-4 left-4">
-          <span className="bg-green-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
-            {data.booking_status}
-          </span>
-        </div>
+       {/* Status Badge */}
+<div className="absolute top-4 left-4">
+  {(() => {
+    const raw = String(data.booking_status || "").toLowerCase().trim();
+    const status =
+      raw === "canceled" ? "cancelled" : raw; // normalize US→UK spelling
+
+    const color =
+      status === "confirmed"
+        ? "bg-green-600"
+        : status === "pending"
+        ? "bg-orange-600"
+        : status === "cancelled"
+        ? "bg-red-600"
+        : "bg-gray-500";
+
+    const label = status
+      ? status.charAt(0).toUpperCase() + status.slice(1)
+      : "Unknown";
+
+    return (
+      <span
+        className={`${color} text-white text-xs font-semibold px-3 py-1.5 rounded-full ring-1 ring-black/10`}
+      >
+        {label}
+      </span>
+    );
+  })()}
+</div>
 
         {/* Content with dark gradient at bottom (same design) */}
         <div className="absolute bg-gradient-to-b from-transparent via-black to-black bottom-0 left-0 right-0 px-5 py-3 text-white">
@@ -188,11 +211,6 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900">
                   {data.hotel_name}
                 </h3>
-                <p className="text-xs md:text-sm text-gray-600">
-                  <span className="font-medium">Supplier:</span>{" "}
-                  {data.supplier?.toUpperCase?.() || "—"} (
-                  {data.service?.toUpperCase?.() || "—"})
-                </p>
               </div>
 
               <p className="text-gray-600 text-sm md:text-base">

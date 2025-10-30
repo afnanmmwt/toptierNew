@@ -18,6 +18,7 @@
   &.input-lg {
     @apply text-base;
   }
+  
 }
 
 .input-addon {

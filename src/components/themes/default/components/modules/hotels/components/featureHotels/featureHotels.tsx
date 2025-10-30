@@ -341,7 +341,7 @@ const FeaturedHotels: React.FC = () => {
               <button
                 onClick={() => toggleLike(hotel)}
                 className="bg-[#EBEFF4] mr-3 cursor-pointer hover:bg-gray-200 rounded-full transition-all duration-200 flex items-center justify-center flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 lg:w-12 lg:h-12"
-                aria-label={`${hotel.favorite === 1 && user ? "Unlike" : "Like"} ${hotel.name}`}
+                aria-label={`${hotel.favorite === 1 && user ? "Like" : "Unlike"} ${hotel.name}`}
               >
                 <svg
                   className="transition-colors duration-200 w-5 h-5 sm:w-6 sm:h-6 md:w-5 md:h-5 lg:w-5 lg:h-5"

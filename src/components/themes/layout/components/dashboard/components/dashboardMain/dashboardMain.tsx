@@ -22,6 +22,7 @@ type Booking = {
   pnr?: string;
   payment_status?: string;
   booking_status?: string;
+  status?: string;
   name?: string;
   customer_name?: string;
   lead_pax_name?: string;
@@ -35,8 +36,8 @@ type ApiCounts = {
   paid?: number;
   unpaid?: number;
   refunded?: number;
-  canceled?: number;
-  cancelled?: number;
+  canceled?: number; // US
+  cancelled?: number; // UK
 };
 
 type PageResult = {
@@ -51,25 +52,29 @@ type PageResult = {
   [k: string]: any;
 };
 
-export default  function Dashboard() {
-  // ✅ ALL HOOKS MUST BE AT THE TOP — NO EXCEPTIONS
+export default function Dashboard() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const ioBusyRef = useRef(false);
   const lingerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [filters, setFilters] = useState({
+  // Filters: all chips use payment_status; only Cancelled uses booking_status
+  const [filters, setFilters] = useState<{
+    search: string;
+    payment_status: string;
+    booking_status: string;
+  }>({
     search: "",
     payment_status: "",
+    booking_status: "",
   });
   const [searchTerm, setSearchTerm] = useState("");
 
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
+  const { user } = useUser();
   const router = useRouter();
-  const { user, isLoading: userLoading } = useUser();
-  const [isVerifying, setIsVerifying] = useState(true);
- const token =  getAccessToken();
-  // --- Debounce search
+
+  // Debounce search → API
   useEffect(() => {
     const t = setTimeout(() => {
       setFilters((p) => ({ ...p, search: searchTerm }));
@@ -77,48 +82,34 @@ export default  function Dashboard() {
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  // --- Auth redirect logic
+  // Auth guard
   useEffect(() => {
-    if (userLoading) return;
-
-    if (!user) {
-      router.push("/auth/login");
-      return;
-    }
-
-    const handleRedirect = async () => {
+    if (!user) return;
+    (async () => {
       try {
         const verify_response = await verify_token();
-                // console.log("verify_response =============>lkdf ", verify_response);
-
         if (!verify_response?.status) {
           router.push("/auth/login");
           return;
         }
-
-        if (user.user_type === "Agent") {
+        if (user.user_type === "Customer") {
+          router.push("/dashboard");
+        } else if (user.user_type === "Agent") {
           const token = await getAccessToken();
-          const url = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${user.user_id}`;
+          const url = `http://localhost:3001/?token=${encodeURIComponent(
+            token
+          )}&user_id=${user.user_id}`;
           window.location.href = url;
-          return;
+        } else {
+          router.push("/auth/login");
         }
-        // if (user.user_type === "Customer") {
-        //   router.push("/customer");
-        //   return;
-        // }
-
-        setIsVerifying(false);
-      } catch (error) {
-        console.error("Verification failed:", error);
-        console.error("current token", token);
+      } catch {
         router.push("/auth/login");
       }
-    };
+    })();
+  }, [user, router]);
 
-    handleRedirect();
-  }, [user, userLoading, router]);
-
-  // ✅ Now call data-fetching hooks — unconditionally
+  // Server-driven paging + filters (API owns filtering)
   const {
     data,
     isLoading,
@@ -128,15 +119,38 @@ export default  function Dashboard() {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery<PageResult>({
-    queryKey: ["dashboard", filters.search, filters.payment_status, PAGE_SIZE],
+    queryKey: [
+      "dashboard",
+      filters.search,
+      // Important: key depends on which filter is active
+      filters.booking_status === "cancelled"
+        ? "cancelled"
+        : filters.payment_status,
+      PAGE_SIZE,
+    ],
     initialPageParam: 1,
-    queryFn: async ({ pageParam }) => {
+    queryFn: async ({ pageParam }): Promise<PageResult> => {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
-      if (filters.search?.trim()) payload.search = filters.search.trim();
+
+      if (filters.search.trim()) payload.search = filters.search.trim();
+      // If "Cancelled" chip selected -> send booking_status only
+      if (filters.booking_status === "cancelled") {
+        payload.booking_status = "cancelled";
+        // extra compatibility keys if your backend uses a different name
+        payload.status = "cancelled";
+        payload.bookingStatus = "cancelled";
+      } else if (filters.payment_status) {
+        // All other chips -> use payment_status
+        payload.payment_status = filters.payment_status; // "paid" | "unpaid" | "refunded"
+      }
+      // Scope (harmless if ignored by backend)
+      payload.search_scope = "name,reference,booking_id";
+
       const res = await fetch_dashboard_data(payload);
-
-      return { ...res, page: Number(pageParam), limit: PAGE_SIZE };
-
+      const total = Number(
+        (res as any).total_records ?? (res as any).total ?? 0
+      );
+      return { ...res, page: Number(pageParam), limit: PAGE_SIZE, total };
     },
     getNextPageParam: (last) => {
       const total = Number(last.total ?? 0);
@@ -153,9 +167,8 @@ export default  function Dashboard() {
   const pages = data?.pages || [];
   const bookings: Booking[] = pages.flatMap((p) => p?.data || []);
 
+  // Local search ONLY (statuses handled by API)
   const norm = (v?: any) => (v == null ? "" : String(v).toLowerCase());
-
-  // ✅ Define makeCardName BEFORE useMemo
   const makeCardName = (b: Booking) => {
     const name =
       b.name ??
@@ -164,7 +177,6 @@ export default  function Dashboard() {
       [b.first_name, b.last_name].filter(Boolean).join(" ");
     return norm(name);
   };
-
   const searchNeedle = norm(filters.search);
 
   const visibleBookings = useMemo(() => {
@@ -175,8 +187,9 @@ export default  function Dashboard() {
       const byId = norm(b.booking_id).includes(searchNeedle);
       return byName || byRef || byId;
     });
-  }, [bookings, searchNeedle, makeCardName]); // ✅ include makeCardName
+  }, [bookings, searchNeedle]);
 
+  // Counts from API (first page)
   const firstPage = pages[0] as PageResult | undefined;
   const countsFromApi = (firstPage?.counts ?? {}) as ApiCounts;
   const cancelledCount = countsFromApi.canceled ?? countsFromApi.cancelled ?? 0;
@@ -185,15 +198,15 @@ export default  function Dashboard() {
     (countsFromApi.paid ?? 0) +
       (countsFromApi.unpaid ?? 0) +
       (countsFromApi.refunded ?? 0) +
-      (cancelledCount ?? 0);
+      cancelledCount;
 
+  // Profile
   const { data: cartResults } = useQuery({
     queryKey: ["profile"],
     queryFn: get_profile,
     staleTime: Infinity,
     gcTime: Infinity,
   });
-
   const {
     total_bookings = "0",
     pending_bookings = "0",
@@ -202,7 +215,7 @@ export default  function Dashboard() {
     last_name = "",
   } = cartResults?.data?.[0] || {};
 
-  // IO sentinel
+  // Infinite scroll sentinel
   useEffect(() => {
     if (!sentinelRef.current) return;
     const node = sentinelRef.current;
@@ -219,7 +232,6 @@ export default  function Dashboard() {
         }
       }, 700);
     };
-
     const onLeave = () => {
       if (lingerTimerRef.current) {
         clearTimeout(lingerTimerRef.current);
@@ -242,20 +254,6 @@ export default  function Dashboard() {
       onLeave();
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  // ✅ NOW it's safe to have early return
-  if (userLoading || isVerifying) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="flex flex-col gap-2">
-          <div className="animate-spin rounded-full h-7 w-7 border-b-2 border-blue-900"></div>
-          <h2 className="text-xl">Redirecting...</h2>
-        </div>
-      </div>
-    );
-  }
-
-
 
   return (
     <div className="w-full max-w-[1200px] mx-auto bg-gray-50 py-4 md:py-10 appHorizantalSpacing">
@@ -296,45 +294,71 @@ export default  function Dashboard() {
               {
                 label: dict?.dashboard?.all || "All",
                 value: "",
+                type: "payment" as const,
                 count: totalAll || 0,
               },
               {
                 label: dict?.dashboard?.paid || "Paid",
                 value: "paid",
+                type: "payment" as const,
                 count: countsFromApi.paid ?? 0,
               },
               {
                 label: dict?.dashboard?.unpaid || "Unpaid",
                 value: "unpaid",
+                type: "payment" as const,
                 count: countsFromApi.unpaid ?? 0,
               },
               {
                 label: dict?.dashboard?.refunded || "Refunded",
                 value: "refunded",
+                type: "payment" as const,
                 count: countsFromApi.refunded ?? 0,
               },
+              // Cancelled = booking_status based
               {
                 label: dict?.dashboard?.cancelled || "Cancelled",
                 value: "cancelled",
+                type: "booking" as const,
                 count: cancelledCount ?? 0,
               },
-            ].map((o) => (
-              <button
-                key={o.value || "all"}
-                onClick={() =>
-                  setFilters((prev) => ({ ...prev, payment_status: o.value }))
-                }
-                className={`px-4 py-1.5 text-xs rounded-xl border transition-colors cursor-pointer ${
-                  filters.payment_status === o.value
-                    ? "bg-blue-900 text-white border-blue-900"
-                    : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-100"
-                }`}
-              >
-                <span className="text-sm">
-                  {o.label} ({o.count})
-                </span>
-              </button>
-            ))}
+            ].map((o) => {
+              const isActive =
+                o.type === "payment"
+                  ? filters.booking_status === "" &&
+                    filters.payment_status === o.value
+                  : filters.booking_status === "cancelled";
+
+              return (
+                <button
+                  key={`${o.type}-${o.value || "all"}`}
+                  onClick={() =>
+                    setFilters((prev) =>
+                      o.type === "payment"
+                        ? {
+                            ...prev,
+                            payment_status: o.value,
+                            booking_status: "",
+                          }
+                        : {
+                            ...prev,
+                            booking_status: "cancelled",
+                            payment_status: "",
+                          }
+                    )
+                  }
+                  className={`px-4 py-1.5 text-xs rounded-xl border transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-blue-900 text-white border-blue-900"
+                      : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-100"
+                  }`}
+                >
+                  <span className="text-sm">
+                    {o.label} ({o.count})
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           <input
@@ -382,7 +406,7 @@ export default  function Dashboard() {
                     <div className="flex gap-4 justify-center py-6">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-3 border-blue-900"></div>
                       <div className="text-blue-900 text-xl font-bold">
-                        {dict?.featured_hotels?.loading || "Loading..."}
+                        Loading
                       </div>
                     </div>
                   )}
@@ -421,7 +445,6 @@ export default  function Dashboard() {
     </div>
   );
 }
-
 //  Reusable Stat Card (unchanged)
 function StatCard({
   label,

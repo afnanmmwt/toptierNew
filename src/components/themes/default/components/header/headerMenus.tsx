@@ -149,10 +149,15 @@ const HeaderMenus = () => {
 
             <button
               onClick={() => (window.location.href = "/auth/login")}
-              className=" bg-[#163C8C] cursor-pointer hover:bg-gray-800 text-white
-                               py-2.5 px-10 text-sm sm:text-base md:text-sm lg:text-sm
-                               rounded-full transition-colors duration-200"
+              className={`
+    bg-[#163C8C] cursor-pointer hover:bg-gray-800 text-white
+    py-2.5 px-10 text-sm sm:text-base md:text-sm lg:text-sm
+    rounded-full transition-colors duration-200 
+    whitespace-nowrap
+    ${locale === "ar" ? "text-right rtl" : "text-center"}
+  `}
               style={{ fontFamily: "Inter, sans-serif" }}
+              dir={locale === "ar" ? "rtl" : "ltr"}
             >
               {dict?.header?.login || "Login"}
             </button>

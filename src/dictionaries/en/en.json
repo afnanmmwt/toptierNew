@@ -126,8 +126,8 @@
     "agents": "Agents",
     "customers": "Customers",
     "myprofile": "My Profile",
-    "dashboard":"Dashboard",
-    "logout":"Logout"
+    "dashboard": "Dashboard",
+    "logout": "Logout"
   },
   "footer": {
     "subheading": "Unlock extraordinary stays with our expert-curated hotels and exclusive access to the world's finest destinations.",
@@ -435,7 +435,7 @@
     "date": "Date",
     "price": "Price",
     "no_bookings_found": "No bookings found.",
-    "no_more_results":"You’re all caught up.",
+    "no_more_results": "You’re all caught up.",
     "showing": "Showing",
     "of": "of",
     "entries": "entries",
@@ -488,7 +488,7 @@
     "children": "Children",
     "bookNow": "Book Now"
   },
-   "modal": {
+  "modal": {
     "hotelImageAlt": "Hotel image",
     "noImagePlaceholder": "No Image",
     "supplierLabel": "Supplier:",
@@ -518,30 +518,38 @@
     "closeButton": "Close",
     "invoiceReferenceNotFound": "Invoice reference not found"
   },
-  "dashboardCard":{
+  "dashboardCard": {
     "noimage": "No Image",
     "moredetails": "More Details",
     "upplier": "Supplier",
     "bookingdetails": "Booking Details",
     "bookingreference": "Booking reference",
-    "bookingstatus":"Booking status",
+    "bookingstatus": "Booking status",
     "paymentstatus": "Payment status",
-    "checkin":"Check-in",
+    "checkin": "Check-in",
     "checkout": "Check-out",
     "guestdetails": "Guest Details",
-    "noguest":"No guest data available.",
+    "noguest": "No guest data available.",
     "name": "Name",
     "type": "Type",
-    "adults" : "Adults",
+    "adults": "Adults",
     "age": "Age",
-    "otherguests" :"Other Guests",
-    "roomdetails":"Room Details",
-    "roomname":"Room name",
-    "roomprice":"Room price",
-    "roomqaunitity":"Room qaunitity",
-    "childs":"Childs",
-    "invoice":"Invoice",
-    "close":"Close",
-    "invoicenotfound":"Invoice reference not found"
+    "otherguests": "Other Guests",
+    "roomdetails": "Room Details",
+    "roomname": "Room name",
+    "roomprice": "Room price",
+    "roomqaunitity": "Room qaunitity",
+    "childs": "Childs",
+    "invoice": "Invoice",
+    "close": "Close",
+    "invoicenotfound": "Invoice reference not found"
+  },
+  "headermodule": {
+    "hotels": "Hotelsssssss",
+    "flights": "Flights",
+    "tours": "Tours",
+    "cars": "Cars",
+    "visa": "Visa",
+    "extra": "Blog"
   }
 }

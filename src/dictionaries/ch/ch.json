@@ -543,5 +543,13 @@
     "invoice": "发票",
     "close": "关闭",
     "invoicenotfound": "未找到发票参考号"
+  },
+  "headermodule": {
+    "hotels": "酒店",
+    "flights": "航班",
+    "tours": "旅游",
+    "cars": "租车",
+    "visa": "签证",
+    "extra": "博客"
   }
 }

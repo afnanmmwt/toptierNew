@@ -16,7 +16,6 @@ export async function getHeaders(contentType: string = "application/x-www-form-u
   const headers: Record<string, string> = {
     Accept: "application/json",
     // Authorization: `Bearer ${token}`,
-
   };
   if (contentType) {
     headers["Content-Type"] = contentType;

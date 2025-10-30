@@ -4,6 +4,7 @@ import { getDictionary } from '@src/get-dictionary'
 import React from 'react'
 import { Metadata } from 'next/types'
 import PageTransition from '@src/utils/pageTransition';
+import { logout } from '@lib/session';
 
 export const metadata = { title: `Auth | Login` } satisfies Metadata;
 export default async function Page({ params }: {
@@ -11,6 +12,7 @@ export default async function Page({ params }: {
 }) {
     const { lang } = await params
     const dict = await getDictionary(lang)
+// await logout();
     return (
         <PageTransition>
             <Login dict={dict} />

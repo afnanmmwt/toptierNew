@@ -36,8 +36,8 @@ type ApiCounts = {
   paid?: number;
   unpaid?: number;
   refunded?: number;
-  canceled?: number; // US
-  cancelled?: number; // UK
+  canceled?: number;
+  cancelled?: number;
 };
 
 type PageResult = {
@@ -96,7 +96,7 @@ export default function Dashboard() {
           router.push("/dashboard");
         } else if (user.user_type === "Agent") {
           const token = await getAccessToken();
-          const url = `http://localhost:3001/?token=${encodeURIComponent(
+          const url = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(
             token
           )}&user_id=${user.user_id}`;
           window.location.href = url;
@@ -122,7 +122,6 @@ export default function Dashboard() {
     queryKey: [
       "dashboard",
       filters.search,
-      // Important: key depends on which filter is active
       filters.booking_status === "cancelled"
         ? "cancelled"
         : filters.payment_status,
@@ -133,17 +132,17 @@ export default function Dashboard() {
       const payload: any = { page: pageParam, limit: PAGE_SIZE };
 
       if (filters.search.trim()) payload.search = filters.search.trim();
+
       // If "Cancelled" chip selected -> send booking_status only
       if (filters.booking_status === "cancelled") {
         payload.booking_status = "cancelled";
-        // extra compatibility keys if your backend uses a different name
         payload.status = "cancelled";
         payload.bookingStatus = "cancelled";
       } else if (filters.payment_status) {
         // All other chips -> use payment_status
-        payload.payment_status = filters.payment_status; // "paid" | "unpaid" | "refunded"
+        payload.payment_status = filters.payment_status;
       }
-      // Scope (harmless if ignored by backend)
+
       payload.search_scope = "name,reference,booking_id";
 
       const res = await fetch_dashboard_data(payload);
@@ -167,27 +166,12 @@ export default function Dashboard() {
   const pages = data?.pages || [];
   const bookings: Booking[] = pages.flatMap((p) => p?.data || []);
 
-  // Local search ONLY (statuses handled by API)
-  const norm = (v?: any) => (v == null ? "" : String(v).toLowerCase());
-  const makeCardName = (b: Booking) => {
-    const name =
-      b.name ??
-      b.customer_name ??
-      b.lead_pax_name ??
-      [b.first_name, b.last_name].filter(Boolean).join(" ");
-    return norm(name);
-  };
-  const searchNeedle = norm(filters.search);
+  console.log('✅ Bookings from API:', bookings);
+  console.log('🔍 Current search filter:', filters.search);
 
-  const visibleBookings = useMemo(() => {
-    if (!searchNeedle) return bookings;
-    return bookings.filter((b) => {
-      const byName = makeCardName(b).includes(searchNeedle);
-      const byRef = norm(b.reference).includes(searchNeedle);
-      const byId = norm(b.booking_id).includes(searchNeedle);
-      return byName || byRef || byId;
-    });
-  }, [bookings, searchNeedle]);
+  // ✅ FIX: Remove frontend filtering - API already handles search
+  // Since the backend filters by search, we should display all returned bookings
+  const visibleBookings = bookings;
 
   // Counts from API (first page)
   const firstPage = pages[0] as PageResult | undefined;
@@ -207,6 +191,7 @@ export default function Dashboard() {
     staleTime: Infinity,
     gcTime: Infinity,
   });
+
   const {
     total_bookings = "0",
     pending_bookings = "0",
@@ -232,6 +217,7 @@ export default function Dashboard() {
         }
       }, 700);
     };
+
     const onLeave = () => {
       if (lingerTimerRef.current) {
         clearTimeout(lingerTimerRef.current);

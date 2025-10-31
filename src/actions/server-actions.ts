@@ -1004,6 +1004,7 @@ page : string;
 limit : string ;
 search : string ;
 payment_status: string;
+booking_status:string ;
 }
 export const fetch_dashboard_data = async (payload: dashboardPayload) => {
   try {
@@ -1020,6 +1021,7 @@ export const fetch_dashboard_data = async (payload: dashboardPayload) => {
     formData.append("search", payload.search ?? "");
     formData.append("payment_status", payload.payment_status ?? "");
     formData.append("type", "customer");
+    formData.append('booking_status', payload.booking_status ==="cancelled" ? "cancelled" : "")
     const response = await fetch(`${baseUrl}/user_bookings`, {
       method: "POST",
       body: formData,
@@ -1027,8 +1029,9 @@ export const fetch_dashboard_data = async (payload: dashboardPayload) => {
         Accept: "application/json, text/plain, */*",
       },
     });
+    console.log('booking paylaod ', formData)
     const data = await response.json().catch(() => null);
-
+    console.log('booking data',data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

@@ -55,7 +55,6 @@ export async function createSession(user: any) {
 }
 
 export async function logout() {
-
   (await cookies()).set("access-token", "", { expires: new Date(0) });
 
 }

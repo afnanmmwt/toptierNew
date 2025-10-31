@@ -2,7 +2,7 @@
 "use client";
 
 import { useFormState } from "react-dom";
-import { useFormStatus } from "react-dom"; // ✅ for loading
+import { useFormStatus } from "react-dom"; // ✅ for loading state
 import { useRouter, useParams } from "next/navigation";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
@@ -15,22 +15,20 @@ import Checkbox from "@components/core/checkbox";
 import { signIn, SignInState } from "@src/actions";
 import { Icon } from "@iconify/react";
 
-// ✅ Loading Button Component (required for useFormStatus)
-function SubmitButton({ dict, isDarkMode }: { dict?: any; isDarkMode?: boolean }) {
-  const { pending } = useFormStatus(); // ✅ true while Server Action is running
+// ✅ Submit Button with Loading Spinner
+function LoginSubmitButton({ dict }: { dict?: any }) {
+  const { pending } = useFormStatus(); // true while Server Action is running
 
   return (
     <Button
       size="lg"
       type="submit"
       disabled={pending}
-      className={`w-full bg-blue-900 mt-7 text-white hover:bg-gray-900 hover:text-white border-none hover:border-none flex gap-2 justify-center rounded-lg py-3 font-medium ${
-        isDarkMode ? "hover:bg-gray-600" : "hover:bg-[#101828]"
-      }`}
+      className="w-full bg-blue-900 mt-7 hover:text-white text-white hover:bg-[#101828] border-none rounded-lg py-3 font-medium flex items-center justify-center gap-2"
     >
       {pending ? (
         <>
-          <Icon icon="line-md:loading-twotone-loop" width="24" height="24" />
+          <Icon icon="line-md:loading-twotone-loop" width="20" height="20" className="animate-spin" />
           <span>{dict?.login_form?.logging_in || "Logging in..."}</span>
         </>
       ) : (
@@ -48,17 +46,7 @@ const Login = ({ dict }: { dict?: any }) => {
   const initialState: SignInState = { success: false, error: '' };
   const [state, formAction] = useFormState(signIn, initialState);
 
-  // Clear token on mount if needed (optional)
-  useEffect(() => {
-    const clearAccessToken = () => {
-      document.cookie =
-        "access-token=; path=/; domain=.toptiertravel.vip; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    };
-    // Only clear if you're sure — usually not needed on login page
-    // clearAccessToken();
-  }, []);
-
-  // Handle post-login logic
+  // Handle post-login redirect
   useEffect(() => {
     if (state.success) {
       toast.success(dict?.login_form?.success_message || "Login successful!");
@@ -81,7 +69,7 @@ const Login = ({ dict }: { dict?: any }) => {
     }
   }, [state, router, lang, dict, checkSession]);
 
-  // ✅ Safely render error only when success: false
+  // Safely extract error (only when success: false)
   const errorMessage = !state.success ? state.error : null;
 
   return (
@@ -144,8 +132,8 @@ const Login = ({ dict }: { dict?: any }) => {
               </Link>
             </div>
 
-            {/* ✅ Use SubmitButton with loading */}
-            <SubmitButton dict={dict} />
+            {/* ✅ Button with spinner */}
+            <LoginSubmitButton dict={dict} />
           </form>
         </div>
       </div>

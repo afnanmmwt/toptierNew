@@ -22,7 +22,8 @@ export default function BookingDetails() {
   const router = useRouter();
   const { priceRateConverssion } = useCurrency();
   const { user } = useUser();
- const user_type = user?.user_type ?? "";    //  Step 3: safely extract
+  const user_type = user?.user_type ?? ""; //  Step 3: safely extract
+  const isAgent = user_type !== "Customer"; // Agent/Admin => true
 
   const { hotelDetails, room, option } = selectedRoom || {};
   const { locale } = useLocale();
@@ -196,41 +197,53 @@ export default function BookingDetails() {
                     : ""}
                 </span>
               </div>
-               <div className="flex justify-between items-center">
+
+              {/* Quantity */}
+              <div className="flex justify-between items-center">
                 <span className="text-gray-600">
                   {dict?.bookingDetails?.roomQuantity}
                 </span>
-               <input
-  type="number"
-  value={quantity}
-  onChange={(e) => handleQuantityChange(e.target.value)}
-  className={`block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] text-center ${
-    user_type === "Customer" ? "bg-gray-100 cursor-not-allowed opacity-70" : ""
-  }`}
-  inputMode="decimal"
-  disabled={user_type === "Customer" } //
-/>
 
+                {isAgent ? (
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => handleQuantityChange(e.target.value)}
+                    className="block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] text-center"
+                    inputMode="numeric"
+                  />
+                ) : (
+                  <span className="text-gray-900">{quantity ?? 0}</span>
+                )}
               </div>
+
+              {/* Price */}
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">
                   {dict?.bookingDetails?.roomPrice}
                 </span>
-                <div className="flex items-center gap-2">
-                  <span>{getCurrencySymbol(currency)}</span>
-                 <input
-  type="text"
-  value={roomPrice}
-  onChange={(e) => handleRoomPriceChange(e.target.value)}
-  className={`block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] ${
-    user_type === "Customer" ? "bg-gray-100 cursor-not-allowed opacity-70" : ""
-  }`}
-  inputMode="decimal"
-  disabled={user_type === "Customer"} // ✅ disable if Customer
-/>
 
-                </div>
+                {isAgent ? (
+                  <div className="flex items-center gap-2">
+                    <span>{getCurrencySymbol(currency)}</span>
+                    <input
+                      type="text"
+                      value={roomPrice}
+                      onChange={(e) => handleRoomPriceChange(e.target.value)}
+                      className="block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C]"
+                      inputMode="decimal"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <span>{getCurrencySymbol(currency)}</span>
+                    <span className="text-gray-900">
+                      {Number(roomPrice || 0).toLocaleString()}
+                    </span>
+                  </div>
+                )}
               </div>
+
               <div className="flex justify-between items-center border-t border-gray-300 pt-3 mt-2">
                 <span className="text-lg font-semibold text-[#0F172B]">
                   {dict?.bookingDetails?.total}

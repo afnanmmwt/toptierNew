@@ -273,6 +273,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       flex-wrap: wrap !important;
       gap: 10px !important;
       margin-top: 5px !important;
+      
     }
 
     .pdf-rendering .bookingInfoItem {
@@ -408,7 +409,8 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       gap: 8px !important;
       border: 1px solid #e5e7eb !important;
       border-radius: 4px !important;
-      padding: 8px !important;
+      padding-bottom: 13px !important;
+      padding-left: 8px !important;
     }
 
     .pdf-rendering .bookingItem {
@@ -438,7 +440,8 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       font-size: 11px !important;
       font-weight: 700 !important;
       color: #374151 !important;
-      margin-bottom: 6px !important;
+      margin-bottom: 12px !important;
+      padding-bottom: 8px !important;
       text-transform: uppercase !important;
     }
 
@@ -459,7 +462,9 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
 
     .pdf-rendering .tableCell {
       text-align: left !important;
-      padding: 6px !important;
+      padding-left: 8px !important;
+      padding-top: 5px !important;
+      padding-bottom: 13px !important;
       font-weight: 600 !important;
       color: #4b5563 !important;
     }
@@ -526,7 +531,9 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     .pdf-rendering .roomSection {
       border: 1px solid #e5e7eb !important;
       border-radius: 4px !important;
-      padding: 8px !important;
+      padding-top: 5px !important;
+      padding-bottom: 6px !important;
+      padding-left: 8px !important;
     }
 
     .pdf-rendering .roomTitle {
@@ -535,7 +542,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       color: #1f2937 !important;
       margin-bottom: 6px !important;
       border-bottom: 1px solid #e5e7eb !important;
-      padding-bottom: 6px !important;
+      padding-bottom: 15px !important;
     }
 
     .pdf-rendering .roomTable {
@@ -549,8 +556,8 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
 
     .pdf-rendering .roomCell {
       font-weight: 600 !important;
-      padding-top: 6px !important;
-      padding-bottom: 6px !important;
+      padding-top: 4px !important;
+      padding-bottom: 15px !important;
       padding-right: 8px !important;
     }
 
@@ -573,29 +580,30 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     .pdf-rendering .rateCommentList {
       border: 1px solid #e5e7eb !important;
       border-radius: 4px !important;
-      margin-bottom: 6px !important;
+      margin-bottom: px !important;
     }
 
     .pdf-rendering .rateCommentItem {
-      padding: 6px !important;
-      border-bottom: 1px solid #e5e7eb !important;
+      padding-bottom: 12px !important;
+      padding-left: 7px !important;
+     
     }
 
-    .pdf-rendering .rateCommentItem:last-child {
-      border-bottom: none !important;
-    }
+
 
     .pdf-rendering .taxRow {
       display: flex !important;
       justify-content: space-between !important;
       align-items: center !important;
-      padding: 6px !important;
+      padding: 0px 6px 13px 6px !important;
+      
       background: #f9fafb !important;
       border-radius: 3px !important;
       margin-bottom: 6px !important;
     }
 
     .pdf-rendering .taxLabel {
+    
       font-size: 11px !important;
       font-weight: 600 !important;
     }
@@ -604,7 +612,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       display: flex !important;
       justify-content: space-between !important;
       align-items: center !important;
-      padding: 6px !important;
+       padding: 0px 6px 13px 6px !important;
       background: #f3f4f6 !important;
       border-radius: 3px !important;
     }
@@ -623,7 +631,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     .pdf-rendering .customerCard {
       border: 1px solid #e5e7eb !important;
       background: #f9fafb !important;
-      padding: 8px !important;
+      padding: 4px 8px 17px 8px !important;
       border-radius: 4px !important;
     }
 
@@ -775,7 +783,8 @@ View Invoice: ${invoiceUrl}`;
                   {dict?.hotelInvoice?.header?.paymentStatus}
                 </span>
                 <span className="paymentStatus">
-                {bookingData.paymentStatus.charAt(0).toUpperCase() + bookingData.paymentStatus.slice(1)}
+                  {bookingData.paymentStatus.charAt(0).toUpperCase() +
+                    bookingData.paymentStatus.slice(1)}
                 </span>
               </div>
               <div>
@@ -783,8 +792,8 @@ View Invoice: ${invoiceUrl}`;
                   {dict?.hotelInvoice?.header?.bookingStatus}
                 </span>
                 <span className="bookingStatus">
-
-                   {bookingData.bookingStatus.charAt(0).toUpperCase() + bookingData.bookingStatus.slice(1)}
+                  {bookingData.bookingStatus.charAt(0).toUpperCase() +
+                    bookingData.bookingStatus.slice(1)}
                 </span>
               </div>
               <div className="contactInfo">
@@ -1050,10 +1059,10 @@ View Invoice: ${invoiceUrl}`;
                   <td className="roomCell">{bookingData.room.quantity}</td>
                 </tr>
                 <tr>
+                  <td className="roomCell">{dict?.modal?.roomPriceLabel}</td>
                   <td className="roomCell">
-                    {dict?.modal?.roomPriceLabel}
+                    {bookingData.room.currency} {bookingData.room.price}
                   </td>
-                  <td className="roomCell">{bookingData.room.currency}    {bookingData.room.price}</td>
                 </tr>
               </tbody>
             </table>
@@ -1190,7 +1199,9 @@ View Invoice: ${invoiceUrl}`;
                 width="20"
                 height="20"
               />
-              <span>{dict?.featured_hotels?.cancelling || "جارٍ الإلغاء..."}</span>
+              <span>
+                {dict?.featured_hotels?.cancelling || "جارٍ الإلغاء..."}
+              </span>
             </>
           ) : (
             <>

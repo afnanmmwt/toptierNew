@@ -12,7 +12,8 @@ export default async function Page({ params }: {
 }) {
     const { lang } = await params
     const dict = await getDictionary(lang)
-// await logout();
+
+// kfsdla
     return (
         <PageTransition>
             <Login dict={dict} />
@@ -20,4 +21,4 @@ export default async function Page({ params }: {
 
     )
 }
-export const dynamic = 'force-dynamic'
+// export const dynamic = 'force-dynamic'

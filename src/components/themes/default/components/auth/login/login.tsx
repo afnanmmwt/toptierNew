@@ -15,39 +15,32 @@ import Link from "next/link";
 import { toast } from 'react-toastify';
 import useDirection from "@hooks/useDirection";
 import { useFormState } from "react-dom";
-import { signIn, SignInState } from "@src/actions"; // ✅ Import Server Action
-
+import { signIn, SignInState } from "@src/actions"; //  Import Server Action
 const Login = ({ dict }: { dict?: any }) => {
   const { lang } = useParams();
   const router = useRouter();
   const [direction] = useDirection();
   const [isDarkMode] = useDarkMode();
   const { checkSession } = useUser();
-
   // Zod schema (use dict messages if available)
   const schema = z.object({
     email: z.string().min(1, { message: dict?.login_form?.email_message || "Email is required" }).email(),
     password: z.string().min(6, { message: dict?.login_form?.password_message || "Password must be at least 6 characters" }),
     keep_logged_in: z.boolean().optional(),
   });
-
   type Values = z.infer<typeof schema>;
   const defaultValues = { email: '', password: '', keep_logged_in: false } satisfies Values;
-
   const {
     control,
     handleSubmit,
     setError,
     formState: { errors },
   } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
-
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  // ✅ useFormState
+  //  useFormState
   const initialState: SignInState = { success: false, error: '' };
   const [state, formAction] = useFormState(signIn, initialState);
-
   // Handle result of Server Action
   useEffect(() => {
     if (state.success) {
@@ -60,7 +53,6 @@ const Login = ({ dict }: { dict?: any }) => {
       setLoading(false);
     }
   }, [state, router, setError, dict, lang, checkSession]);
-
   // Client validation only — then submit hidden form
   const onSubmit = useCallback(
     async (values: Values) => {
@@ -74,7 +66,6 @@ const Login = ({ dict }: { dict?: any }) => {
     },
     []
   );
-
   return (
     <div className="relative w-full flex flex-col justify-between items-center h-full border-t border-gray-300">
       <div className="w-full flex items-center justify-center p-6 lg:p-8 bg-white dark:bg-gray-800">
@@ -90,7 +81,6 @@ const Login = ({ dict }: { dict?: any }) => {
               </Link>
             </p>
           </div>
-
           {/* Visible form with validation */}
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {errors.root && (
@@ -98,10 +88,9 @@ const Login = ({ dict }: { dict?: any }) => {
                 {errors.root.message}
               </Alert>
             )}
-
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-1">
                 {dict?.login_form?.email || "Email *"}
               </label>
               <Controller
@@ -119,16 +108,15 @@ const Login = ({ dict }: { dict?: any }) => {
                 )}
               />
               {errors.email && (
-                <div className="text-red-500 flex items-center gap-1 text-xs">
+                <div className="text-red-500 flex items-center gap-1 text-xs pt-1 mb-3">
                   <Icon icon="mdi:warning-circle" width="15" height="15" />
                   <span>{errors.email.message}</span>
                 </div>
               )}
             </div>
-
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-100 mb-1 mt-6">
                 {dict?.login_form?.password || "Password *"}
               </label>
               <Controller
@@ -154,14 +142,13 @@ const Login = ({ dict }: { dict?: any }) => {
                 )}
               />
               {errors.password && (
-                <div className="text-red-500 flex items-center gap-1 text-xs">
+                <div className="text-red-500 flex items-center gap-1 pt-1 mb-4 text-xs">
                   <Icon icon="mdi:warning-circle" width="15" height="15" />
                   <span>{errors.password.message}</span>
                 </div>
               )}
             </div>
-
-            <div className="flex items-center justify-between mt-2.5">
+            <div className="flex items-center justify-between mt-8">
               <Controller
                 name="keep_logged_in"
                 control={control}
@@ -175,28 +162,21 @@ const Login = ({ dict }: { dict?: any }) => {
                   />
                 )}
               />
-              <Link href={`/${lang}/auth/forget-password`} className="text-blue-900 hover:text-blue-800 font-medium">
-                <span className="text-blue-900 dark:text-blue-100 hover:text-blue-600 text-sm">
+              <Link href={`/${lang}/auth/forget-password`} className="text-blue-950 hover:text-blue-900 font-medium">
+                <span className="text-blue-900 dark:text-blue-100 hover:text-blue-900 text-sm">
                   {dict?.login_form?.forgot_password || "Forgot Password?"}
                 </span>
               </Link>
             </div>
-
-            <Button
-              size="lg"
-              disabled={loading}
-              className={`w-full bg-blue-900 text-white hover:bg-blue-800 ...`}
-              type="submit"
-            >
-              {loading ? (
-                <Icon icon="line-md:loading-twotone-loop" width="24" height="24" />
-              ) : (
-                <span>{dict?.login_form?.login_button || "Login"}</span>
-              )}
+             <Button size="lg"
+              {...(loading && {
+                icon: <Icon icon="line-md:loading-twotone-loop" width="24" height="24" />
+              })}
+              disabled={loading} className={`w-full bg-blue-900 mt-7 text-white hover:bg-gray-900 hover:text-white border-none hover:border-none flex gap-2 justify-center rounded-lg py-3 font-medium  ${isDarkMode ? "hover:bg-gray-600" : "hover:bg-[#101828]"}`} type="submit">
+              <span>{dict?.login_form?.login_button || "Login"}</span>
             </Button>
           </form>
-
-          {/* ✅ Hidden form to trigger Server Action */}
+          {/*  Hidden form to trigger Server Action */}
           <form id="hidden-login-form" action={formAction} className="hidden">
             <input name="email" defaultValue="" />
             <input name="password" defaultValue="" />
@@ -207,5 +187,4 @@ const Login = ({ dict }: { dict?: any }) => {
     </div>
   );
 };
-
 export default Login;

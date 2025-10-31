@@ -163,7 +163,7 @@ const handleProfiledClick =async() =>{
                   className="flex items-center w-full cursor-pointer gap-3 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg transition"
                 >
                   <Image
-                    src="https://images.unsplash.com/photo-1633332755192-727a05c4013d"
+                  src={defaultImage as string}
                     alt="User Avatar"
                     width={28}
                     height={28}

@@ -13,7 +13,7 @@ import { useAppSelector } from "@lib/redux/store";
 const HeaderMenus = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUser();
-
+ console.log('sessionn user',user)
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any) as any;
 
@@ -152,7 +152,7 @@ const HeaderMenus = () => {
               className={`
     bg-[#163C8C] cursor-pointer hover:bg-gray-800 text-white
     py-2.5 px-10 text-sm sm:text-base md:text-sm lg:text-sm
-    rounded-full transition-colors duration-200 
+    rounded-full transition-colors duration-200
     whitespace-nowrap
     ${locale === "ar" ? "text-right rtl" : "text-center"}
   `}

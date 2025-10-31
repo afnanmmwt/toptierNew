@@ -171,15 +171,15 @@ export default function CustomerProfile() {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="bg-gray-50 flex justify-center items-center min-h-screen">
-      <p className="text-gray-600">
-        {dict?.profilemessages?.loginRequired || "Please log in to view your profile."}
-      </p>
-    </div>
-  );
-}
+//   if (!user) {
+//     return (
+//       <div className="bg-gray-50 flex justify-center items-center min-h-screen">
+//       <p className="text-gray-600">
+//         {dict?.profilemessages?.loginRequired || "Please log in to view your profile."}
+//       </p>
+//     </div>
+//   );
+// }
 
 
 

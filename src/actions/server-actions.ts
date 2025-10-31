@@ -6,6 +6,7 @@ import { cookies, headers } from "next/headers";
 import { userInfo } from "os";
 import { z } from 'zod';
 import { json } from "stream/consumers";
+import { redirect } from "next/navigation";
 // console.log("base",baseUrl);
 
 
@@ -278,13 +279,15 @@ export const sign_up = async (signUpData: {
 
 
 
+
+
 const signInSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
 });
 
 export type SignInState =
-  | { success: true }
+  | { success: true; userType?: string; userId?: string }
   | { success: false; error: string };
 
 export async function signIn(
@@ -295,34 +298,42 @@ export async function signIn(
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
-    // Validate
+    // ✅ Validate input first
     signInSchema.parse({ email, password });
-
-    // Call your API
-
 
     const body = new FormData();
     body.append('email', email);
     body.append('password', password);
     if (api_key) body.append('api_key', api_key);
 
+    // ✅ Call backend
     const response = await fetch(`${baseUrl}/login`, {
       method: 'POST',
       body,
     });
 
     const data = await response.json();
+    console.log('Login response:', data);
 
+    // ✅ Check if login actually succeeded
     if (!response.ok || data?.status === false) {
       return { success: false, error: data?.message || 'Invalid credentials' };
     }
-    // ✅ Create session (this runs on server, so cookies() works!)
+
+    // ✅ Only create session if login succeeded
     await createSession(data.data);
     await save_token();
-    return { success: true };
+
+    // ✅ Return success + user info for client redirect
+    return {
+      success: true,
+      userType: data.data.user_type,
+      userId: data.data.user_id,
+    };
   } catch (error) {
+    console.error('Login error:', error);
     if (error instanceof z.ZodError) {
-      return { success: false, error: 'Invalid input' };
+      return { success: false, error: 'Invalid email or password format' };
     }
     return { success: false, error: 'An unexpected error occurred' };
   }
@@ -989,6 +1000,7 @@ export const get_profile = async () => {
     });
 
     const data = await response.json().catch(() => null);
+    console.log('============== profile data', data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }
@@ -1075,6 +1087,7 @@ export const profile_update = async (payload: ProfileUpdatePayload) => {
 
     const data = await response.json().catch(() => null);
     const userData=data.user[0]
+    console.log('-=================data', data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Failed to update profile" };
     }

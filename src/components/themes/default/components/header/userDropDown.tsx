@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signOut } from "@src/actions";
+import { getAccessToken, signOut, verify_token } from "@src/actions";
 import { useUser } from "@hooks/use-user";
 import { Icon } from "@iconify/react";
 import useLocale from "@hooks/useLocale";
@@ -19,14 +19,16 @@ export default function ProfileDropdown() {
   const [isRTL, setIsRTL] = useState(false);
   const { locale } = useLocale();
     const { data: dict } = useDictionary(locale as any);
+// useEffect(()=>{
+//   const clearAccessToken = () => {
+//   document.cookie =
+//     "access-token=; path=/; domain=.toptiertravel.vip; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+// };
+//   if(user){
+// clearAccessToken()
+//   }
+// },[user])
 
-  //   useEffect(() => {
-  //   try {
-  //     const d = document?.dir || document?.documentElement.getAttribute("dir") || "";
-  //     const lang = document?.documentElement.getAttribute("lang") || "";
-  //     setIsRTL(d.toLowerCase() === "rtl" || lang.toLowerCase().startsWith("ar"));
-  //   } catch {}
-  // }, []);
   useEffect(() => {
     try {
       const d =
@@ -59,11 +61,13 @@ export default function ProfileDropdown() {
     await signOut();
     await checkSession?.();
     toast.success("Logged out successfully");
-    router.push("/auth/login");
+    router.push("/");
   };
 
-  const defaultImage =
-    "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
+const defaultImage =
+  user?.profile_photo && user.profile_photo !== null
+    ? user.profile_photo
+    : "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
 
   // Safe URL resolver for profile photos
   const getValidSrc = (src?: string) => {
@@ -80,12 +84,61 @@ export default function ProfileDropdown() {
     }
     return defaultImage;
   };
-
+const handleDashboardClick =async() =>{
+     if (!user) return;
+      (async () => {
+        try {
+          const verify_response = await verify_token();
+          if (!verify_response?.status) {
+            router.push("/auth/login");
+            return;
+          }
+          if (user.user_type === "Customer") {
+            router.push("/dashboard");
+          } else if (user.user_type === "Agent") {
+            const token = await getAccessToken();
+            const url = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(
+              token
+            )}&user_id=${user.user_id}`;
+            window.location.href = url;
+          } else {
+            router.push("/auth/login");
+          }
+        } catch {
+          router.push("/auth/login");
+        }
+      })();
+}
+const handleProfiledClick =async() =>{
+     if (!user) return;
+      (async () => {
+        try {
+          const verify_response = await verify_token();
+          if (!verify_response?.status) {
+            router.push("/auth/login");
+            return;
+          }
+          if (user.user_type === "Customer") {
+            router.push("/profile");
+          } else if (user.user_type === "Agent") {
+            const token = await getAccessToken();
+            const url = `https://toptier-agent-d-ua92.vercel.app/settings?token=${encodeURIComponent(
+              token
+            )}&user_id=${user.user_id}`;
+            window.location.href = url;
+          } else {
+            router.push("/auth/login");
+          }
+        } catch {
+          router.push("/auth/login");
+        }
+      })();
+}
   return (
     <div className="relative z-50" ref={dropdownRef}>
       {/* Profile Image (toggle button) */}
       <Image
-        src="https://images.unsplash.com/photo-1633332755192-727a05c4013d"
+        src={defaultImage as string}
         alt="User"
         width={40}
         height={40}
@@ -102,14 +155,15 @@ export default function ProfileDropdown() {
         >
           <ul className="py-2 px-2 space-y-2">
             {/* My Profile (Customer only) */}
-            {user?.user_type === "Customer" && (
+            {/* {user?.user_type === "Customer" && ( */}
               <li>
-                <Link
-                  href="/profile"
-                  className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg transition"
+                <button
+                  // href="/profile"
+                  onClick={handleProfiledClick}
+                  className="flex items-center w-full cursor-pointer gap-3 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg transition"
                 >
                   <Image
-                    src="https://images.unsplash.com/photo-1633332755192-727a05c4013d"
+                  src={defaultImage as string}
                     alt="User Avatar"
                     width={28}
                     height={28}
@@ -118,15 +172,16 @@ export default function ProfileDropdown() {
                   <span className="text-[15px] font-base font-medium">
                     {dict?.header?.myprofile || "My Profile"}
                   </span>
-                </Link>
+                </button>
               </li>
-            )}
+            {/* )} */}
 
             {/* Dashboard */}
             <li>
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-4 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg transition"
+              <button
+                // href="/dashboard"
+                onClick={handleDashboardClick}
+                className="flex w-full cursor-pointer items-center gap-4 px-4 py-3 text-gray-500 hover:bg-gray-100 rounded-lg transition"
               >
                 <Icon
                   icon="lucide:layout-dashboard"
@@ -137,7 +192,7 @@ export default function ProfileDropdown() {
                 <span className="text-[15px] font-base font-medium">
                    {dict?.header?.dashboard || "Dashboard"}
                 </span>
-              </Link>
+              </button>
             </li>
 
             {/* Logout */}

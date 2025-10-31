@@ -71,9 +71,12 @@ export default function Dashboard() {
 
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-  const { user } = useUser();
+  const { user , checkSession} = useUser();
   const router = useRouter();
-
+  const [isVerified, setIsVerified] = useState(false);
+useEffect(()=>{
+   checkSession?.();
+},[ checkSession,user])
   // Debounce search → API
   useEffect(() => {
     const t = setTimeout(() => {
@@ -83,31 +86,31 @@ export default function Dashboard() {
   }, [searchTerm]);
 
   // Auth guard
-  useEffect(() => {
-    if (!user) return;
-    (async () => {
-      try {
-        const verify_response = await verify_token();
-        if (!verify_response?.status) {
-          router.push("/auth/login");
-          return;
-        }
-        if (user.user_type === "Customer") {
-          router.push("/dashboard");
-        } else if (user.user_type === "Agent") {
-          const token = await getAccessToken();
-          const url = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(
-            token
-          )}&user_id=${user.user_id}`;
-          window.location.href = url;
-        } else {
-          router.push("/auth/login");
-        }
-      } catch {
-        router.push("/auth/login");
-      }
-    })();
-  }, [user, router]);
+  // useEffect(() => {
+  //   if (!user) return;
+  //   (async () => {
+  //     try {
+  //       const verify_response = await verify_token();
+  //       if (!verify_response?.status) {
+  //         router.push("/auth/login");
+  //         return;
+  //       }
+  //       if (user.user_type === "Customer") {
+  //         router.push("/dashboard");
+  //       } else if (user.user_type === "Agent") {
+  //         const token = await getAccessToken();
+  //         const url = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(
+  //           token
+  //         )}&user_id=${user.user_id}`;
+  //         window.location.href = url;
+  //       } else {
+  //         router.push("/auth/login");
+  //       }
+  //     } catch {
+  //       router.push("/auth/login");
+  //     }
+  //   })();
+  // }, [user, router]);
 
   // Server-driven paging + filters (API owns filtering)
   const {
@@ -166,8 +169,7 @@ export default function Dashboard() {
   const pages = data?.pages || [];
   const bookings: Booking[] = pages.flatMap((p) => p?.data || []);
 
-  console.log('✅ Bookings from API:', bookings);
-  console.log('🔍 Current search filter:', filters.search);
+
 
   // ✅ FIX: Remove frontend filtering - API already handles search
   // Since the backend filters by search, we should display all returned bookings

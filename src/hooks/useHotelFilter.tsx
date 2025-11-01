@@ -283,7 +283,115 @@ const updateRatingFilter = useCallback(
     // removeDuplicates is now handled inside hotel_search_multi if needed
   ]
 );
+const applyFilters = useCallback(async () => {
+  const { priceRange, selectedRating } = filters; // use local state here
+  const from_price = priceRange[0];
+  const to_price = priceRange[1];
 
+  console.log('apply filter', filters);
+
+  try {
+    const savedForm = localStorage.getItem("hotelSearchForm");
+    if (!savedForm) return;
+
+    const parsedForm: any = JSON.parse(savedForm);
+      dispatch(setHotels([])); // Clear old data
+ setIsFilterLoading(true);
+    const result = await hotel_search_multi(
+      {
+        destination: parsedForm.destination,
+        checkin: parsedForm.checkin,
+        checkout: parsedForm.checkout,
+        rooms: parsedForm.rooms,
+        adults: parsedForm.adults,
+        children: parsedForm.children,
+        nationality: parsedForm.nationality,
+        page: 1,
+        price_from: String(from_price),
+        price_to: String(to_price),
+        rating: selectedRating > 1 ? String(selectedRating) : "",
+        currency,
+        language: locale,
+        child_age: parsedForm.children_ages || [],
+      },
+      hotelModuleNames
+    );
+
+    if (result.success?.length > 0) {
+      const updatedHotels = [...allHotelsData, ...result.success];
+      dispatch(setHotels(updatedHotels));
+      queryClient.setQueryData(["hotel-search"], updatedHotels);
+       setIsFilterLoading(false);
+      return { success: true, data: result.success };
+    } else {
+       setIsFilterLoading(false);
+      return { success: false, error: "No more data" };
+    }
+  } catch (err) {
+    console.error("Apply filter error:", err);
+    return { success: false, error: "Apply filter failed" };
+  }
+}, [
+  filters,
+  allHotelsData,
+  hotelModuleNames,
+  dispatch,
+  queryClient,
+  currency,
+  locale,
+]);
+
+// const applyFilters = useCallback(async () => {
+//   try {
+//     dispatch(setHotels([])); // Clear old data
+//     setIsFilterLoading(true);
+
+//     const savedForm = localStorage.getItem("hotelSearchForm");
+//     if (!savedForm) return;
+
+//     const parsedForm = JSON.parse(savedForm);
+
+//     // ✅ Use ALL current filter values
+//     const result = await hotel_search_multi(
+//       {
+//         destination: parsedForm.destination,
+//         checkin: parsedForm.checkin,
+//         checkout: parsedForm.checkout,
+//         rooms: parsedForm.rooms,
+//         adults: parsedForm.adults,
+//         children: parsedForm.children,
+//         nationality: parsedForm.nationality,
+//         page: 1,
+//         price_from: String(filters.priceRange[0] || ""),
+//         price_to: String(filters.priceRange[1] || ""),
+//         rating: filters.selectedRating > 1 ? String(filters.selectedRating) : "", // only send if >1
+//         currency: currency,
+//         language: locale,
+//         child_age: parsedForm.children_ages || [],
+//         // Note: amenities & search are client-side only (not sent to API)
+//         // If your API supports amenity/search filters, add them here
+//       },
+//       hotelModuleNames
+//     );
+
+//     dispatch(setHotels(result.success));
+//     queryClient.setQueryData(["hotel-search"], result.success);
+//   } catch (err) {
+//     console.error("Apply filters fetch failed", err);
+//   } finally {
+//     setIsFilterLoading(false);
+//   }
+// }, [
+//   filters.priceRange,
+//   filters.selectedRating,
+//   // ⚠️ Do NOT include `filters.searchQuery` or `filters.selectedAmenities`
+//   // unless your backend supports them — they are client-side only in your current setup
+//   hotelModuleNames,
+//   dispatch,
+//   queryClient,
+//   currency,
+//   locale,
+// ]);
   const updateSearchQuery = useCallback((query: string) => {
     setFilters(prev => ({ ...prev, searchQuery: query }));
   }, []);
@@ -305,7 +413,7 @@ const resetFilters = useCallback(async (e?: any) => {
       setIsFilterLoading(true);
       // Reset filter state first
       setFilters({
-        priceRange: [priceRange.min, priceRange.max],
+        priceRange: [1,5000],
         selectedStars: [],
         selectedRating: 1,
         searchQuery: '',
@@ -316,33 +424,48 @@ const resetFilters = useCallback(async (e?: any) => {
 
       // Clear existing data
       dispatch(setHotels([]));
-      queryClient.setQueryData(["hotel-search"], []);
-
-      // Get saved form data for reset
       const savedForm = localStorage.getItem("hotelSearchForm");
-      if (!savedForm) {
-        // console.error('No saved form data found');
-        return;
-      }
+        if (!savedForm) return;
 
-      const parsedForm = JSON.parse(savedForm);
+        const parsedForm: any = JSON.parse(savedForm);
 
-      // FIX 3: Use callAllModulesAPI directly instead of handleSubmit
-      const result = await callAllModulesAPI({
-        ...parsedForm,
-        price_from: "", // Reset to no price filter
-        price_to: "",
-        rating: "" // Reset to no rating filter
-      }, 1);
+        // Use hotel_search_multi for pagination
+        const result = await hotel_search_multi(
+          {
+            destination: parsedForm.destination,
+            checkin: parsedForm.checkin,
+            checkout: parsedForm.checkout,
+            rooms: parsedForm.rooms,
+            adults: parsedForm.adults,
+            children: parsedForm.children,
+            nationality: parsedForm.nationality,
+            page: 1, //  next page
+            price_from: "1", // or keep current filters if needed
+            price_to: "5000",
+            rating:  "",
+            currency:currency,
+            language:locale,
+            child_age: parsedForm.children_ages || [],
+          },
+          hotelModuleNames
+        );
+        if (result.success.length > 0) {
+          if (result.success.length > 0) {
+            const updatedHotels = [...allHotelsData, ...result.success];
+            dispatch(setHotels(updatedHotels));
+            queryClient.setQueryData(["hotel-search"], updatedHotels);
 
-      if (result.success && result.data) {
-        // Update both cache and Redux with reset data
-        queryClient.setQueryData(["hotel-search"], result.data);
-        dispatch(setHotels(result.data));
-      } else {
-        // console.error('Reset failed:', result.error);
-      }
 
+            return { success: true, data: result.success };
+
+          } else {
+
+            return { success: false, error: "No new hotels found" };
+          }
+        } else {
+
+          return { success: false, error: "No more data" };
+        }
     } catch (error) {
       console.error('Reset filters error:', error);
     } finally {
@@ -384,6 +507,7 @@ const resetFilters = useCallback(async (e?: any) => {
     toggleAmenityFilter,
     updateSortBy,
     resetFilters,
+    applyFilters,
 
     selectedStars, setSelectedStars,isFilterLoading
   };

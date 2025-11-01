@@ -28,7 +28,7 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
 
       if (!user) {
         //  Store the current route before redirecting to login
-        sessionStorage.setItem('lastRoute', pathname);
+        // sessionStorage.setItem('lastRoute', pathname);
         router.replace('/auth/login');
 
       }else {

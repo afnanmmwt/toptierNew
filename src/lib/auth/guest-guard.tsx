@@ -14,7 +14,7 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
   const router = useRouter();
   const { user, error, isLoading } = useUser();
   const [isChecking, setIsChecking] = React.useState(true);
-
+   const lastRoute=sessionStorage.getItem('lastRoute')
   React.useEffect(() => {
     const verifyGuestAccess = async () => {
       if (isLoading) return;
@@ -23,9 +23,10 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
         setIsChecking(false);
         return;
       }
-      if (user) {
-        sessionStorage.removeItem('lastRoute');
+      if (user && lastRoute==="/bookings" ) {
+        router.push('/bookings')
       }
+      // sessionStorage.removeItem('lastRoute');
       setIsChecking(false);
     };
     verifyGuestAccess().catch(console.error);

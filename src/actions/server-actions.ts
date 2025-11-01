@@ -306,7 +306,7 @@ export async function signIn(
     body.append('password', password);
     if (api_key) body.append('api_key', api_key);
 
-    // ✅ Call backend
+    // Call backend
     const response = await fetch(`${baseUrl}/login`, {
       method: 'POST',
       body,
@@ -315,16 +315,16 @@ export async function signIn(
     const data = await response.json();
     console.log('Login response:', data);
 
-    // ✅ Check if login actually succeeded
+    // Check if login actually succeeded
     if (!response.ok || data?.status === false) {
       return { success: false, error: data?.message || 'Invalid credentials' };
     }
 
-    // ✅ Only create session if login succeeded
+    // Only create session if login succeeded
     await createSession(data.data);
     await save_token();
 
-    // ✅ Return success + user info for client redirect
+    //  Return success + user info for client redirect
     return {
       success: true,
       userType: data.data.user_type,
@@ -370,6 +370,10 @@ export const getUser = async () => {
   const session = await getSession();
   return session?.user;
 };
+//=============cleare token =================
+// export const cleartoken = ()=>{
+//   logout();
+// }
 //------------- SAVE TOKEN --------------------//
 export const save_token = async () => {
    const userinfo = (await getSession()) as any | null;
@@ -572,7 +576,8 @@ export const hotel_search = async (payload: HotelSearchPayload & { modules: stri
       },
     });
     const data = await response.json().catch(() => null);
-
+    console.log(`${module} name `, data)
+    console.log('paylaod for single module',payload)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong", module: payload.modules };
     }
@@ -613,7 +618,8 @@ export const hotel_search_multi = async (
     })
     .filter(Boolean) // remove nulls
     .flat(); // flatten into single array
-
+// console.log('================== apply filer', successful)
+// console.log('======================',basePayload )
   return {
     success: successful,
     total: successful.length,

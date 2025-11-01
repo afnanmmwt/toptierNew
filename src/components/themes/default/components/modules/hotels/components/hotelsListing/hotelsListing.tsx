@@ -82,8 +82,7 @@ const onShowMaphandler=(hotel:any)=>{
     selectedStars,
     setSelectedStars,
     isFilterLoading,
-updateSortBy
-
+updateSortBy,applyFilters
   } = useHotelFilter();
 
 
@@ -288,13 +287,13 @@ function getOptionLabel(option: string) {
                 >
                   {dict?.hotel_listing?.reset_filters || "Reset Filters"}
                 </button>
-                <button
-                  onClick={resetFilters}
+                {/* <button
+                  onClick={applyFilters}
                   disabled={!hasActiveFilters}
                   className="w-full py-3 bg-[#163C8C] border border-[#163C8C] cursor-pointer text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {dict?.hotel_listing?.apply || "Apply"}
-                </button>
+                </button> */}
               </div>
             </div>
           </div>}
@@ -514,7 +513,7 @@ function getOptionLabel(option: string) {
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{dict?.hotel_listing?.no_hotels_found || "No hotels found"}</h3>
                 <p className="text-gray-600 mb-4">{dict?.hotel_listing?.search_criteria || "Try adjusting your filters or search criteria"}</p>
                 <button
-                  onClick={() => resetFilters(event)}
+                  onClick={resetFilters}
                   className="bg-blue-800 text-white px-4 py-2.5 cursor-pointer rounded-lg font-medium hover:bg-gray-950 transition-colors"
                 >
                   {dict?.hotel_listing?.reset_all_filters || "Reset All Filters"}
@@ -614,18 +613,22 @@ function getOptionLabel(option: string) {
             </div>
             <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 space-y-3 max-w-lg mx-auto w-full">
               <button
-                onClick={(e) => resetFilters(e)}
+                onClick={resetFilters}
                 disabled={!hasActiveFilters}
                 className="w-full py-2.5 text-sm bg-gray-100 text-blue-600 cursor-pointer rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {dict?.hotel_listing?.reset_filters || "Reset Filters"}
               </button>
-              <button
-                onClick={() => setMobileFiltersOpen(false)}
+              {/* <button
+               onClick={() => {
+  applyFilters();
+  setMobileFiltersOpen(false);
+}}
+
                 className="w-full py-2.5 text-sm bg-[#163C8C] text-white cursor-pointer rounded-lg font-medium hover:bg-[#163C8C] transition-colors"
               >
                 {dict?.hotel_listing?.apply_filters || "Apply Filters"} ({totalResults} {dict?.hotel_listing?.hotels || "hotels"})
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

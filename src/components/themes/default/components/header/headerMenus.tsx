@@ -13,7 +13,6 @@ import { useAppSelector } from "@lib/redux/store";
 const HeaderMenus = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUser();
- console.log('sessionn user',user)
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any) as any;
 

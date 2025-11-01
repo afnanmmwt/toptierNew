@@ -64,10 +64,10 @@ export default function ProfileDropdown() {
     router.push("/");
   };
 
-const defaultImage =
-  user?.profile_photo && user.profile_photo !== null
-    ? user.profile_photo
-    : "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
+const defaultImage ="https://images.unsplash.com/photo-1633332755192-727a05c4013d"
+  // user?.profile_photo && user.profile_photo !== null
+  //   ? user.profile_photo
+  //   : "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
 
   // Safe URL resolver for profile photos
   const getValidSrc = (src?: string) => {

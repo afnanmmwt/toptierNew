@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { z } from 'zod';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import useHotelSearch from './useHotelSearch';
 import { useAppDispatch } from '@lib/redux/store';
 import { setSeletecRoom } from '@lib/redux/base';
@@ -73,11 +73,11 @@ export const useHotelDetails = ({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { setSelectedRoom } = useHotelSearch();
-
+  const pathname = usePathname();
   const formatDate = (date: Date) => {
     return date.toISOString().split("T")[0];
   };
-
+console.log('last route',pathname)
   const today = new Date();
   const defaultCheckin = initialCheckin || formatDate(today);
   const tomorrow = new Date();
@@ -260,7 +260,14 @@ const [form, setForm] = useState<HotelForm>(initialForm);
       option,
     };
     dispatch(setSeletecRoom(roomData));
-    router.push(`/bookings`);
+    if(!user){
+  sessionStorage.setItem('lastRoute', "/bookings");
+  router.replace('/auth/login');
+    }
+    else{
+router.push(`/bookings`);
+    }
+
 
   };
 

@@ -204,17 +204,7 @@ export default function BookingDetails() {
                   {dict?.bookingDetails?.roomQuantity}
                 </span>
 
-                {isAgent ? (
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => handleQuantityChange(e.target.value)}
-                    className="block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] text-center"
-                    inputMode="numeric"
-                  />
-                ) : (
-                  <span className="text-gray-900">{quantity ?? 0}</span>
-                )}
+                <span className="text-gray-900">{quantity ?? 0}</span>
               </div>
 
               {/* Price */}
@@ -223,25 +213,12 @@ export default function BookingDetails() {
                   {dict?.bookingDetails?.roomPrice}
                 </span>
 
-                {isAgent ? (
-                  <div className="flex items-center gap-2">
-                    <span>{getCurrencySymbol(currency)}</span>
-                    <input
-                      type="text"
-                      value={roomPrice}
-                      onChange={(e) => handleRoomPriceChange(e.target.value)}
-                      className="block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C]"
-                      inputMode="decimal"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <span>{getCurrencySymbol(currency)}</span>
-                    <span className="text-gray-900">
-                      {Number(roomPrice || 0).toLocaleString()}
-                    </span>
-                  </div>
-                )}
+                <div className="flex items-center gap-1">
+                  <span>{getCurrencySymbol(currency)}</span>
+                  <span className="text-gray-900">
+                    {Number(roomPrice || 0).toLocaleString()}
+                  </span>
+                </div>
               </div>
 
               <div className="flex justify-between items-center border-t border-gray-300 pt-3 mt-2">

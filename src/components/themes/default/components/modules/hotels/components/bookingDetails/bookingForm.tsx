@@ -176,7 +176,7 @@ export default function BookingForm({
   const selectedRoom = useAppSelector((state) => state.root.selectedRoom);
     const hasAutoSaved = useRef(false);
   const { option } = selectedRoom || {};
-  console.log(option);
+  // console.log(option);
   
   const rootState = useAppSelector((state) => state.root);
   const stripe = useStripe();

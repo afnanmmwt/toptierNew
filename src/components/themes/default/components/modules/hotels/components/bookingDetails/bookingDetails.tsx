@@ -39,10 +39,10 @@ export default function BookingDetails() {
   } = saveBookingData;
   const {
     price = 0,
+    markup_price,
     markup_price_per_night = 0,
     currency = "USD",
   } = option || {};
-
   // Calculate stay duration (in nights)
   const checkinDate = new Date(checkin);
   const checkoutDate = new Date(checkout);
@@ -54,16 +54,35 @@ export default function BookingDetails() {
 
   // Editable fields state
   const [quantity, setQuantity] = useState<string>(String(rooms || 1));
-  const [roomPrice, setRoomPrice] = useState<string>(
-    String(markup_price_per_night || 0)
-  );
-  // Optional: topTierFee can be removed if not used
-  // const [topTierFee, setTopTierFee] = useState<string>(String(Math.max(0, Number(price) - Number(markup_price)) || 0));
+const [roomPrice, setRoomPrice] = useState<string>(() => {
+  // Remove commas and ensure valid number
+  const sanitized = String(markup_price || "0").replace(/,/g, "");
+  return sanitized;
+});
 
-  // Clean and compute total
+// Optional: topTierFee can be removed if not used
+// const [topTierFee, setTopTierFee] = useState<string>(String(Math.max(0, Number(price) - Number(markup_price)) || 0));
+// Clean and compute total
   const cleanRoomPriceNum = parseFloat(roomPrice.replace(/,/g, "") || "0");
   const cleanQuantityNum = parseInt(quantity.replace(/,/g, ""), 10) || 1; // quantity can't be 0
-  const finalTotal = cleanRoomPriceNum * nights * cleanQuantityNum;
+  const cleanPrice_actual_price=parseInt(price.replace(/,/g, ""), 10) || 1;
+  const finalTotal = markup_price * nights * cleanQuantityNum;
+// final calcualtion
+
+// total cc fee
+const ccFee = (cleanRoomPriceNum * 0.029) + 0.3;
+// Subtotal calculation: PER-NIGHT price without tax
+const Subtotal_per_night = cleanRoomPriceNum / (1 + 14 / 100);
+
+// Total subtotal (subtotal per night × days × quantity)
+const subtotal = Subtotal_per_night * nights * cleanQuantityNum;
+
+// Agent commission calculation (based on total subtotal) if agent is logged in other wise 0
+const agentFee = (subtotal * 10) / 100;
+
+//  Net Profit Calculation:
+// Total revenue - supplier cost - agent commission + IATA benefit - CC fee
+const netProfit = cleanRoomPriceNum - cleanPrice_actual_price - agentFee  - ccFee;
 
   // Input handler for numeric fields
   const handleQuantityChange = (value: string) => {
@@ -122,6 +141,9 @@ export default function BookingDetails() {
               quantity={quantity}
               markup_price={roomPrice}
               total={finalTotal}
+              subtotal={subtotal}
+              agentFee={agentFee}
+              netProfit={netProfit}
             />
           </StripeProvider>
         </div>
@@ -249,7 +271,10 @@ export default function BookingDetails() {
                   {dict?.bookingDetails?.total}
                 </span>
                 <span className="text-lg font-bold text-[#163C8C]">
-                  {getCurrencySymbol(currency)} {finalTotal.toFixed(2)}
+                  {getCurrencySymbol(currency)}{" "}{finalTotal.toLocaleString('en-US', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}
                 </span>
               </div>
             </div>

@@ -74,9 +74,7 @@ export default function Dashboard() {
   const { user , checkSession} = useUser();
   const router = useRouter();
   const [isVerified, setIsVerified] = useState(false);
-useEffect(()=>{
-   checkSession?.();
-},[ checkSession,user])
+
   // Debounce search → API
   useEffect(() => {
     const t = setTimeout(() => {

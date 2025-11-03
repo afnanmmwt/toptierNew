@@ -196,6 +196,7 @@ const FeaturedHotels: React.FC = () => {
           children_ages: [],
           nationality: "PK",
           destination: hotel?.city || "Dubai",
+          supplier_name:'hotels',
           latitude: "",
           longitude: "",
         };

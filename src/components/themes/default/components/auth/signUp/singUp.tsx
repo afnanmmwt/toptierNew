@@ -91,7 +91,7 @@ export default function SignUpForm() {
         setLoading(false);
         return;
       }
-      toast.success(dict?.signup_form?.success_message || "Signup successful! 🎉");
+      toast.success(dict?.signup_form?.success_message || "Signup successful!.Please check your Email 🎉");
       router.push(`/${lang}/auth/login`);
     },
   });

@@ -1,10 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Alert from '@src/components/core/alert';
 import { useUser } from '@src/hooks/use-user';
 import GlobalLoadingOverlay from '@components/core/GlobalLoadingOverlay';
+import { signOut } from '@src/actions';
 
 export interface GuestGuardProps {
   children: React.ReactNode;
@@ -12,8 +13,9 @@ export interface GuestGuardProps {
 
 export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | null {
   const router = useRouter();
-  const { user, error, isLoading } = useUser();
+  const { user, error, isLoading , checkSession} = useUser();
   const [isChecking, setIsChecking] = React.useState(true);
+ const pathname = usePathname();
    const lastRoute=sessionStorage.getItem('lastRoute')
   React.useEffect(() => {
     const verifyGuestAccess = async () => {
@@ -26,6 +28,13 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
       if (user && lastRoute==="/bookings" ) {
         router.push('/bookings')
       }
+      else if(user){
+        checkSession?.();
+        router.push('/')
+      }
+      // else if( user && pathname ==="/auth/login" ){
+      //   signOut()
+      // }
       // sessionStorage.removeItem('lastRoute');
       setIsChecking(false);
     };

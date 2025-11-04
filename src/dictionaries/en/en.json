@@ -40,7 +40,7 @@
     "and": "and",
     "privacy_policy": "Privacy Policy",
     "create_account_button": "Create Account",
-    "success_message": "Signup successful! 🎉"
+    "success_message": "Signup successful!.Please check your Email for verification 🎉"
   },
   "errors": {
     "first_name_required": "First name is required",

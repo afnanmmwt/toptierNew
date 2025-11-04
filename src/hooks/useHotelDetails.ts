@@ -77,7 +77,6 @@ export const useHotelDetails = ({
   const formatDate = (date: Date) => {
     return date.toISOString().split("T")[0];
   };
-console.log('last route',pathname)
   const today = new Date();
   const defaultCheckin = initialCheckin || formatDate(today);
   const tomorrow = new Date();

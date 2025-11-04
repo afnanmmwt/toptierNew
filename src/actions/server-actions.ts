@@ -314,7 +314,6 @@ export async function signIn(
     });
 
     const data = await response.json();
-    console.log('Login response:', data);
 
     // Check if login actually succeeded
     if (!response.ok || data?.status === false) {
@@ -421,13 +420,11 @@ export const verify_token = async () => {
     const formData = new FormData();
     formData.append('user_id', String(userId)); // ✅ always a string
     formData.append('token', String(token));
-   console.log("verifying token for user server action:", formData);
     const response = await fetch(`${baseUrl}/verify_token`, {
       method: 'POST',
       body: formData,
     });
     const data = await response.json().catch(() => null);
-
     if (!response.ok || data?.status === false) {
       return { error: data || 'Something went wrong' };
     }
@@ -541,10 +538,17 @@ interface HotelSearchPayload {
   language:string;
   currency:string;
   child_age?: string[];
+
   // Remove `modules` from this interface if you're handling it externally
 }
 // This function handles ONE module
 export const hotel_search = async (payload: HotelSearchPayload & { modules: string }) => {
+  const userinfo = (await getSession()) as any | null;
+     const userId =
+      typeof userinfo === 'object' && userinfo !== null
+        ? (userinfo.user_id || userinfo?.user?.user_id || '')
+        : '';
+
   const formData = new FormData();
   formData.append("city", String(payload.destination));
   formData.append("checkin", payload.checkin);
@@ -560,6 +564,7 @@ export const hotel_search = async (payload: HotelSearchPayload & { modules: stri
   formData.append("price_from", payload.price_from || "");
   formData.append("price_to", payload.price_to || "");
   formData.append("price_low_to_high", "");
+  formData.append('user_id', userId)
   formData.append("rating", payload.rating || "");
   if (payload.child_age && payload.child_age.length > 0) {
     const formattedAges = payload.child_age.map((age) => ({ ages: age }));
@@ -567,7 +572,6 @@ export const hotel_search = async (payload: HotelSearchPayload & { modules: stri
   } else {
     formData.append("child_age", "[]"); // send empty array if no children
   }
-
   try {
     const response = await fetch(`${baseUrl}/hotel_search`, {
       method: "POST",
@@ -577,8 +581,7 @@ export const hotel_search = async (payload: HotelSearchPayload & { modules: stri
       },
     });
     const data = await response.json().catch(() => null);
-    console.log(`${module} name `, data)
-    console.log('paylaod for single module',payload)
+
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong", module: payload.modules };
     }
@@ -606,7 +609,7 @@ export const hotel_search_multi = async (
   // Use allSettled to avoid one failure breaking all
   const results = await Promise.allSettled(promises);
 // console.log('successful hotels', JSON.parse(results));
-  // console.log('multi search result ', results)
+
   const successful = results
     .map((result) => {
       if (result.status === "fulfilled") {
@@ -619,8 +622,7 @@ export const hotel_search_multi = async (
     })
     .filter(Boolean) // remove nulls
     .flat(); // flatten into single array
-// console.log('================== apply filer', successful)
-// console.log('======================',basePayload )
+
   return {
     success: successful,
     total: successful.length,
@@ -639,10 +641,12 @@ interface HotelDetailsPayload {
   language: string;
   currency: string;
   supplier_name: string;
+
 }
 
 export const hotel_details = async (payload: HotelDetailsPayload) => {
   try {
+    console.log('actual paylaod', payload)
     const formData = new FormData();
     //  match exactly with API keys
     formData.append("hotel_id", String(payload.hotel_id));
@@ -654,8 +658,8 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
     formData.append("nationality", payload.nationality || "US");
     formData.append("language", payload.language || "en");
     formData.append("currency", payload.currency || "usd");
-    formData.append("supplier_name", payload.supplier_name || "");
-    formData.append("child_age","0" );
+    formData.append("supplier_name", payload.supplier_name || "hotels");
+
      if(payload.child_age && payload.child_age.length > 0) {
     const formattedAges = payload.child_age.map((age: string) => ({ ages: age }));
     formData.append("child_age", JSON.stringify(formattedAges));
@@ -669,9 +673,9 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
         Accept: "application/json, text/plain, */*",
       },
     });
-
     const data = await response.json().catch(() => null);
-
+    console.log("payloded", formData)
+   console.log("details==========", data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }
@@ -725,8 +729,13 @@ interface UserData {
 }
 
 export interface BookingPayload {
+  agent_id: string,
+  agent_fee: string,
+  supplier_cost:string,
+  supplier_id: string,
   price_original: number;
   price_markup: number;
+  actual_price:number;
   vat: number;
   tax: number;
   gst: number;
@@ -765,23 +774,15 @@ export interface BookingPayload {
   booking_ref_no: string;
 }
 
-interface SessionUser {
-  user?: {
-    id?: string;
-    user_id?: string;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    // ... add other fields you need
-  };
-  iat?: number;
-  exp?: number;
-}
+
 
 export const hotel_booking = async (payload: BookingPayload) => {
   try {
-    const userinfo = (await getSession()) as SessionUser | null;
-    const user_id = userinfo?.user?.user_id ?? "";
+const userInfo = (await getSession()) as any | null;
+const user_id = userInfo?.user?.user_id ?? "";
+const agent_id =
+  userInfo?.user?.user_type === "Agent" ? userInfo.user.user_id : "";
+const agent_fee =userInfo?.user?.user_type === "Agent" ? payload.agent_fee : "0"
     const formData = new FormData();
     //  Append normal fields
     formData.append("booking_ref_no", payload.booking_ref_no || "");
@@ -815,18 +816,17 @@ export const hotel_booking = async (payload: BookingPayload) => {
     formData.append("currency_original", payload.currency_original);
     formData.append("currency_markup", payload.currency_markup);
     formData.append("supplier", payload.supplier);
-    formData.append("supplier_cost",  String(payload.price_original));
     formData.append("nationality", payload.nationality);
     formData.append("payment_gateway", payload.payment_gateway ?? "");
     formData.append("user_id", user_id ?? "");
-
+    formData.append('agent_id', agent_id)
+    formData.append('supplier_cost',payload.supplier_cost)
     // hardcoded fields
-    formData.append("supplier_id", "");
-    formData.append("agent_fee", "0");
+    formData.append("supplier_id",payload.supplier_id ?? "");
+    formData.append("agent_fee",agent_fee);
     // agent_fee= price_markup - price_original
-    formData.append("net_profit", String(payload.price_markup - payload.price_original));
-    // if user is agent logged as agent
-    formData.append("agent_id", api_key ?? "");
+    formData.append("net_profit", payload.agent_fee);
+
 
 
     // Append JSON fields (must stringify)
@@ -1007,7 +1007,6 @@ export const get_profile = async () => {
     });
 
     const data = await response.json().catch(() => null);
-    console.log('============== profile data', data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }
@@ -1048,9 +1047,7 @@ export const fetch_dashboard_data = async (payload: dashboardPayload) => {
         Accept: "application/json, text/plain, */*",
       },
     });
-    console.log('booking paylaod ', formData)
     const data = await response.json().catch(() => null);
-    console.log('booking data',data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }
@@ -1078,27 +1075,39 @@ interface ProfileUpdatePayload {
 }
 
 export const profile_update = async (payload: ProfileUpdatePayload) => {
-  const formData = new URLSearchParams();
+  const formData = new FormData();
 
-  for (const [key, value] of Object.entries(payload)) {
-    if (value !== undefined && value !== null) {
-      formData.append(key, String(value));
-    }
-  }
+  // for (const [key, value] of Object.entries(payload)) {
+  //   if (value !== undefined && value !== null) {
+  //     formData.append(key, String(value));
+  //   }
+  // }
+formData.append('user_id', String(payload.user_id));
+formData.append('first_name', String(payload.first_name));
+formData.append('last_name', String(payload.last_name));
+formData.append('email', String(payload.email));
+formData.append('phone', String(payload.phone));
+formData.append('phone_country_code', String(payload.phone_country_code));
+formData.append('country_code', String(payload.country_code));
+formData.append('state', String(payload.state));
+formData.append('city', String(payload.city));
+formData.append('address1', String(payload.address1));
+formData.append('address2', String(payload.address2));
+
   try {
     const response = await fetch(`${baseUrl}/profile_update`, {
       method: "POST",
-      body: formData.toString(),
-      headers: await getHeaders("application/x-www-form-urlencoded"),
+      body: formData,
+
     });
 
     const data = await response.json().catch(() => null);
-    const userData=data.user[0]
-    console.log('-=================data', data)
+    const userData=data.data[0]
+
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Failed to update profile" };
     }
-    await createSession(userData as any);
+    // await createSession(userData as any);
     return { success: true, data };
   } catch (error) {
     return { error: (error as Error).message || "An error occurred while updating profile" };

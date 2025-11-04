@@ -94,10 +94,12 @@ export default function SignUpForm() {
         setLoading(false);
         return;
       }
+
       // toast.success(dict?.signup_form?.success_message || "Signup successful! 🎉");
       // ✅ Instead of redirecting immediately, show modal first
       setIsModalOpen(true);
       setLoading(false);
+
     },
   });
 

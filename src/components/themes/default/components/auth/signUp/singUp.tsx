@@ -34,6 +34,9 @@ export default function SignUpForm() {
   const mode = useAppSelector(selectMode);
   const { countries } = useCountries();
 
+  // ✅ Modal state added
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // ✅ Zod schema
   const schema = zod.object({
     first_name: zod.string().min(1, { message: dict?.errors?.first_name_required }),
@@ -91,8 +94,12 @@ export default function SignUpForm() {
         setLoading(false);
         return;
       }
-      toast.success(dict?.signup_form?.success_message || "Signup successful!.Please check your Email 🎉");
-      router.push(`/${lang}/auth/login`);
+
+      // toast.success(dict?.signup_form?.success_message || "Signup successful! 🎉");
+      // ✅ Instead of redirecting immediately, show modal first
+      setIsModalOpen(true);
+      setLoading(false);
+
     },
   });
 
@@ -256,19 +263,18 @@ export default function SignUpForm() {
                 control={control}
                 render={({ field }) => (
                   <div className="relative flex flex-col gap-2">
-                      <Input
-                        {...field}
-                        type={showPassword ? "text" : "password"}
-                        placeholder={dict?.signup_form?.password_placeholder}
-                        size="lg"
-                        // className=" input"
-                        invalid={!!errors.password}
-                        suffix={
-                          <button type="button" onClick={() => setShowPassword(!showPassword)}>
-                            <Icon icon={showPassword ? "mdi:eye-off" : "mdi:eye"} width="20" height="20" />
-                          </button>
-                        }
-                      />
+                    <Input
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                      placeholder={dict?.signup_form?.password_placeholder}
+                      size="lg"
+                      invalid={!!errors.password}
+                      suffix={
+                        <button type="button" onClick={() => setShowPassword(!showPassword)}>
+                          <Icon icon={showPassword ? "mdi:eye-off" : "mdi:eye"} width="20" height="20" />
+                        </button>
+                      }
+                    />
                     {errors.password && (
                       <p className="text-red-500 text-xs flex items-center gap-1">
                         <Icon icon="mdi:warning-circle" width="15" height="15" />
@@ -344,6 +350,26 @@ export default function SignUpForm() {
           </form>
         </div>
       </div>
+
+      {/* ✅ Simple Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/60 bg-opacity-10 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-500 rounded-lg px-6 py-12 w-[90%] max-w-sm h-52 shadow-lg text-center">
+            <h2 className="text-xl font-semibold mb-3 text-gray-800 dark:text-white">
+              Account Created Successfully 
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 mb-5">
+             Check your email to verify your account.
+            </p>
+            <Button
+              onClick={() => router.push(`/${lang}/auth/login`)}
+              className="bg-blue-900 hover:bg-gray-900 hover:text-white text-white rounded-lg px-5 py-2 font-medium"
+            >
+              Go to Login
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

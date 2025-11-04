@@ -77,7 +77,7 @@ export const toCardData = (b: any): BookingCardData => ({
   childs: String(b.childs ?? ""),
   room_data: b.room_data,
   guest: b.guest, // keep raw; we parse safely in the component
-});
+}); 
 // ======================== CARD COMPONENT ========================
 const DashboardCard = ({ data }: { data: BookingCardData }) => {
   const [open, setOpen] = useState(false);

@@ -105,7 +105,7 @@ const useHotelSearch = () => {
     rooms: 1,
     adults: 2,
     children: 0,
-    nationality: "PK",
+    nationality: "US",
     children_ages: [], //  NEW
   });
   const hotelSearch_path = usePathname();

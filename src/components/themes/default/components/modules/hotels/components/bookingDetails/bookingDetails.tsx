@@ -22,14 +22,14 @@ export default function BookingDetails() {
   const router = useRouter();
   const { priceRateConverssion } = useCurrency();
   const { user } = useUser();
-  const user_type = user?.user_type ?? ""; //  Step 3: safely extract
-  const isAgent = user_type !== "Customer"; // Agent/Admin => true
+  // const user_type = user?.user_type ?? ""; //  Step 3: safely extract
+  // const isAgent = user_type !== "Customer"; // Agent/Admin => true
 
   const { hotelDetails, room, option } = selectedRoom || {};
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const {
     checkin,
     checkout,
@@ -200,17 +200,7 @@ const [roomPrice, setRoomPrice] = useState<string>(() => {
                   {dict?.bookingDetails?.roomQuantity}
                 </span>
 
-                {isAgent ? (
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => handleQuantityChange(e.target.value)}
-                    className="block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C] text-center"
-                    inputMode="numeric"
-                  />
-                ) : (
-                  <span className="text-gray-900">{quantity ?? 0}</span>
-                )}
+                <span className="text-gray-900">{quantity ?? 0}</span>
               </div>
 
               {/* Price */}
@@ -219,25 +209,12 @@ const [roomPrice, setRoomPrice] = useState<string>(() => {
                   {dict?.bookingDetails?.roomPrice}
                 </span>
 
-                {isAgent ? (
-                  <div className="flex items-center gap-2">
-                    <span>{getCurrencySymbol(currency)}</span>
-                    <input
-                      type="text"
-                      value={roomPrice}
-                      onChange={(e) => handleRoomPriceChange(e.target.value)}
-                      className="block border border-gray-300 rounded-xl px-3 py-1.5 text-base w-20 outline-none focus:border-[#163C8C] focus:ring-1 focus:ring-[#163C8C]"
-                      inputMode="decimal"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-1">
-                    <span>{getCurrencySymbol(currency)}</span>
-                    <span className="text-gray-900">
-                      {Number(roomPrice || 0).toLocaleString()}
-                    </span>
-                  </div>
-                )}
+                <div className="flex items-center gap-1">
+                  <span>{getCurrencySymbol(currency)}</span>
+                  <span className="text-gray-900">
+                    {Number(roomPrice || 0).toLocaleString()}
+                  </span>
+                </div>
               </div>
 
               <div className="flex justify-between items-center border-t border-gray-300 pt-3 mt-2">

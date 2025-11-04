@@ -44,7 +44,7 @@ export default function HotelDetailsSearch({
 
   const selectedCountryName = countries?.find(
     (c: any) => c.iso === form.nationality
-  )?.nicename || "Pakistan";
+  )?.nicename || "United States";
 
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);

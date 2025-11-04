@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import Select from "@components/core/select";
 import useCountries from "@hooks/useCountries";
@@ -25,8 +25,14 @@ export default function NationalitySelect({
       iso: c.iso,
     })) || [];
 
-  const selected =
-    options.find((opt: any) => opt.value === value) || null;
+  // ✅ Automatically set "US" if nothing selected
+  useEffect(() => {
+    if (!value && options.length > 0) {
+      onChange("US");
+    }
+  }, [value, options, onChange]);
+
+  const selected = options.find((opt: any) => opt.value === value) || null;
 
   return (
     <div className="w-full">

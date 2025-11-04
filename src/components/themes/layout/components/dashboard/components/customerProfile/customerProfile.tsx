@@ -361,7 +361,7 @@ export default function CustomerProfile() {
                         icon="mdi:keyboard-arrow-down"
                         width="24"
                         height="24"
-                        className={`text-gray-600 transition duration-100 ease-in-out ${
+                        className={`absolute top-2.5 -left-4 text-gray-600 transition duration-300 ease-in-out ${
                           isPhoneCodeOpen ? "rotate-180" : "rotate-0"
                         }`}
                       />
@@ -461,7 +461,7 @@ export default function CustomerProfile() {
                         icon="mdi:keyboard-arrow-down"
                         width="24"
                         height="24"
-                        className={`text-gray-600 transition duration-100 ease-in-out ${
+                        className={`absolute top-2.5 -left-4 text-gray-600 transition duration-100 ease-in-out ${
                           isCountryOpen ? "rotate-180" : "rotate-0"
                         }`}
                       />

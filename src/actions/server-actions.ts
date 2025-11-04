@@ -81,6 +81,7 @@ export const fetchCountries = async () => {
     formData.append("api_key", api_key ?? "");
 
     const response = await fetch(`${baseUrl}/countries`, {
+      
       method: "POST",
       body: formData,
       headers: await getHeaders("application/json"), // do NOT set Content-Type manually
@@ -654,7 +655,7 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
     formData.append("rooms", String(payload.rooms));
     formData.append("adults", String(payload.adults));
     formData.append("childs", String(payload.childs));
-    formData.append("nationality", payload.nationality || "PK");
+    formData.append("nationality", payload.nationality || "US");
     formData.append("language", payload.language || "en");
     formData.append("currency", payload.currency || "usd");
     formData.append("supplier_name", payload.supplier_name || "hotels");

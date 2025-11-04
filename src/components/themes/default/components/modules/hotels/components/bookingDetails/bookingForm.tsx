@@ -12,11 +12,11 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Select from '@components/core/select';
 import { AccordionInfoCard } from '@components/core/accordians/accordian';
-import useDictionary from '@hooks/useDict'; //  Add this
+import useDictionary from '@hooks/useDict';
 import useLocale from '@hooks/useLocale';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useUser } from '@hooks/use-user';
-// Get dict for error messages
+
 const useBookingFormSchema = (dict: any) => {
   return z.object({
     firstName: z.string().min(1, dict?.bookingForm?.errors?.firstNameRequired),
@@ -29,8 +29,6 @@ const useBookingFormSchema = (dict: any) => {
     phoneNumber: z
       .string()
       .min(1, dict?.bookingForm?.errors?.phoneNumberRequired || "Phone number is required"),
-
-
     travellers: z
       .array(
         z.object({
@@ -41,15 +39,11 @@ const useBookingFormSchema = (dict: any) => {
         })
       )
       .min(1, dict?.bookingForm?.errors?.atLeastOneTraveller),
-    // paymentMethod: z.string().min(1, dict?.bookingForm?.errors?.paymentMethodRequired),
-
-    // Payment Card Fields (conditionally required)
     cardName: z.string().optional(),
     cardNumber: z.string().optional(),
     cardExpiry: z.string().optional(),
     cardCvv: z.string().optional(),
     cardZip: z.string().optional(),
-
     acceptPolicy: z
       .boolean()
       .refine((val) => val === true, {
@@ -57,77 +51,51 @@ const useBookingFormSchema = (dict: any) => {
       }),
   }).superRefine((data, ctx) => {
     const { cardName, cardNumber, cardExpiry, cardCvv, cardZip } = data;
-
-    // if (paymentMethod === 'credit_card') {
     if (!cardName || cardName.trim() === '') {
       ctx.addIssue({
         path: ['cardName'],
         message: dict?.bookingForm?.errors?.cardNameRequired || 'Cardholder name is required',
         code: 'custom',
       });
-      // }
-
-      if (!cardNumber || !/^\d{13,19}$/.test(cardNumber.replace(/\s+/g, ''))) {
-        ctx.addIssue({
-          path: ['cardNumber'],
-          message: dict?.bookingForm?.errors?.invalidCardNumber || 'Invalid card number',
-          code: 'custom',
-        });
-      }
-
-      if (!cardExpiry || !/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(cardExpiry)) {
-        ctx.addIssue({
-          path: ['cardExpiry'],
-          message: dict?.bookingForm?.errors?.invalidCardExpiry || 'Invalid expiration date (MM/YY)',
-          code: 'custom',
-        });
-      }
-
-      if (!cardCvv || !/^\d{3,4}$/.test(cardCvv)) {
-        ctx.addIssue({
-          path: ['cardCvv'],
-          message: dict?.bookingForm?.errors?.invalidCardCvv || 'Invalid CVV (3-4 digits)',
-          code: 'custom',
-        });
-      }
-
-      if (!cardZip || !/^\d{5}(?:[-\s]\d{4})?$/.test(cardZip)) {
-        ctx.addIssue({
-          path: ['cardZip'],
-          message: dict?.bookingForm?.errors?.invalidCardZip || 'Invalid ZIP code',
-          code: 'custom',
-        });
-      }
+    }
+    if (!cardNumber || !/^\d{13,19}$/.test(cardNumber.replace(/\s+/g, ''))) {
+      ctx.addIssue({
+        path: ['cardNumber'],
+        message: dict?.bookingForm?.errors?.invalidCardNumber || 'Invalid card number',
+        code: 'custom',
+      });
+    }
+    if (!cardExpiry || !/^(0[1-9]|1[0-2])\/([0-9]{2})$/.test(cardExpiry)) {
+      ctx.addIssue({
+        path: ['cardExpiry'],
+        message: dict?.bookingForm?.errors?.invalidCardExpiry || 'Invalid expiration date (MM/YY)',
+        code: 'custom',
+      });
+    }
+    if (!cardCvv || !/^\d{3,4}$/.test(cardCvv)) {
+      ctx.addIssue({
+        path: ['cardCvv'],
+        message: dict?.bookingForm?.errors?.invalidCardCvv || 'Invalid CVV (3-4 digits)',
+        code: 'custom',
+      });
+    }
+    if (!cardZip || !/^\d{5}(?:[-\s]\d{4})?$/.test(cardZip)) {
+      ctx.addIssue({
+        path: ['cardZip'],
+        message: dict?.bookingForm?.errors?.invalidCardZip || 'Invalid ZIP code',
+        code: 'custom',
+      });
     }
   });
 };
 
 export type BookingFormValues = z.infer<ReturnType<typeof useBookingFormSchema>>;
-interface BookingFormProps {
-  quantity?: string;
-  markup_price?: string;
-  total?: number;
-  agentFee:number;
-  subtotal:number;
-  netProfit:number;
 
-}
-
-
-export default function BookingForm({
-  quantity,
-  markup_price,
-  total,
-  agentFee,
-  subtotal,
-  netProfit
-
-}: BookingFormProps) {
+export default function BookingForm() {
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const bookingSchema = useBookingFormSchema(dict);
-
 
   interface User {
     id: string;
@@ -139,12 +107,15 @@ export default function BookingForm({
     country_code: string;
     phone_country_code: string;
     phone: string;
-    // Add other fields if needed
   }
-  const { user } = useUser();
 
-  // Cast to known type (safe because you've verified the structure)
+  const { user } = useUser();
   const typedUser = user as User | null | undefined;
+
+  // ✅ FIX: Initialize bookingReference only once using lazy initializer
+  const [bookingReference, setBookingReference] = useState<string>(() => {
+    return new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14);
+  });
 
   const defaultValues: BookingFormValues = {
     firstName: typedUser?.first_name || '',
@@ -185,16 +156,11 @@ export default function BookingForm({
   const { countries: rawCountries } = useCountries();
   const { payment_gateways } = useAppSelector((state) => state.appData?.data);
   const selectedRoom = useAppSelector((state) => state.root.selectedRoom);
-    const hasAutoSaved = useRef(false);
+  const hasAutoSaved = useRef(false);
   const { option } = selectedRoom || {};
-
   const rootState = useAppSelector((state) => state.root);
   const stripe = useStripe();
   const elements = useElements();
-  const [bookingReference, setBookingReference] = useState<string>(
-    new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14)
-  );
-  const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const { hotelDetails } = selectedRoom || {};
   const [isTitleOpen, setIsTitleOpen] = useState<number | null>(null);
@@ -212,12 +178,37 @@ export default function BookingForm({
   const saveBookingData = curruntBooking ? JSON.parse(curruntBooking) : {};
   const { adults = 0, children = 0, nationality, checkin, checkout } = saveBookingData;
   const travelers = adults + children;
-  const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night,actual_price, per_day, service_fee, child, currency } = selectedRoom?.option || {};
 
+  const {
+    price,
+    id: option_id,
+    currency: booking_currency,
+    extrabeds_quantity,
+    extrabed_price,
+    markup_price_per_night,
+    subtotal,
+    cc_fee,
+    markup_type,
+    markup_amout,
+    net_profit,
+    markup_price,
+    quantity,
+    per_day,
+    service_fee,
+    child,
+    currency,
+  } = selectedRoom?.option || {};
 
+  const agent_fee = markup_type === "user" ? markup_amout : "";
 
   const booking_data = selectedRoom?.option || {};
-  const modified_booking_data = { ...booking_data, quantity: quantity, markup_price: total, markup_price_per_night: markup_price };
+  const modified_booking_data = {
+    ...booking_data,
+    quantity,
+    markup_price,
+    markup_price_per_night,
+  };
+
   const {
     id: hotel_id,
     address: hotel_address,
@@ -233,25 +224,15 @@ export default function BookingForm({
     hotel_website,
   } = selectedRoom?.hotelDetails || {};
 
-  const activePayments = payment_gateways
-    ?.filter((p: any) => p.status)
-    ?.map((p: any) => ({
-      id: p.id,
-      name: p.name,
-      label: p.label || p.name,
-      icon: p.icon || null,
-    })) || [];
-
-
   const excludedCodes = ['0', '381', '599'];
   const countryList = Array.isArray(rawCountries)
     ? rawCountries
-      .map((c: any) => ({
-        iso: c.iso || c.code || '',
-        name: c.nicename || c.name || '',
-        phonecode: c.phonecode?.toString() || '0',
-      }))
-      .filter((c) => c.iso && c.name && !excludedCodes.includes(c.phonecode))
+        .map((c: any) => ({
+          iso: c.iso || c.code || '',
+          name: c.nicename || c.name || '',
+          phonecode: c.phonecode?.toString() || '0',
+        }))
+        .filter((c) => c.iso && c.name && !excludedCodes.includes(c.phonecode))
     : [];
 
   const countryOptions = countryList.map((c) => ({
@@ -260,6 +241,7 @@ export default function BookingForm({
     iso: c.iso,
     phonecode: c.phonecode,
   }));
+
   const phoneCodeOptions = countryList.map((c) => ({
     value: `+${c.phonecode}`,
     label: `+${c.phonecode}`,
@@ -286,13 +268,13 @@ export default function BookingForm({
         title: dict?.bookingForm?.titles?.mr,
         firstName: '',
         lastName: '',
-
       }));
       setValue('travellers', initialTravellers);
     }
   }, [setValue, nationality, travelers, dict]);
- useEffect(() => {
-    // Guard: Only run once, only if user exists, and only if not already saved
+
+  // ✅ FIX: Auto-save booking ONCE per user session
+  useEffect(() => {
     if (!user || hasAutoSaved.current) return;
 
     const {
@@ -306,7 +288,6 @@ export default function BookingForm({
       phoneNumber,
     } = defaultValues;
 
-    // Build guest payload
     const guestPayload = Array.from({ length: travelers }, (_, index) => ({
       traveller_type: index < adults ? 'adults' : 'child',
       title: dict?.bookingForm?.titles?.mr || 'Mr',
@@ -319,16 +300,15 @@ export default function BookingForm({
       dob_year: '',
     }));
 
-    // Build booking payload
     const bookingPayload = {
-      supplier_cost:price || "",
-      supplier_id:supplier_id || "",
-      net_profit:parseFloat(String(netProfit)).toFixed(2),
-      subtotal:parseFloat(String(subtotal)).toFixed(2),
-      agent_fee:parseFloat(String(agentFee)).toFixed(2),
-      booking_ref_no: bookingReference,
+      supplier_cost: price || "",
+      supplier_id: supplier_id || "",
+      net_profit: net_profit,
+      subtotal: subtotal,
+      agent_fee: agent_fee,
+      booking_ref_no: bookingReference, // ← use current state (temp or real)
       price_original: price || 0,
-      price_markup: total || 0,
+      price_markup: markup_price || 0,
       vat: 0,
       tax: 0,
       gst: 0,
@@ -355,6 +335,7 @@ export default function BookingForm({
           room_extrabed_price: extrabed_price,
           room_extrabed: extrabeds_quantity,
           room_actual_price: price,
+          cc_fee: cc_fee,
         },
       ],
       location: hotel_location || '',
@@ -390,26 +371,25 @@ export default function BookingForm({
       },
     };
 
-    // ✅ FIX: Mark as saved BEFORE API call to prevent race conditions
     hasAutoSaved.current = true;
 
-    // Hit the API
     hotel_booking(bookingPayload as any)
-      .then(response => {
-        setBookingReference(response.booking_ref_no);
+      .then((response) => {
+        // ✅ ONLY update if API returns a valid booking_ref_no
+        if (response?.booking_ref_no) {
+          setBookingReference(response.booking_ref_no);
+        }
       })
-      .catch(error => {
-        console.error(' Pre-booking API failed:', error);
-        // Reset flag on error so it can retry
-        hasAutoSaved.current = false;
+      .catch((error) => {
+        console.error('Pre-booking API failed:', error);
+        hasAutoSaved.current = false; // allow retry
       });
-  }, [user]); // ✅ FIX:
+  }, [user, bookingReference]); // ✅ Include bookingReference to use latest value
+
   const onSubmit = async (data: BookingFormValues) => {
     if (!data) return;
-
     setIsProcessingPayment(true);
     setIsPending(true);
-
     try {
       const {
         firstName,
@@ -428,7 +408,6 @@ export default function BookingForm({
         cardZip,
       } = data;
 
-      //  Fix guest type to 'child' not 'childs'
       const guestPayload = (travellers || []).map((traveller: any, index: number) => ({
         traveller_type: index < adults ? 'adults' : 'child',
         title: traveller.title || '',
@@ -440,15 +419,16 @@ export default function BookingForm({
         dob_month: '',
         dob_year: '',
       }));
+
       const bookingPayload = {
-          supplier_cost:price,
-      supplier_id:supplier_id,
-      net_profit:parseFloat(String(netProfit)).toFixed(2),
-      subtotal:parseFloat(String(subtotal)).toFixed(2),
-      agent_fee:parseFloat(String(agentFee)).toFixed(2),
-        booking_ref_no: bookingReference,
+        supplier_cost: price,
+        supplier_id: supplier_id,
+        net_profit: net_profit,
+        subtotal: subtotal,
+        agent_fee: agent_fee,
+        booking_ref_no: bookingReference, // ✅ always use current (real or temp)
         price_original: price || 0,
-        price_markup: total || 0,
+        price_markup: markup_price || 0,
         vat: 0,
         tax: 0,
         gst: 0,
@@ -471,10 +451,11 @@ export default function BookingForm({
             room_id: option_id,
             room_name: selectedRoom?.room?.name,
             room_price: markup_price || 0,
-            room_qaunitity: quantity,
+            room_quantity: quantity, // ✅ fixed typo: was room_qaunitity
             room_extrabed_price: extrabed_price,
             room_extrabed: extrabeds_quantity,
             room_actual_price: price,
+            cc_fee: cc_fee,
           },
         ],
         location: hotel_location || '',
@@ -510,15 +491,13 @@ export default function BookingForm({
         },
       };
 
-      //  Run hotel booking and paymentIntent API in parallel for performance
       const [bookingResponse, paymentRes] = await Promise.all([
-
         hotel_booking(bookingPayload as any),
         fetch("/api/paymentIntent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: total || 0,
+            amount: markup_price || 0,
             currency: booking_currency,
             booking_ref_no: bookingReference,
             module_type: supplier_name,
@@ -539,7 +518,7 @@ export default function BookingForm({
       }
 
       if (!clientSecret) {
-        console.error("Missing clientSecret from payment API:");
+        console.error("Missing clientSecret from payment API");
         alert("Payment setup failed. Please try again.");
         setIsProcessingPayment(false);
         setIsPending(false);
@@ -554,7 +533,6 @@ export default function BookingForm({
         return;
       }
 
-      // Confirm payment
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
@@ -576,7 +554,6 @@ export default function BookingForm({
         alert("Payment did not succeed. Please try again.");
         setIsProcessingPayment(false);
       }
-
     } catch (error) {
       console.error("Payment process error:", error);
       alert("An error occurred. Please try again.");
@@ -585,9 +562,9 @@ export default function BookingForm({
     }
   };
 
-
   const getCountryByIso = (iso: string) => countryList.find((c) => c.iso === iso);
 
+  const [isPending, setIsPending] = useState(false); // moved here for correct scope
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -683,7 +660,6 @@ export default function BookingForm({
           />
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
-
         <div className="w-full max-w-2xl">
           <label htmlFor="nationality" className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.contactInformation?.nationalityLabel}
@@ -705,7 +681,6 @@ export default function BookingForm({
           />
           {errors.nationality && <p className="text-red-500 text-sm mt-1">{errors.nationality.message}</p>}
         </div>
-
         <div className="w-full max-w-2xl">
           <label htmlFor="currentCountry" className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.contactInformation?.currentCountryLabel || "Current Country"}
@@ -729,7 +704,6 @@ export default function BookingForm({
                   singleValue: () =>
                     'flex items-center gap-2 text-gray-800 font-medium truncate',
                   placeholder: () => 'text-gray-400 font-normal',
-                  // ✅ ONLY CHANGE: arrow position based on locale
                   indicatorsContainer: () =>
                     locale?.startsWith('ar') ? 'absolute left-4' : 'absolute right-4',
                 }}
@@ -761,7 +735,6 @@ export default function BookingForm({
                       <span>{data.label}</span>
                     </div>
                   ),
-                  // ✅ ONLY CHANGE: keep arrow rotation, but no margin tricks
                   DropdownIndicator: () => (
                     <Icon
                       icon="mdi:keyboard-arrow-down"
@@ -801,7 +774,6 @@ export default function BookingForm({
                     valueContainer: () => 'flex items-center gap-2 px-1',
                     singleValue: () => 'flex items-center justify-between text-gray-800 font-medium',
                     placeholder: () => 'text-gray-400 font-normal',
-                    //  ONLY CHANGE: arrow position
                     indicatorsContainer: () =>
                       locale?.startsWith('ar') ? 'absolute left-4' : 'absolute right-4',
                   }}
@@ -849,7 +821,6 @@ export default function BookingForm({
             />
             {errors.phoneCountryCode && <p className="text-red-500 text-sm mt-1">{errors.phoneCountryCode.message}</p>}
           </div>
-
           <div className="w-full sm:max-w-122">
             <label htmlFor="phoneNumber" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.contactInformation?.phoneNumberLabel || "Phone Number"}
@@ -891,7 +862,6 @@ export default function BookingForm({
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.5fr_1.5fr] gap-4">
               <div className="w-full">
                 {index < adults ? (
-                  // 🔹 Adults — show title dropdown as usual
                   <>
                     <label
                       htmlFor={`travellers.${index}.title`}
@@ -944,11 +914,8 @@ export default function BookingForm({
                     />
                   </>
                 ) : (
-                  // 🔹 Children — show disabled input with age
                   <>
-                    <label
-                      className="block text-base font-medium text-[#5B697E] mb-2"
-                    >
+                    <label className="block text-base font-medium text-[#5B697E] mb-2">
                       {dict?.bookingForm?.travelersInformation?.ageLabel || "Child Age"}
                     </label>
                     <input
@@ -959,7 +926,6 @@ export default function BookingForm({
                     />
                   </>
                 )}
-
                 {errors.travellers?.[index]?.title && (
                   <p className="text-red-500 text-sm mt-1">{errors.travellers[index].title?.message}</p>
                 )}
@@ -1008,7 +974,6 @@ export default function BookingForm({
           </div>
         ))}
       </div>
-
 
       {/* Payment Method */}
       <div className="flex flex-col gap-3 mb-12">
@@ -1066,13 +1031,8 @@ export default function BookingForm({
         </div>
       </div>
 
-
-
-
       {/* Cancellation Policy */}
       <div className="flex flex-col gap-4 mt-3">
-
-
         {hotelDetails?.cancellation !== "" && (
           <>
             <h3 className="text-xl text-[#0F172BE5] font-semibold">
@@ -1093,7 +1053,6 @@ export default function BookingForm({
             </AccordionInfoCard>
           </>
         )}
-
         <Controller
           name="acceptPolicy"
           control={control}
@@ -1120,7 +1079,7 @@ export default function BookingForm({
       {/* Submit Button */}
       <button
         type="submit"
-        disabled={isPending || isProcessingPayment} //  Block during booking OR payment
+        disabled={isPending || isProcessingPayment}
         className={`w-full text-lg text-white py-3 font-medium rounded-lg mt-5 transition-colors focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 ${(isPending || isProcessingPayment)
           ? 'bg-gray-400 cursor-not-allowed'
           : 'bg-[#163C8C] hover:bg-[#0f2d6b] cursor-pointer focus:ring-[#163C8C]'

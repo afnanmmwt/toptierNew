@@ -645,6 +645,7 @@ interface HotelDetailsPayload {
 
 export const hotel_details = async (payload: HotelDetailsPayload) => {
   try {
+    console.log('actual paylaod', payload)
     const formData = new FormData();
     //  match exactly with API keys
     formData.append("hotel_id", String(payload.hotel_id));
@@ -672,7 +673,8 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
       },
     });
     const data = await response.json().catch(() => null);
-
+    console.log("payloded", formData)
+   console.log("details==========", data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

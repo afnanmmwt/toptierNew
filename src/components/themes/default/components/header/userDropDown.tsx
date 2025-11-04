@@ -64,10 +64,10 @@ export default function ProfileDropdown() {
     router.push("/");
   };
 
-const defaultImage ="https://images.unsplash.com/photo-1633332755192-727a05c4013d"
-  // user?.profile_photo && user.profile_photo !== null
-  //   ? user.profile_photo
-  //   : "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
+const defaultImage =
+  user?.profile_photo && user.profile_photo !== null
+    ? user.profile_photo
+    : "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
 
   // Safe URL resolver for profile photos
   const getValidSrc = (src?: string) => {
@@ -90,22 +90,25 @@ const handleDashboardClick =async() =>{
         try {
           const verify_response = await verify_token();
           if (!verify_response?.status) {
+            toast.error('token not verifying something went wrong')
             router.push("/auth/login");
             return;
           }
           if (user.user_type === "Customer") {
             router.push("/dashboard");
           } else if (user.user_type === "Agent") {
+
             const token = await getAccessToken();
             const url = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(
               token
             )}&user_id=${user.user_id}`;
             window.location.href = url;
-          } else {
+          }
+           else {
             router.push("/auth/login");
           }
         } catch {
-          router.push("/auth/login");
+          console.log('some thing went wrong ')
         }
       })();
 }
@@ -130,7 +133,7 @@ const handleProfiledClick =async() =>{
             router.push("/auth/login");
           }
         } catch {
-          router.push("/auth/login");
+        console.log('something went wrong')
         }
       })();
 }

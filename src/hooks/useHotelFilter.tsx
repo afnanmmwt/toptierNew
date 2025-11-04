@@ -288,7 +288,6 @@ const applyFilters = useCallback(async () => {
   const from_price = priceRange[0];
   const to_price = priceRange[1];
 
-  console.log('apply filter', filters);
 
   try {
     const savedForm = localStorage.getItem("hotelSearchForm");

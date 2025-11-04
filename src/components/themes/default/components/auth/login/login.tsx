@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/react";
 import { useState, useCallback, useEffect } from "react";
 import { useForm, Controller } from 'react-hook-form';
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import Input from "@components/core/input";
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,13 +15,13 @@ import Link from "next/link";
 import { toast } from 'react-toastify';
 import useDirection from "@hooks/useDirection";
 import { useFormState } from "react-dom";
-import { signIn, SignInState } from "@src/actions"; //  Import Server Action
+import { signIn, SignInState, signOut } from "@src/actions"; //  Import Server Action
 const Login = ({ dict }: { dict?: any }) => {
   const { lang } = useParams();
   const router = useRouter();
   const [direction] = useDirection();
   const [isDarkMode] = useDarkMode();
-  const { checkSession } = useUser();
+  const { checkSession,user } = useUser();
   // Zod schema (use dict messages if available)
   const schema = z.object({
     email: z.string().min(1, { message: dict?.login_form?.email_message || "Email is required" }).email(),
@@ -41,6 +41,11 @@ const Login = ({ dict }: { dict?: any }) => {
   //  useFormState
   const initialState: SignInState = { success: false, error: '' };
   const [state, formAction] = useFormState(signIn, initialState);
+  useEffect(()=>{
+    if(user){
+ signOut()
+    }
+  },[])
   // Handle result of Server Action
 useEffect(() => {
     if (state.success) {
@@ -54,8 +59,10 @@ useEffect(() => {
             .find(row => row.startsWith('access-token='))?.split('=')[1];
 
           if (token) {
+            // https://toptier-agent-d-ua92.vercel.app
             window.location.href = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(token)}&user_id=${userId}`;
             return;
+
           }
         }
 

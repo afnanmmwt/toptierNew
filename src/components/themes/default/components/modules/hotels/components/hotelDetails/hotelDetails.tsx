@@ -62,7 +62,7 @@ const HotelsDetails = () => {
       nationality: initialNationality,
     });
   }, [slugArr]);
-
+console.log(slugArr[2]," ", slugArr[3])
   // ✅ Now define ALL remaining hooks — no early return before this point!
   const updateUrl = useCallback(
     (params: typeof searchParams, hotelName: string) => {

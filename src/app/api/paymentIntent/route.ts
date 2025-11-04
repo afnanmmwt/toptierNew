@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     // Parse it into an object
     const decodedData = JSON.parse(decodedString);
-   
+
 
     if (!decodedData?.secret_key) {
       throw new Error("Stripe secret key missing in decoded data");
@@ -32,6 +32,13 @@ export async function POST(req: Request) {
     const user_id = userinfo?.user?.user_id ?? "";
 
     const { amount, currency, email, booking_ref_no, module_type } = await req.json();
+    console.log('amount ==============',amount)
+        console.log('currency ==============',currency)
+
+            console.log('email ==============',email)
+
+                console.log('booking_ref_no ==============',booking_ref_no)
+
     if (!amount || !currency || !email || !booking_ref_no) {
       throw new Error("Missing required payment parameters");
     }

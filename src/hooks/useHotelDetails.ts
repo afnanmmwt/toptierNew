@@ -64,7 +64,7 @@ interface UseHotelDetailsOptions {
 export const useHotelDetails = ({
   initialCheckin,
   initialCheckout,
-  initialNationality = "PK",
+  initialNationality = "US", // 👈 Default United States
   initialCurrency = "USD",
   onSearchSuccess,
   onSearchError,
@@ -96,7 +96,7 @@ let initialForm: HotelForm = {
   adults: 2,
   children: 0,
   children_ages: [],
-  nationality: initialNationality || "PK",
+  nationality: initialNationality || "US",
   currency: initialCurrency || "USD",
 
 };

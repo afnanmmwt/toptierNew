@@ -22,14 +22,14 @@ export default function BookingDetails() {
   const router = useRouter();
   const { priceRateConverssion } = useCurrency();
   const { user } = useUser();
-  const user_type = user?.user_type ?? ""; //  Step 3: safely extract
-  const isAgent = user_type !== "Customer"; // Agent/Admin => true
+  // const user_type = user?.user_type ?? ""; //  Step 3: safely extract
+  // const isAgent = user_type !== "Customer"; // Agent/Admin => true
 
   const { hotelDetails, room, option } = selectedRoom || {};
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const {
     checkin,
     checkout,

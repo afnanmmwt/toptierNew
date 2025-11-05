@@ -81,7 +81,7 @@ export const fetchCountries = async () => {
     formData.append("api_key", api_key ?? "");
 
     const response = await fetch(`${baseUrl}/countries`, {
-      
+
       method: "POST",
       body: formData,
       headers: await getHeaders("application/json"), // do NOT set Content-Type manually
@@ -580,6 +580,7 @@ export const hotel_search = async (payload: HotelSearchPayload & { modules: stri
         Accept: "application/json, text/plain, */*",
       },
     });
+
     const data = await response.json().catch(() => null);
 
     if (!response.ok || data?.status === false) {
@@ -645,8 +646,9 @@ interface HotelDetailsPayload {
 }
 
 export const hotel_details = async (payload: HotelDetailsPayload) => {
+      const userInfo = (await getSession()) as any | null;
+    const user_id = userInfo?.user?.user_id ?? "";
   try {
-    console.log('actual paylaod', payload)
     const formData = new FormData();
     //  match exactly with API keys
     formData.append("hotel_id", String(payload.hotel_id));
@@ -659,6 +661,7 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
     formData.append("language", payload.language || "en");
     formData.append("currency", payload.currency || "usd");
     formData.append("supplier_name", payload.supplier_name || "hotels");
+    formData.append('user_id',user_id)
 
      if(payload.child_age && payload.child_age.length > 0) {
     const formattedAges = payload.child_age.map((age: string) => ({ ages: age }));
@@ -674,8 +677,6 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
       },
     });
     const data = await response.json().catch(() => null);
-    console.log("payloded", formData)
-   console.log("details==========", data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }
@@ -729,16 +730,32 @@ interface UserData {
 }
 
 export interface BookingPayload {
-  agent_id: string,
-  agent_fee: string,
-  supplier_cost:string,
-  supplier_id: string,
+  booking_ref_no: string;
+  booking_date: string;
+  booking_status: string;
+  booking_nights: string;
   price_original: number;
   price_markup: number;
-  actual_price:number;
+  actual_price: number;
+  toptier_fee: string;
+  agent_fee: string;
   vat: number;
   tax: number;
   gst: number;
+  net_profit: number | string;
+  subtotal: number | string;
+  supplier_cost: string | number;
+  supplier_id: string;
+  supplier_payment_type: string;
+  customer_payment_type: string;
+  supplier_payment_status: string;
+  supplier_due_date: string;
+  agent_commission_status: string;
+  agent_payment_type: string;
+  agent_payment_status: string;
+  agent_payment_date: string;
+  iata: string;
+  agent_id: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -746,6 +763,7 @@ export interface BookingPayload {
   phone_country_code: string;
   phone: string;
   country: string;
+  nationality: string;
   stars: number;
   hotel_id: string;
   hotel_name: string;
@@ -753,10 +771,10 @@ export interface BookingPayload {
   hotel_email: string;
   hotel_website: string;
   hotel_address: string;
-  room_data: any[];
+  hotel_img: string;
   location: string;
   location_cords: string;
-  hotel_img: string;
+  room_data: any[];
   checkin: string;
   checkout: string;
   adults: number;
@@ -764,33 +782,77 @@ export interface BookingPayload {
   child_ages: string | number;
   currency_original: string;
   currency_markup: string;
+  payment_date: string;
+  payment_status: string;
+  payment_gateway: string;
+  module_type: string;
+  pnr: string;
+  transaction_id: string;
+  cancellation_request: string;
+  cancellation_status: string;
+  cancellation_response: string;
+  cancellation_date: string;
+  cancellation_error: string;
+  cancellation_terms: string;
   booking_data: BookingData;
+  booking_response: string;
+  error_response: string;
+  booking_note: string;
   supplier: string;
-  user_id?: string;
-  guest: Guest[];
-  nationality: string;
-  payment_gateway?: string;
+  user_id: string;
   user_data: UserData;
-  booking_ref_no: string;
+  guest: Guest[];
+  card: any;
 }
-
-
 
 export const hotel_booking = async (payload: BookingPayload) => {
   try {
-const userInfo = (await getSession()) as any | null;
-const user_id = userInfo?.user?.user_id ?? "";
-const agent_id =
-  userInfo?.user?.user_type === "Agent" ? userInfo.user.user_id : "";
-const agent_fee =userInfo?.user?.user_type === "Agent" ? payload.agent_fee : "0"
+    const userInfo = (await getSession()) as any | null;
+    const user_id = userInfo?.user?.user_id ?? "";
+    const agent_id =
+      userInfo?.user?.user_type === "Agent" ? userInfo.user.user_id : "";
+
     const formData = new FormData();
-    //  Append normal fields
+
+    // 🔹 Core booking info
     formData.append("booking_ref_no", payload.booking_ref_no || "");
-    formData.append("price_original", String(payload.price_original));
-    formData.append("price_markup", String(payload.price_markup));
+    formData.append("booking_date", payload.booking_date || "");
+    formData.append("booking_status", payload.booking_status || "");
+    formData.append("booking_nights", payload.booking_nights || "1");
+
+    // 🔹 Financial details
+formData.append(
+  "price_original",
+  String(payload.price_original).replace(/,/g, "")
+);
+formData.append(
+  "price_markup",
+  String(payload.price_markup).replace(/,/g, "")
+);
+
+
+    // formData.append("actual_price", String(payload.actual_price));
+    formData.append("toptier_fee", payload.toptier_fee);
+    formData.append("agent_fee", payload.agent_fee);
     formData.append("vat", String(payload.vat));
     formData.append("tax", String(payload.tax));
     formData.append("gst", String(payload.gst));
+    formData.append("net_profit", String(payload.net_profit));
+    formData.append("subtotal", String(payload.subtotal));
+    formData.append("supplier_cost", String(payload.supplier_cost));
+    formData.append("supplier_id", payload.supplier_id);
+    formData.append("supplier_payment_type", payload.supplier_payment_type);
+    formData.append("customer_payment_type", payload.customer_payment_type);
+    formData.append("supplier_payment_status", payload.supplier_payment_status);
+    formData.append("supplier_due_date", payload.supplier_due_date);
+    formData.append("agent_commission_status", payload.agent_commission_status);
+    formData.append("agent_payment_type", payload.agent_payment_type);
+    formData.append("agent_payment_status", payload.agent_payment_status);
+    formData.append("agent_payment_date", payload.agent_payment_date);
+    formData.append("iata", "0");
+    formData.append("agent_id", agent_id || payload.agent_id || "");
+
+    // 🔹 Customer info
     formData.append("first_name", payload.first_name);
     formData.append("last_name", payload.last_name);
     formData.append("email", payload.email);
@@ -798,6 +860,9 @@ const agent_fee =userInfo?.user?.user_type === "Agent" ? payload.agent_fee : "0"
     formData.append("phone_country_code", payload.phone_country_code);
     formData.append("phone", payload.phone);
     formData.append("country", payload.country);
+    formData.append("nationality", payload.nationality);
+
+    // 🔹 Hotel info
     formData.append("stars", String(payload.stars));
     formData.append("hotel_id", payload.hotel_id);
     formData.append("hotel_name", payload.hotel_name);
@@ -805,39 +870,57 @@ const agent_fee =userInfo?.user?.user_type === "Agent" ? payload.agent_fee : "0"
     formData.append("hotel_email", payload.hotel_email);
     formData.append("hotel_website", payload.hotel_website);
     formData.append("hotel_address", payload.hotel_address);
+    formData.append("hotel_img", payload.hotel_img);
     formData.append("location", payload.location);
     formData.append("location_cords", payload.location_cords);
-    formData.append("hotel_img", payload.hotel_img);
+
+    // 🔹 Stay info
     formData.append("checkin", payload.checkin);
     formData.append("checkout", payload.checkout);
     formData.append("adults", String(payload.adults));
     formData.append("childs", String(payload.childs));
     formData.append("child_ages", String(payload.child_ages));
+
+    // 🔹 Currency
     formData.append("currency_original", payload.currency_original);
     formData.append("currency_markup", payload.currency_markup);
+
+    // 🔹 Payment & meta
+    formData.append("payment_date", payload.payment_date);
+    formData.append("payment_status", payload.payment_status);
+    formData.append("payment_gateway", payload.payment_gateway);
+    formData.append("module_type", payload.module_type);
+    formData.append("pnr", payload.pnr);
+    formData.append("transaction_id", payload.transaction_id);
+    formData.append("user_id", user_id || payload.user_id);
+
+    // 🔹 Cancellation info
+    formData.append("cancellation_request", payload.cancellation_request);
+    formData.append("cancellation_status", payload.cancellation_status);
+    formData.append("cancellation_response", payload.cancellation_response);
+    formData.append("cancellation_date", payload.cancellation_date);
+    formData.append("cancellation_error", payload.cancellation_error);
+    formData.append("cancellation_terms", payload.cancellation_terms);
+
+    // 🔹 Notes and responses
+    formData.append("booking_note", payload.booking_note);
     formData.append("supplier", payload.supplier);
-    formData.append("nationality", payload.nationality);
-    formData.append("payment_gateway", payload.payment_gateway ?? "");
-    formData.append("user_id", user_id ?? "");
-    formData.append('agent_id', agent_id)
-    formData.append('supplier_cost',payload.supplier_cost)
-    // hardcoded fields
-    formData.append("supplier_id",payload.supplier_id ?? "");
-    formData.append("agent_fee",agent_fee);
-    // agent_fee= price_markup - price_original
-    formData.append("net_profit", payload.agent_fee);
+    formData.append("booking_response", payload.booking_response);
+    formData.append("error_response", payload.error_response);
 
-
-
-    // Append JSON fields (must stringify)
+    // 🔹 JSON fields
     formData.append("room_data", JSON.stringify(payload.room_data));
     formData.append("booking_data", JSON.stringify(payload.booking_data));
     formData.append("guest", JSON.stringify(payload.guest));
     formData.append("user_data", JSON.stringify(payload.user_data));
+    formData.append("card", JSON.stringify(payload.card));
+
+    // 🔹 Send request
     const response = await fetch(`${baseUrl}/hotel_booking`, {
       method: "POST",
       body: formData,
     });
+
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
@@ -845,6 +928,7 @@ const agent_fee =userInfo?.user?.user_type === "Agent" ? payload.agent_fee : "0"
 
     return data;
   } catch (error) {
+    console.error("Booking Error:", error);
     return { error: (error as Error).message || "An error occurred" };
   }
 };

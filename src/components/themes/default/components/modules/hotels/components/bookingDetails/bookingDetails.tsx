@@ -222,10 +222,7 @@ const [roomPrice, setRoomPrice] = useState<string>(() => {
                   {dict?.bookingDetails?.total}
                 </span>
                 <span className="text-lg font-bold text-[#163C8C]">
-                  {getCurrencySymbol(currency)}{" "}{finalTotal.toLocaleString('en-US', {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})}
+                  {getCurrencySymbol(currency)}{" "}{finalTotal}
                 </span>
               </div>
             </div>

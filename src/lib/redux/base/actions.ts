@@ -22,6 +22,7 @@ export const setDestination = createAction<
     status: string;
   }[]
 >("SET_DESTINATION");
+
 interface HotelData {
   hotel_id: string;
   name: string;
@@ -48,4 +49,6 @@ export const setHotels = createAction<HotelData[]>("SET_HOTELS");
 export const setSidebarExpanded = createAction<boolean>("SET_SIDEBAR_EXPANDED");
 export const setSeletecRoom= createAction<any>("SET_SELECTED_ROOM")
 export const setSeletecHotel= createAction<any>("SET_SELECTED_HOTEL")
+export const setBookingReference=createAction<string>('SET_BOOKINGRERENCE')
+
 

@@ -41,8 +41,6 @@ const HotelsDetails = () => {
   const textRef = useRef<HTMLDivElement>(null);
 
   const { featured_hotels } = useAppSelector((state) => state.appData?.data);
-  console.log(featured_hotels);
-
   // Initialize from URL
   const slugArr = (params?.slug as string[]) || [];
 
@@ -64,8 +62,7 @@ const HotelsDetails = () => {
       nationality: initialNationality,
     });
   }, [slugArr]);
-console.log(slugArr[2]," ", slugArr[3])
-  // ✅ Now define ALL remaining hooks — no early return before this point!
+  //  Now define ALL remaining hooks — no early return before this point!
   const updateUrl = useCallback(
     (params: typeof searchParams, hotelName: string) => {
       const slugName = hotelName.toLowerCase().replace(/\s+/g, "-");

@@ -126,7 +126,7 @@ const useHotelSearch = () => {
   // FIX 1: Add separate loading states
   const [isSearching, setIsSearching] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
- 
+
   const listRef = useRef<HTMLDivElement | null>(null);
   const [page, setPage] = useState(1);
 
@@ -350,7 +350,7 @@ const useHotelSearch = () => {
         });
 
         localStorage.setItem("hotelSearchForm", JSON.stringify(form));
-    
+
         const destinationSlug = form.destination.trim().replace(/\s+/g, "-");
 
         const url = `/hotel/${destinationSlug}/${params.get(
@@ -467,15 +467,13 @@ const useHotelSearch = () => {
     let suplier_name;
     if (selectedNationality) {
        parsedFormData = JSON.parse(selectedNationality); // now it's an object
-
-    
     }
     //  construct URL
-    const url = `/hotelDetails/${hotel.hotel_id}/${slugName}/${form.checkin}/${form.checkout}/${form.rooms}/${form.adults}/${parsedFormData.children}/${parsedFormData.nationality}`;
+    const url = `/hotelDetails/${hotel.hotel_id}/${slugName}/${parsedFormData.checkin}/${parsedFormData.checkout}/${form.rooms}/${form.adults}/${parsedFormData.children}/${parsedFormData.nationality}`;
     dispatch(setSeletecHotel(hotel));
     //  navigate
     router.push(url);
-   
+
   };
 
   // Other utility functions

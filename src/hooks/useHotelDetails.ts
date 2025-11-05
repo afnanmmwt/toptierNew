@@ -77,6 +77,7 @@ export const useHotelDetails = ({
   const formatDate = (date: Date) => {
     return date.toISOString().split("T")[0];
   };
+  console.log("initial checkin and initail checkout", initialCheckin, initialCheckout)
   const today = new Date();
   const defaultCheckin = initialCheckin || formatDate(today);
   const tomorrow = new Date();
@@ -88,7 +89,6 @@ const storedForm = typeof window !== "undefined"
   : null;
 const {user}=useUser()
 let initialForm: HotelForm = {
-
   checkin: defaultCheckin,
   checkout: defaultCheckout,
   rooms: 1,
@@ -223,6 +223,7 @@ const [form, setForm] = useState<HotelForm>(initialForm);
       //  Include children_ages in URL
       const childrenAgesParam = form.children_ages?.join(",") || "";
       const url = `/hotelDetails/${currentHotel.hotel_id}/${slugName}/${form.checkin}/${form.checkout}/${form.rooms}/${form.adults}/${form.children}/${nationality}/${childrenAgesParam}`;
+      console.log('url for hotel detalssss', url)
 
       if (onSearchRefetch) {
         onSearchRefetch(form);

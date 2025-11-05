@@ -21,6 +21,7 @@ const Login = ({ dict }: { dict?: any }) => {
   const router = useRouter();
   const [direction] = useDirection();
   const [isDarkMode] = useDarkMode();
+  const lastRoute=sessionStorage.getItem('lastRoute')
   const { checkSession,user } = useUser();
   // Zod schema (use dict messages if available)
   const schema = z.object({
@@ -48,28 +49,31 @@ const Login = ({ dict }: { dict?: any }) => {
   },[])
   // Handle result of Server Action
 useEffect(() => {
-    if (state.success) {
-      toast.success(dict?.login_form?.success_message || "Login successful!");
-      checkSession?.().then(() => {
-        const { userType, userId } = state;
+  if (state.success) {
+    toast.success(dict?.login_form?.success_message || "Login successful!");
 
-        if (userType === "Agent" && userId) {
-          const token = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('access-token='))?.split('=')[1];
+    checkSession?.().then(() => {
+      const { userType, userId } = state;
 
-          if (token) {
-            // https://toptier-agent-d-ua92.vercel.app
-            window.location.href = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(token)}&user_id=${userId}`;
-            return;
+      if (userType === "Agent" && userId) {
+        const token = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('access-token='))?.split('=')[1];
 
-          }
+        // Only redirect externally if lastRoute is NOT "/bookings"
+        if (token && lastRoute !== "/bookings") {
+          window.location.href = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(token)}&user_id=${userId}`;
+          return;
         }
+      }
 
-        router.push(`/${lang}`);
-      });
-    }
-  }, [state, router, lang, dict, checkSession]);
+      // Fallback: normal redirect
+      router.push(lastRoute === "/bookings" ? "/bookings" : `/${lang}`);
+
+    });
+  }
+}, [state, router, lang, dict, checkSession, lastRoute]);
+
   // Client validation only — then submit hidden form
   const onSubmit = useCallback(
     async (values: Values) => {

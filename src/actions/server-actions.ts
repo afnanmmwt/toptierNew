@@ -677,6 +677,9 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
       },
     });
     const data = await response.json().catch(() => null);
+        console.log('==================data details', formData)
+
+    console.log('==================data details', data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

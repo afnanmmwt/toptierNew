@@ -215,15 +215,23 @@ const [form, setForm] = useState<HotelForm>(initialForm);
       if (!currentHotelString) {
         throw new Error("No current hotel found in storage");
       }
+  //  store full hotel object in localStorage
 
+    const formData = localStorage.getItem("hotelSearchForm");
+    //  generate slug
+    let parsedFormData:any;
+    let suplier_name;
+    if (formData) {
+       parsedFormData = JSON.parse(formData); // now it's an object
+    }
       const currentHotel = JSON.parse(currentHotelString);
       const nationality = form.nationality;
       const slugName = currentHotel.name.toLowerCase().replace(/\s+/g, "-");
       // const supplier=storedForm?.suplier_name
       //  Include children_ages in URL
       const childrenAgesParam = form.children_ages?.join(",") || "";
-      const url = `/hotelDetails/${currentHotel.hotel_id}/${slugName}/${form.checkin}/${form.checkout}/${form.rooms}/${form.adults}/${form.children}/${nationality}/${childrenAgesParam}`;
-      console.log('url for hotel detalssss', url)
+      const url = `/hotelDetails/${currentHotel.hotel_id}/${slugName}/${parsedFormData.checkin}/${parsedFormData.checkout}/${parsedFormData.rooms}/${parsedFormData.adults}/${parsedFormData.children}/${nationality}/${childrenAgesParam}`;
+
 
       if (onSearchRefetch) {
         onSearchRefetch(form);

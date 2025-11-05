@@ -271,6 +271,7 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
     phonecode: `${c.phonecode}`,
   }));
 useEffect(()=>{
+   dispatch(setBookingReference(""));
 const ref_no= new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14)
 dispatch(setBookingReference(ref_no))
 },[])

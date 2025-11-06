@@ -14,12 +14,11 @@ export default async function Page({ params }: {
 }) {
   const { lang } = await params
   const dict = await getDictionary(lang)
-
+ 
 
   return (
     // <div>home page</div>
     <TransitionLayout>
-
       <div className="flex  flex-col bg-white dark:bg-gray-900  dark:text-gray-50 " >
          <BookingDetails/>
       </div>

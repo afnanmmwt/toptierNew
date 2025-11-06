@@ -216,7 +216,7 @@ export const sign_up = async (signUpData: {
   // terms?: boolean;
 }) => {
   try {
-    const formData = new FormData();
+    const formData = new FormData();    
     formData.append("first_name", signUpData.first_name);
     formData.append("last_name", signUpData.last_name);
     formData.append("email", signUpData.email);
@@ -314,6 +314,7 @@ export async function signIn(
     });
 
     const data = await response.json();
+console.log(data ,"first data");
 
     // Check if login actually succeeded
     if (!response.ok || data?.status === false) {
@@ -940,6 +941,7 @@ formData.append(
 export const hotel_invoice = async (payload: string) => {
   try {
     const formData = new FormData();
+console.log(formData ,"first data");
 
     //  match exactly with API keys
     formData.append("booking_ref_no", payload);
@@ -950,6 +952,7 @@ export const hotel_invoice = async (payload: string) => {
     });
 
     const data = await response.json().catch(() => null);
+console.log(data ,"secound data");
 
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };

@@ -16,7 +16,7 @@ import useDictionary from '@hooks/useDict'; //  Add this
 import useLocale from '@hooks/useLocale';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useUser } from '@hooks/use-user';
-import { setBookingReference } from '@lib/redux/base';
+import { country, setBookingReference } from '@lib/redux/base';
 import { toast } from 'react-toastify';
 // Get dict for error messages
 const useBookingFormSchema = (dict: any) => {
@@ -132,11 +132,9 @@ export default function BookingForm(){
     lastName: typedUser?.last_name || '',
     address: typedUser?.address1 || '',
     email: typedUser?.email || '',
-    nationality: typedUser?.country_code || '',
-    currentCountry: typedUser?.country_code || '',
-    phoneCountryCode: typedUser?.phone_country_code
-      ? `+${typedUser.phone_country_code}`
-      : '',
+    nationality:  "US",
+    currentCountry: "US",
+    phoneCountryCode: "1",
     phoneNumber: typedUser?.phone || '',
     travellers: [{ title: dict?.bookingForm?.titles?.mr, firstName: '', lastName: '', age: '' }],
     cardName: '',
@@ -357,7 +355,7 @@ const bookingPayload = {
   address: address || "",
   phone_country_code: phoneCountryCode || "+92",
   phone: phoneNumber || "000-000-000",
-  country: hotel_country || "UNITED ARAB EMIRATES",
+  country: currentCountry || "UNITED ARAB EMIRATES",
 
   // 🔹 Hotel info
   stars: stars || 0,
@@ -542,7 +540,7 @@ const bookingPayload = {
   address: address || "",
   phone_country_code: phoneCountryCode || "+92",
   phone: phoneNumber || "000-000-000",
-  country: hotel_country || "UNITED ARAB EMIRATES",
+  country: currentCountry || "UNITED ARAB EMIRATES",
   nationality: nationality || "",
 
   // 🔹 Hotel info

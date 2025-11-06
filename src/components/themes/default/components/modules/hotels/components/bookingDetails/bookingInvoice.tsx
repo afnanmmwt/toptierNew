@@ -30,7 +30,7 @@ interface RoomData {
   currency: string;
   room_price: string;
   room_name: string;
-  room_qaunitity: string;
+  room_quantity: string;
   room_price_per_night: string;
 }
 
@@ -40,7 +40,7 @@ interface HotelInvoiceProps {
 
 const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
   const invoiceRef = useRef<HTMLDivElement>(null);
-  
+
   const appData = useAppSelector((state) => state.appData?.data?.app);
   // console.log(appData);
   const { locale } = useLocale();
@@ -76,11 +76,11 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
   }
 
   const data = invoiceDetails[0];
-  console.log(data, "usman");
-  
+
+
   const travellers: Traveller[] = JSON.parse(data.guest || "[]");
   const rooms: RoomData[] = JSON.parse(data.room_data || "[]");
-  console.log(rooms);
+
   const booking_Data = JSON.parse(data.booking_data);
   const invoiceDetailsBooking = JSON.parse(data.booking_data || "{}");
   const invoiceUrl = `${window.location.origin}/hotel/invoice/${data.booking_ref_no}`;
@@ -108,7 +108,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       checkout: data.checkout,
       totalNights: 1,
       type: rooms[0]?.room_name || "N/A",
-      quantity: rooms[0].room_qaunitity,
+      quantity: rooms[0].room_quantity,
       price: rooms[0]?.room_price_per_night || data.price_markup,
       currency: rooms[0]?.currency || data.currency_markup,
     },
@@ -280,7 +280,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       flex-wrap: wrap !important;
       gap: 10px !important;
       margin-top: 5px !important;
-      
+
     }
 
     .pdf-rendering .bookingInfoItem {
@@ -593,7 +593,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     .pdf-rendering .rateCommentItem {
       padding-bottom: 12px !important;
       padding-left: 7px !important;
-     
+
     }
 
 
@@ -603,14 +603,14 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
       justify-content: space-between !important;
       align-items: center !important;
       padding: 0px 6px 13px 6px !important;
-      
+
       background: #f9fafb !important;
       border-radius: 3px !important;
       margin-bottom: 6px !important;
     }
 
     .pdf-rendering .taxLabel {
-    
+
       font-size: 11px !important;
       font-weight: 600 !important;
     }
@@ -1063,7 +1063,7 @@ View Invoice: ${invoiceUrl}`;
                   <td className="roomCell">
                     {dict?.hotelInvoice?.roomDetails?.quantity}
                   </td>
-                  <td className="roomCell">{bookingData.room.quantity}</td>
+                  <td className="roomCell">{rooms[0]?.room_quantity}</td>
                 </tr>
                 <tr>
                   <td className="roomCell">{dict?.modal?.roomPriceLabel}</td>

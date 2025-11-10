@@ -63,7 +63,7 @@ useEffect(() => {
           .find(row => row.startsWith('access-token='))?.split('=')[1];
 
         if (token && lastRoute !== "/bookings") {
-          window.location.href = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(token)}&user_id=${userId}`;
+          window.location.href = `http://localhost:3001/?token=${encodeURIComponent(token)}&user_id=${userId}`;
           return;
         }
       }

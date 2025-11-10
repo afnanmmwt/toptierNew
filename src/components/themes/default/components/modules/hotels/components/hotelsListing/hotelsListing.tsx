@@ -436,6 +436,7 @@ function getOptionLabel(option: string) {
                 {filteredHotels.map((hotel: any, index: number) => (
                   <HotelsListingCard
                     key={`${hotel.hotel_id}-${index}`}
+                    favourite={true}
                     hotel={hotel}
                     viewMode={viewMode}
                     onBookNow={(hotel: any) => detailsBookNowHandler(hotel)}
@@ -472,6 +473,7 @@ function getOptionLabel(option: string) {
                         setActiveHotelId={setActiveHotelId}
                         activeHotelId={activeHotelId}
                         loading={loadingHotelId}
+                        favourite={true}
                       />
                     ))}
                   </div>

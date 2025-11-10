@@ -19,7 +19,8 @@ interface HotelListingCardProps {
   onMapShow?: (hotel: any) => void;
   viewMode: any;
   onBookNow: any;
-  loading: null | string
+  loading: null | string;
+  favourite:boolean;
 }
 
 const HotelCard = memo(function HotelCard({
@@ -29,7 +30,8 @@ const HotelCard = memo(function HotelCard({
   onMapShow,
   activeHotelId,
   setActiveHotelId,
-  loading
+  loading,
+  favourite=true
 }: HotelListingCardProps) {
   const { user } = useUser();
   // Use number state to match API (0 = not fav, 1 = fav)
@@ -211,7 +213,7 @@ const HotelCard = memo(function HotelCard({
     dict?.hotel_listing?.book_now || "Book Now"
   )}
           </button>
-          <button
+         {favourite && <button
             onClick={toggleLike}
             className="bg-[#EBEFF4] cursor-pointer hover:bg-gray-200 rounded-full transition-all duration-200 flex items-center justify-center flex-shrink-0 w-12 h-12 sm:w-11 sm:h-11 lg:w-11.5 lg:h-11.5"
             aria-label={`${isFav === 1 ? "Unlike" : "Like"} ${hotel.name}`}
@@ -232,7 +234,7 @@ const HotelCard = memo(function HotelCard({
                 fill={isFav === 1 && user ? "#EF4444" : "none"}
               />
             </svg>
-          </button>
+          </button>}
         </div>
       </div>
     </div>

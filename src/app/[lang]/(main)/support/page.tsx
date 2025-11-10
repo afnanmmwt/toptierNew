@@ -7,18 +7,13 @@ import TransitionLayout from '@src/utils/pageTransition'
 // import { HotelDetails } from '@components/themes/default'
 import Support from '@components/themes/default/components/home/supportUs/supportus'
 
-export default async function Page({ params }: {
-  params: Promise<{ lang: 'en' | 'ar' }>
-}) {
-  const { lang } = await params
-  const dict = await getDictionary(lang)
-
+export default async function Page() {
   return (
     // <div>home page</div>
     <TransitionLayout>
       <div className="flex  flex-col bg-white dark:bg-gray-900  dark:text-gray-50 " >
          {/* <HotelDetails/> */}
-         
+
          <Support/>
       </div>
     </TransitionLayout>

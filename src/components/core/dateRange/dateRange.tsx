@@ -100,7 +100,7 @@ export default function CustomDateRangePicker({
       {isOpen && (
        <div
   className={`absolute z-50 mt-2 bg-white rounded-xl shadow-lg overflow-hidden
-    ${direction === "rtl" ? "-left-6 rtl-date-picker" : "-left-6"}
+    ${direction === "rtl" ? "right-0 rtl-date-picker" : "-left-6"}
     w-[calc(100vw-2rem)] md:w-auto`}
   dir={direction}
 >

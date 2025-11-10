@@ -288,6 +288,32 @@ body:is(.dark *) {
 }
 
 
+[dir="rtl"] .rdrDayStartPreview {
+  left: 0 !important;
+  right: 5% !important;
+  border-radius: 0 1.042em 1.042em 0 !important;
+}
+
+[dir="rtl"] .rdrDayEndPreview {
+  left: 5% !important;
+  right: 0 !important;
+  border-radius: 1.042em 0 0 1.042em !important;
+}
+
+[dir="rtl"] .rdrDayInPreview {
+  left: 0 !important;
+  right: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* make sure preview sits correct under number */
+[dir="rtl"] .rdrDay .rdrDayPreview {
+  inset-inline: 0 !important;
+}
+
+
+
+
 
 /* //==================== invoice ===================== */
 /* HotelInvoice.module.css */

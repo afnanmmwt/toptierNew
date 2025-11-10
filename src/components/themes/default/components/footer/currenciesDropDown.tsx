@@ -3,11 +3,11 @@ import { useState, useRef, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@lib/redux/store";
 import { Icon } from "@iconify/react";
 import { setCurrency } from "@lib/redux/base";
-import useCurrency from "@hooks/useCurrency"; // 👈 Import your custom hook
-import { useRouter } from "next/navigation"; //  import router
+import useCurrency from "@hooks/useCurrency";
+import { useRouter } from "next/navigation";
 import { setAppData } from "@lib/redux/appData/actions";
 
-//  Map of symbols/logos by currency name
+// Map of symbols/logos by currency name
 const currencyMap: Record<string, React.ReactNode> = {
   USD: <Icon icon="flag:gb-4x3" width="22" height="22" />,
   EUR: <Icon icon="flag:eu-4x3" width="22" height="22" />,
@@ -18,22 +18,29 @@ const currencyMap: Record<string, React.ReactNode> = {
 export default function CurrencyDropdown() {
   const dispatch = useAppDispatch();
   const { currencies } = useAppSelector((state) => state.appData?.data);
-  const { currency } = useCurrency(); // use your hook
-   const router = useRouter();
+  const { currency } = useCurrency();
+  const router = useRouter();
 
   const [selected, setSelected] = useState<string>(currency || "USD");
   const [open, setOpen] = useState(false);
+  const [isRTL, setIsRTL] = useState(false); // 👈 RTL state
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ✅ Keep `selected` synced with Redux currency
+  // keep selected synced with Redux/hook
   useEffect(() => {
-    if (currency) {
-      setSelected(currency);
-    }
+    if (currency) setSelected(currency);
   }, [currency]);
 
-  // ✅ Close on outside click
+  // detect RTL from <html dir="...">
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      const dir = document.documentElement.getAttribute("dir") || "ltr";
+      setIsRTL(dir.toLowerCase() === "rtl");
+    }
+  }, []);
+
+  // close on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -55,11 +62,14 @@ export default function CurrencyDropdown() {
           {/* {currencyMap[selected] ?? <span className="font-bold">¤</span>} */}
           {selected}
         </span>
+
+        {/* Chevron (mirrors in RTL, rotates on open) */}
         <svg
-          className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 transition-transform ${open ? "rotate-180" : ""} ${isRTL ? "absolute -right-1" : ""}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          aria-hidden="true"
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
@@ -72,15 +82,14 @@ export default function CurrencyDropdown() {
             <button
               key={c.iso}
               onClick={async () => {
-  setSelected(c.name);
-  setOpen(false);
-  dispatch(setCurrency(c.name));
-  localStorage.setItem("currency", c.name);
-  await dispatch(setAppData());
-  router.replace("/"); // navigate to home
-  router.refresh(); // force a refresh / re-render
-}}
-
+                setSelected(c.name);
+                setOpen(false);
+                dispatch(setCurrency(c.name));
+                localStorage.setItem("currency", c.name);
+                await dispatch(setAppData());
+                router.replace("/");
+                router.refresh();
+              }}
               className={`flex items-center cursor-pointer gap-3 px-4 py-3 rounded-md text-sm text-gray-500 dark:text-gray-300 w-full text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
                 selected === c.name ? "bg-gray-100 dark:bg-gray-700" : ""
               }`}

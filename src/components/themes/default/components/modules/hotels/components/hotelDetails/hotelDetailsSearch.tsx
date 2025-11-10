@@ -95,7 +95,7 @@ export default function HotelDetailsSearch({
                     <button
                       type="button"
                       onClick={toggleGuestsDropdown}
-                      className={`w-full flex items-center justify-between ${direction === "rtl" ? "pr-11 pl-4" : "pl-11 pr-4"} py-2.5 text-xs hover:bg-gray-100 hover:border-gray-300 border border-gray-200 rounded-xl text-gray-900 dark:bg-gray-800 dark:border-gray-600 cursor-pointer dark:hover:bg-gray-700 dark:hover:border-gray-500 transition-all duration-200`}
+                      className={`w-full flex items-center justify-between ${direction === "rtl" ? "pr-11 pl-5.5" : "pl-11 pr-4"} py-2.5 text-xs hover:bg-gray-100 hover:border-gray-300 border border-gray-200 rounded-xl text-gray-900 dark:bg-gray-800 dark:border-gray-600 cursor-pointer dark:hover:bg-gray-700 dark:hover:border-gray-500 transition-all duration-200`}
                     >
                       {/* Person Icon on RIGHT side in RTL */}
                       <div className={`absolute ${direction === "rtl" ? "right-3" : "left-4"} bottom-1 transform -translate-y-1/2 text-gray-400`}>
@@ -238,11 +238,11 @@ export default function HotelDetailsSearch({
                       onMenuClose={() => setIsNationalityOpen(false)}
                       classNames={{
                         control: () =>
-                          'w-full font-medium pl-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 shadow-none',
-                        valueContainer: () => 'flex items-center gap-2 px-1',
+                          'w-full font-medium px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 shadow-none',
+                        valueContainer: () => 'flex items-center gap-2 pl-1',
                         singleValue: () => 'flex items-center gap-2',
                         placeholder: () => 'text-gray-400',
-                        indicatorsContainer: () => direction === "rtl" ? 'absolute left-4 top-3' : 'absolute right-4 top-3',
+                        indicatorsContainer: () => direction === "rtl" ? 'absolute left-3 top-3' : 'absolute right-4 top-3',
                       }}
                       components={{
                         Option: ({ data, ...props }) => (

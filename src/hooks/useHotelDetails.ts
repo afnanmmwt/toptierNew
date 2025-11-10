@@ -77,7 +77,7 @@ export const useHotelDetails = ({
   const formatDate = (date: Date) => {
     return date.toISOString().split("T")[0];
   };
-  console.log("initial checkin and initail checkout", initialCheckin, initialCheckout)
+
   const today = new Date();
   const defaultCheckin = initialCheckin || formatDate(today);
   const tomorrow = new Date();
@@ -127,6 +127,7 @@ const [form, setForm] = useState<HotelForm>(initialForm);
   const guestsDropdownRef = useRef<HTMLDivElement | null>(null);
   const totalGuests = form.adults + form.children;
   const isFormValid = Object.keys(errors).length === 0;
+  const [roomOptionLoadingId, setRommOptionLoadingId]=useState<null>(null)
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -267,13 +268,21 @@ const [form, setForm] = useState<HotelForm>(initialForm);
       room,
       option,
     };
+setRommOptionLoadingId(option.id)
     dispatch(setSeletecRoom(roomData));
     if(!user){
-  sessionStorage.setItem('lastRoute', "/bookings");
+        setTimeout(() => {
+          setRommOptionLoadingId(null)
+     sessionStorage.setItem('lastRoute', "/bookings");
   router.replace('/auth/login');
+  }, 500);
+
     }
     else{
-router.push(`/bookings`);
+       setTimeout(() => {
+          setRommOptionLoadingId(null)
+ router.push(`/bookings`);
+  }, 500);
     }
 
 
@@ -319,5 +328,6 @@ router.push(`/bookings`);
     validateForm,
     formatDate,
     handleReserveRoom,
+    roomOptionLoadingId
   };
 };

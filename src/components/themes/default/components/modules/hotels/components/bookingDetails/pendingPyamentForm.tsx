@@ -1,6 +1,6 @@
 // components/booking/PendingPaymentForm.tsx
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
 import useCountries from '@hooks/useCountries';
 import { useAppDispatch } from '@lib/redux/store';
@@ -29,7 +29,6 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
 
   const adults = parseInt(parsedInvoice.adults) || 0;
   const children = parseInt(parsedInvoice.childs) || 0;
-  const totalTravelers = adults + children;
 
   // =============== FORM STATE ===============
   const [formData, setFormData] = useState({
@@ -63,42 +62,50 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  // Country data
+
+
+  // Country data - useMemo to prevent recreating on every render
   const excludedCodes = ['0', '381', '599'];
-  const countryList = Array.isArray(rawCountries)
-    ? rawCountries
-        .map((c: any) => ({
-          iso: c.iso || c.code || '',
-          name: c.nicename || c.name || '',
-          phonecode: c.phonecode?.toString() || '0',
-        }))
-        .filter((c) => c.iso && c.name && !excludedCodes.includes(c.phonecode))
-    : [];
+  const countryList = useMemo(() => {
+    return Array.isArray(rawCountries)
+      ? rawCountries
+          .map((c: any) => ({
+            iso: c.iso || c.code || '',
+            name: c.nicename || c.name || '',
+            phonecode: c.phonecode?.toString() || '0',
+          }))
+          .filter((c) => c.iso && c.name && !excludedCodes.includes(c.phonecode))
+      : [];
+  }, [rawCountries]);
 
-  const countryOptions = countryList.map((c) => ({
-    value: c.iso,
-    label: c.name,
-    iso: c.iso,
-    phonecode: c.phonecode,
-  }));
+  const countryOptions = useMemo(() =>
+    countryList.map((c) => ({
+      value: c.iso,
+      label: c.name,
+      iso: c.iso,
+      phonecode: c.phonecode,
+    })), [countryList]
+  );
 
-  const phoneCodeOptions = countryList.map((c) => ({
-    value: `+${c.phonecode}`,
-    label: `+${c.phonecode}`,
-    iso: c.iso,
-    phonecode: `${c.phonecode}`,
-  }));
+  const phoneCodeOptions = useMemo(() =>
+    countryList.map((c) => ({
+      value: `+${c.phonecode}`,
+      label: `+${c.phonecode}`,
+      iso: c.iso,
+      phonecode: `${c.phonecode}`,
+    })), [countryList]
+  );
 
   // =============== EFFECTS ===============
-  useEffect(() => {
-    if (bookingReference) {
-      dispatch(setBookingReference(bookingReference));
-    }
-  }, [bookingReference, dispatch]);
+  // useEffect(() => {
+  //   if (bookingReference) {
+  //     dispatch(setBookingReference(bookingReference));
+  //   }
+  // }, [bookingReference, dispatch]);
 
   useEffect(() => {
     const country = countryList.find((c) => c.iso === formData.currentCountry);
-    if (country) {
+    if (country && formData.phoneCountryCode !== `+${country.phonecode}`) {
       setFormData((prev) => ({ ...prev, phoneCountryCode: `+${country.phonecode}` }));
     }
   }, [formData.currentCountry, countryList]);
@@ -107,25 +114,25 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.firstName.trim()) newErrors.firstName = dict?.bookingForm?.errors?.firstNameRequired;
-    if (!formData.lastName.trim()) newErrors.lastName = dict?.bookingForm?.errors?.lastNameRequired;
-    if (!formData.address.trim()) newErrors.address = dict?.bookingForm?.errors?.addressRequired;
-    if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = dict?.bookingForm?.errors?.invalidEmail;
-    if (!formData.nationality) newErrors.nationality = dict?.bookingForm?.errors?.nationalityRequired;
-    if (!formData.currentCountry) newErrors.currentCountry = dict?.bookingForm?.errors?.currentCountryRequired;
-    if (!formData.phoneCountryCode) newErrors.phoneCountryCode = dict?.bookingForm?.errors?.countryCodeRequired;
-    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = dict?.bookingForm?.errors?.phoneNumberRequired;
-    if (!formData.cardName.trim()) newErrors.cardName = dict?.bookingForm?.errors?.cardNameRequired;
-    if (!formData.acceptPolicy) newErrors.acceptPolicy = dict?.bookingForm?.errors?.acceptPolicyRequired;
+    if (!formData.firstName.trim()) newErrors.firstName = dict?.bookingForm?.errors?.firstNameRequired || 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = dict?.bookingForm?.errors?.lastNameRequired || 'Last name is required';
+    if (!formData.address.trim()) newErrors.address = dict?.bookingForm?.errors?.addressRequired || 'Address is required';
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) newErrors.email = dict?.bookingForm?.errors?.invalidEmail || 'Invalid email';
+    if (!formData.nationality) newErrors.nationality = dict?.bookingForm?.errors?.nationalityRequired || 'Nationality is required';
+    if (!formData.currentCountry) newErrors.currentCountry = dict?.bookingForm?.errors?.currentCountryRequired || 'Country is required';
+    if (!formData.phoneCountryCode) newErrors.phoneCountryCode = dict?.bookingForm?.errors?.countryCodeRequired || 'Country code is required';
+    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = dict?.bookingForm?.errors?.phoneNumberRequired || 'Phone number is required';
+    if (!formData.cardName.trim()) newErrors.cardName = dict?.bookingForm?.errors?.cardNameRequired || 'Cardholder name is required';
+    if (!formData.acceptPolicy) newErrors.acceptPolicy = dict?.bookingForm?.errors?.acceptPolicyRequired || 'Please accept terms and conditions';
 
-    travellers.forEach((t:any, i:any) => {
-      if (!t.title.trim()) newErrors[`travellers.${i}.title`] = dict?.bookingForm?.errors?.titleRequired;
-      if (!t.firstName.trim()) newErrors[`travellers.${i}.firstName`] = dict?.bookingForm?.errors?.firstNameRequired;
-      if (!t.lastName.trim()) newErrors[`travellers.${i}.lastName`] = dict?.bookingForm?.errors?.lastNameRequired;
+    travellers.forEach((t: any, i: any) => {
+      if (i < adults && !t.title.trim()) newErrors[`travellers.${i}.title`] = dict?.bookingForm?.errors?.titleRequired || 'Title is required';
+      if (!t.firstName.trim()) newErrors[`travellers.${i}.firstName`] = dict?.bookingForm?.errors?.firstNameRequired || 'First name is required';
+      if (!t.lastName.trim()) newErrors[`travellers.${i}.lastName`] = dict?.bookingForm?.errors?.lastNameRequired || 'Last name is required';
     });
 
     if (travellers.length === 0) {
-      newErrors.travellers = dict?.bookingForm?.errors?.atLeastOneTraveller;
+      newErrors.travellers = dict?.bookingForm?.errors?.atLeastOneTraveller || 'At least one traveller required';
     }
 
     setErrors(newErrors);
@@ -140,8 +147,8 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
   };
 
   const handleTravellerChange = (index: number, field: string, value: string) => {
-    setTravellers((prev:any) =>
-      prev.map((t:any, i:any) => (i === index ? { ...t, [field]: value } : t))
+    setTravellers((prev: any) =>
+      prev.map((t: any, i: any) => (i === index ? { ...t, [field]: value } : t))
     );
   };
 
@@ -157,13 +164,24 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
 
   // =============== SUBMIT ===============
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('clicldlsldssdj')
     e.preventDefault();
-    if (!validate()) return;
-
+    if (!validate()) {
+      toast.error('Please fill all required fields');
+      return;
+    }
+    // Check Stripe is loaded
+    if (!stripe || !elements) {
+      toast.error('Payment system not loaded. Please refresh and try again.');
+      return;
+    }
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) {
+      toast.error('Card element not found. Please refresh and try again.');
+      return;
+    }
     setIsProcessingPayment(true);
-
     try {
+      // Step 1: Prepare booking payload
       const guestPayload = travellers.map((traveller: any, index: number) => ({
         traveller_type: index < adults ? 'adults' : 'child',
         title: traveller.title || 'Mr',
@@ -271,56 +289,80 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
         iata: '',
       };
 
-      const [bookingResponse, paymentRes] = await Promise.all([
-        hotel_booking(bookingPayload as any),
-        fetch('/api/paymentIntent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: sanitizeNumber(parsedInvoice.price_markup),
-            currency: parsedInvoice.currency_markup,
-            booking_ref_no: bookingReference,
-            module_type: parsedInvoice.supplier,
-            email: formData.email,
-          }),
+      // Step 2: Create payment intent
+      const paymentRes = await fetch('/api/paymentIntent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: sanitizeNumber(parsedInvoice.price_markup),
+          currency: parsedInvoice.currency_markup,
+          booking_ref_no: bookingReference,
+          module_type: parsedInvoice.supplier,
+          email: formData.email,
         }),
-      ]);
+      });
+
+      if (!paymentRes.ok) {
+        const errorData = await paymentRes.json();
+        throw new Error(errorData.message || 'Failed to create payment intent');
+      }
 
       const paymentData = await paymentRes.json();
+
       const { clientSecret, success_url } = paymentData;
 
-      if (!stripe || !elements || !clientSecret) {
-        toast.error('Payment setup failed. Please try again.');
-        setIsProcessingPayment(false);
-        return;
+      if (!clientSecret) {
+        throw new Error('Payment client secret not received');
       }
 
-      const cardElement = elements.getElement(CardElement);
-      if (!cardElement) {
-        toast.error('Card element not found.');
-        setIsProcessingPayment(false);
-        return;
-      }
-
+      // Step 3: Confirm card payment with Stripe
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
-          billing_details: { name: formData.cardName, email: formData.email },
+          billing_details: {
+            name: formData.cardName,
+            email: formData.email
+          },
         },
       });
 
       if (result.error) {
-        toast.error(`Payment failed: ${result.error.message}`);
-        setIsProcessingPayment(false);
-      } else if (result.paymentIntent?.status === 'succeeded') {
-        router.replace(success_url);
-      } else {
-        toast.error('Payment did not succeed. Please try again.');
-        setIsProcessingPayment(false);
+        console.error(' Payment failed:', result.error);
+        throw new Error(result.error.message || 'Payment failed');
       }
-    } catch (error) {
-      console.error('Payment error:', error);
-      toast.error('An error occurred. Please try again.');
+
+      if (result.paymentIntent?.status !== 'succeeded') {
+        throw new Error('Payment did not succeed');
+      }
+
+
+      // Step 4: Create booking record
+      const bookingResponse = await hotel_booking(bookingPayload as any);
+
+
+      if (!bookingResponse || bookingResponse.error) {
+        // Payment succeeded but booking failed - this needs manual intervention
+
+        toast.warning('Payment processed but booking creation failed. Please contact support with reference: ' + bookingReference);
+        // Still redirect to success page as payment was taken
+        if (success_url) {
+          router.replace(success_url);
+        }
+        return;
+      }
+
+      // Step 5: Success - redirect to success page
+      toast.success('Booking confirmed successfully!');
+
+      if (success_url) {
+       window.location.href=success_url
+      } else {
+        router.push('/booking-success?ref=' + bookingReference);
+      }
+
+    } catch (error: any) {
+      console.error('💥 Payment/Booking error:', error);
+      toast.error(error.message || 'An error occurred. Please try again.');
       setIsProcessingPayment(false);
     }
   };
@@ -330,10 +372,10 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
   const [isTitleOpen, setIsTitleOpen] = useState<number | null>(null);
   const titleRefs = useRef<(HTMLDivElement | null)[]>([]);
   const titles = [
-    dict?.bookingForm?.titles?.mr,
-    dict?.bookingForm?.titles?.mrs,
-    dict?.bookingForm?.titles?.ms,
-    dict?.bookingForm?.titles?.dr,
+    dict?.bookingForm?.titles?.mr || 'Mr',
+    dict?.bookingForm?.titles?.mrs || 'Mrs',
+    dict?.bookingForm?.titles?.ms || 'Ms',
+    dict?.bookingForm?.titles?.dr || 'Dr',
   ];
   const [isCountryListOpen, setIsCountryListOpen] = useState<boolean>(false);
   const [isPhoneCodeListOpen, setIsPhoneCodeListOpen] = useState<boolean>(false);
@@ -343,15 +385,15 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
       {/* Personal Information */}
       <div className="mb-12">
         <h3 className="text-xl text-[#0F172BE5] font-semibold mb-2">
-          {dict?.bookingForm?.personalInformation?.title}
+          {dict?.bookingForm?.personalInformation?.title || 'Personal Information'}
         </h3>
         <p className="text-[#0F172B66] font-medium text-base mb-4">
-          {dict?.bookingForm?.personalInformation?.subtitle}
+          {dict?.bookingForm?.personalInformation?.subtitle || 'Enter your personal details'}
         </p>
         <div className="grid grid-cols-1 gap-6">
           <div className="w-full max-w-2xl">
             <label htmlFor="firstName" className="block text-base font-medium text-[#5B697E] mb-2">
-              {dict?.bookingForm?.personalInformation?.firstNameLabel}
+              {dict?.bookingForm?.personalInformation?.firstNameLabel || 'First Name'}
             </label>
             <input
               id="firstName"
@@ -365,7 +407,7 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
           </div>
           <div className="w-full max-w-2xl">
             <label htmlFor="lastName" className="block text-base font-medium text-[#5B697E] mb-2">
-              {dict?.bookingForm?.personalInformation?.lastNameLabel}
+              {dict?.bookingForm?.personalInformation?.lastNameLabel || 'Last Name'}
             </label>
             <input
               id="lastName"
@@ -379,7 +421,7 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
           </div>
           <div className="w-full max-w-2xl">
             <label htmlFor="address" className="block text-base font-medium text-[#5B697E] mb-2">
-              {dict?.bookingForm?.personalInformation?.addressLabel}
+              {dict?.bookingForm?.personalInformation?.addressLabel || 'Address'}
             </label>
             <input
               id="address"
@@ -397,14 +439,14 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
       {/* Contact Information */}
       <div className="flex flex-col gap-3 mb-12">
         <h3 className="text-xl text-[#0F172BE5] font-semibold">
-          {dict?.bookingForm?.contactInformation?.title}
+          {dict?.bookingForm?.contactInformation?.title || 'Contact Information'}
         </h3>
         <p className="text-[#0F172B66] text-base font-medium">
-          {dict?.bookingForm?.contactInformation?.subtitle}
+          {dict?.bookingForm?.contactInformation?.subtitle || 'Enter your contact details'}
         </p>
         <div className="w-full max-w-2xl">
           <label htmlFor="email" className="block text-base font-medium text-[#5B697E] mb-2">
-            {dict?.bookingForm?.contactInformation?.emailLabel}
+            {dict?.bookingForm?.contactInformation?.emailLabel || 'Email'}
           </label>
           <input
             id="email"
@@ -418,7 +460,7 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
         </div>
         <div className="w-full max-w-2xl">
           <label className="block text-base font-medium text-[#5B697E] mb-2">
-            {dict?.bookingForm?.contactInformation?.nationalityLabel}
+            {dict?.bookingForm?.contactInformation?.nationalityLabel || 'Nationality'}
           </label>
           <div className="border border-gray-300 rounded-xl px-3 py-4 text-base w-full outline-none bg-gray-100 cursor-not-allowed flex items-center gap-2">
             {getCountryByIso(formData.nationality) && (
@@ -491,7 +533,7 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
             </label>
             <Select
               options={phoneCodeOptions}
-              placeholder={dict?.bookingForm?.contactInformation?.phoneCodeLabel || 'Country Code'}
+              placeholder={dict?.bookingForm?.contactInformation?.phoneCodeLabel || 'Code'}
               isSearchable
               value={phoneCodeOptions.find((opt) => opt.value === formData.phoneCountryCode) || null}
               onChange={(option: any) => handleSelectChange('phoneCountryCode', option?.value || '')}
@@ -557,12 +599,14 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
       {/* Travelers Information */}
       <div className="flex flex-col gap-3 mb-12">
         <h3 className="text-xl text-[#0F172BE5] font-semibold">
-          {dict?.bookingForm?.travelersInformation?.title}
+          {dict?.bookingForm?.travelersInformation?.title || 'Travelers Information'}
         </h3>
         <p className="text-[#0F172B66] text-base font-medium mb-4">
-          {dict?.bookingForm?.travelersInformation?.subtitle}
+          {dict?.bookingForm?.travelersInformation?.subtitle || 'Enter traveler details'}
         </p>
-        {travellers.map((traveller:any, index:any) => (
+
+
+ {travellers.map((traveller:any, index:any) => (
           <div key={index} className="space-y-4 mb-3">
             <div className="flex justify-between items-center">
               <h4 className="text-lg text-[#0F172BE5] font-medium">

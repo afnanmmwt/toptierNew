@@ -6,17 +6,17 @@ import { useRouter } from "next/navigation";
 import getCurrencySymbol from "@src/utils/getCurrencySymbals";
 import useDictionary from "@hooks/useDict";
 import useLocale from "@hooks/useLocale";
-
+import Spinner from "@components/core/Spinner";
 const RoomOption: React.FC<{
   room?: any;
   options?: any;
   getAmenityIcon?: (amenity: string) => string;
   onReserve?: (room?: any, option?: any) => void;
   roomImage: string;
-}> = ({ room, options, getAmenityIcon, onReserve, roomImage }) => {
+  loading:null | string;
+}> = ({ room, options, getAmenityIcon, onReserve, roomImage,loading }) => {
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-
   const amenitiesList: string[] = React.useMemo(() => {
     const a = room?.amenities;
     if (!a) return [];
@@ -145,6 +145,7 @@ const RoomOption: React.FC<{
                   <td className="bg-gray-200 py-3 font-medium">
                     <div className="flex flex-col items-center text-center gap-2">
                       <button
+                      disabled={loading === opt.id}
                         onClick={() => {
                           if (onReserve) return onReserve(room, opt);
                           const roomId = room?.id ?? room?.room_id ?? "";
@@ -153,7 +154,14 @@ const RoomOption: React.FC<{
                         }}
                         className="bg-[#1C398E] hover:bg-gray-800 text-white px-4 py-2 rounded-full cursor-pointer"
                       >
-                        {dict?.roomOption?.bookNow || "Book Now"}
+                           {loading === opt.id ? (
+                            <div className="flex items-center justify-center gap-2 px-5">
+                              <Spinner /> <span></span>
+                            </div>
+                          ) : (
+                            dict?.roomOption?.bookNow || "Book Now"
+                          )}
+
                       </button>
                     </div>
                   </td>

@@ -111,12 +111,12 @@ export default function CustomerProfile() {
     phonecode: c.phonecode?.toString() || "0",
   }));
 
-  const phoneCodeOptions = (countries || []).map((c: any) => ({
-    value: c.phonecode || c.code,
-    label: `+${c.phonecode}`,
-    iso: c.iso,
-    phonecode: c.phonecode?.toString() || "0",
-  }));
+const phoneCodeOptions = (countries || []).map((c: any) => ({
+  value: c.phonecode,
+  label: `+${c.phonecode}`,
+  iso: c.phonecode === "1" ? "US" : c.iso, //  Force US for +1
+  phonecode: c.phonecode?.toString() || "0",
+}));
   const onSubmit = async (data: any) => {
     if (!user) {
       toast.error(dict?.profiletoasts?.unauthorized || "User not authenticated");

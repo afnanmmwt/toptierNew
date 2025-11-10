@@ -132,25 +132,25 @@ const Input = (props: InputProps) => {
             paddingRight?: string
         } = {}
 
-        if (direction === 'ltr') {
-            if (prefix) {
-                gutterStyle.paddingLeft = leftGutter
-            }
+        // if (direction === 'ltr') {
+        //     if (prefix) {
+        //         gutterStyle.paddingLeft = leftGutter
+        //     }
 
-            if (suffix) {
-                gutterStyle.paddingRight = rightGutter
-            }
-        }
+        //     if (suffix) {
+        //         gutterStyle.paddingRight = rightGutter
+        //     }
+        // }
 
-        if (direction === 'rtl') {
-            if (prefix) {
-                gutterStyle.paddingRight = leftGutter
-            }
+        // if (direction === 'rtl') {
+        //     if (prefix) {
+        //         gutterStyle.paddingRight = leftGutter
+        //     }
 
-            if (suffix) {
-                gutterStyle.paddingLeft = rightGutter
-            }
-        }
+        //     if (suffix) {
+        //         gutterStyle.paddingLeft = rightGutter
+        //     }
+        // }
 
         return gutterStyle
     }

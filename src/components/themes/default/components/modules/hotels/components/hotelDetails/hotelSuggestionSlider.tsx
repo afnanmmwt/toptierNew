@@ -11,10 +11,11 @@ import useDictionary from "@hooks/useDict";
 interface HotelSuggestionSliderProps {
   hotels: any[];
   onHotelClick?: (hotel: any) => void;
+  loading:null | string
 }
 
 
-const HotelSuggestionSlider = ({ hotels, onHotelClick }: HotelSuggestionSliderProps) => {
+const HotelSuggestionSlider = ({ hotels, onHotelClick, loading }: HotelSuggestionSliderProps) => {
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const { locale } = useLocale();
@@ -59,6 +60,7 @@ const HotelSuggestionSlider = ({ hotels, onHotelClick }: HotelSuggestionSliderPr
             >
               <div className="w-full h-full">
                 <HotelListingCard
+                loading={loading}
                   hotel={hotel}
                   viewMode="map"
                   activeHotelId=""

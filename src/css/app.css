@@ -903,3 +903,36 @@ body:is(.dark *) {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+
+/* // for signup successfull modal  */
+@keyframes fade-in {
+  to { opacity: 1; }
+}
+@keyframes scale-in {
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out forwards;
+}
+.animate-scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+}
+/* // activated icons animation */
+ @keyframes drawCircle {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  @keyframes drawCheck {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  .animate-check-circle {
+    animation: drawCircle 0.6s ease-out forwards;
+  }
+  .animate-check-mark {
+    animation: drawCheck 0.3s ease-out 0.4s forwards;
+  }
+

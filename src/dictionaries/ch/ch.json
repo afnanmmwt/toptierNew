@@ -1,11 +1,11 @@
 {
   "home_page": {
     "hero_section": {
-      "where_to": "去哪里？",
+      "where_to": "目的地？",
       "hotel_search_placeholder": "搜索城市或酒店...",
       "check_in": "入住",
       "check_out": "退房",
-      "guests": "住客",
+      "guests": "旅客",
       "rooms": "房间",
       "adults": "成人",
       "children": "儿童",
@@ -30,38 +30,49 @@
     "country_placeholder": "选择国家",
     "phone_label": "电话号码",
     "phone_placeholder": "电话号码 (+92xxxxxxxxxxx)",
-    "email_label": "邮箱",
-    "email_placeholder": "邮箱地址",
+    "email_label": "电子邮箱",
+    "email_placeholder": "电子邮箱地址",
     "password_label": "密码",
     "password_placeholder": "请输入密码",
     "human_label": "我不是机器人",
     "agree_text": "我同意",
     "terms_of_use": "使用条款",
     "and": "和",
+    "phone_code_label": "国家电话区号",
     "privacy_policy": "隐私政策",
     "create_account_button": "创建账户",
-    "success_message": "注册成功！🎉"
+    "success_message": "注册成功！请检查您的邮箱以完成验证 🎉"
+  },
+  "forget_password": {
+    "title": "忘记密码",
+    "subtitle": "输入您的邮箱以接收重置密码链接",
+    "label": "电子邮箱",
+    "email_placeholder": "请输入您的邮箱",
+    "submit": "提交",
+    "back_to": "返回",
+    "login": "登录",
+    "success_message": "注册成功！请检查您的邮箱以完成验证 🎉"
   },
   "errors": {
     "first_name_required": "请输入名字",
     "last_name_required": "请输入姓氏",
-    "email_invalid": "邮箱地址无效",
+    "email_invalid": "无效的电子邮箱地址",
     "phone_number_required": "请输入电话号码",
     "phone_number_invalid": "请输入有效的国际电话号码",
     "country_code_required": "请选择国家代码",
     "password_min_length": "密码至少需要6个字符",
-    "terms_required": "您必须接受条款和条件",
+    "terms_required": "您必须同意条款与条件",
     "human_required": "请确认您不是机器人"
   },
   "login_form": {
     "success_message": "登录成功！",
     "text": "登录",
-    "email_message": "请输入邮箱",
+    "email_message": "请输入电子邮箱",
     "password_message": "请输入密码",
     "new_user": "新用户？",
     "create_account": "创建账户",
-    "email": "邮箱",
-    "email_placeholder": "请输入您的邮箱",
+    "email": "电子邮箱",
+    "email_placeholder": "请输入您的电子邮箱",
     "password": "密码",
     "password_placeholder": "请输入您的密码",
     "remember_me": "记住我",
@@ -70,10 +81,10 @@
   },
   "featured_dest": {
     "dest_heading": "精选目的地",
-    "dest_subheading": "探索全球最惊艳、最受欢迎的旅行胜地，为您打造难忘体验。",
+    "dest_subheading": "发现全球最令人惊叹且热门的旅行胜地，为您打造难忘体验。",
     "no_featured_dest": "暂无精选目的地",
     "dest_explore": "立即探索",
-    "error": "请先登录以收藏"
+    "error": "登录后才能添加到收藏夹"
   },
   "featured_hotels": {
     "heading": "精选酒店",
@@ -83,20 +94,20 @@
     "loading": "加载中...",
     "cancelling": "取消中...",
     "per_night": "/晚",
-    "error_login_required": "请先登录以收藏",
-    "error_failed_fav": "收藏更新失败",
-    "success_updated_fav": "收藏已更新",
+    "error_login_required": "登录后才能添加到收藏夹",
+    "error_failed_fav": "更新收藏失败",
+    "success_updated_fav": "已更新收藏",
     "something_wrong": "出错了"
   },
   "offer_sec": {
     "offer_heading": "为什么选择我们？",
-    "offer_subheading": "体验我们无与伦比的旅行服务，您的满意是我们的首要任务。"
+    "offer_subheading": "与我们一同体验无与伦比的旅行服务，您的满意是我们首要目标。"
   },
   "testi_sec": {
     "testi_see_room": "查看房间",
-    "testi_heading": "住客",
-    "testi_heading_2": "怎么说",
-    "testi_subheading": "看看为什么旅行者信赖我们——关于舒适、便捷和难忘住宿的真实评价",
+    "testi_heading": "客人",
+    "testi_heading_2": "的真实评价",
+    "testi_subheading": "了解旅客为何信任我们——关于舒适、便捷和难忘住宿的真实评论",
     "testi_autoplay": "自动播放 • 点击暂停"
   },
   "news_letter_sec": {
@@ -104,18 +115,18 @@
     "letter_name": "姓名",
     "letter_name_placeholder": "姓名",
     "letter_email": "邮箱",
-    "letter_email_placeholder": "邮箱",
+    "letter_email_placeholder": "电子邮箱",
     "letter_continue": "继续",
     "errors": {
-      "name_too_short": "姓名至少需要2个字符",
-      "email_invalid": "邮箱地址无效"
+      "name_too_short": "姓名至少需2个字符",
+      "email_invalid": "无效的电子邮箱地址"
     }
   },
   "header": {
-    "paymentStatus": "支付状态：",
+    "paymentStatus": "付款状态：",
     "bookingStatus": "预订状态：",
     "phone": "电话：",
-    "email": "邮箱：",
+    "email": "电子邮箱：",
     "Agent": "代理",
     "Customer": "客户",
     "login": "登录",
@@ -127,13 +138,13 @@
     "customers": "客户",
     "myprofile": "我的资料",
     "dashboard": "仪表盘",
-    "logout": "退出登录"
+    "logout": "退出"
   },
   "footer": {
-    "subheading": "通过我们精心挑选的酒店和全球顶级目的地的专属通道，开启非凡住宿体验。",
+    "subheading": "通过我们精心挑选的酒店和独家目的地通道，开启非凡住宿体验。",
     "connect": "保持联系",
-    "subconnect": "订阅获取旅行贴士、独家优惠和最新资讯。",
-    "email_placeholder": "请输入您的邮箱",
+    "subconnect": "订阅即可获取旅行贴士、独家优惠和最新动态。",
+    "email_placeholder": "请输入您的电子邮箱",
     "subscribing": "订阅中...",
     "subscribe": "订阅",
     "success": "订阅成功",
@@ -151,52 +162,52 @@
     "price_range": "价格区间",
     "hotel_stars": "酒店星级",
     "stars": "星",
-    "reset_filters": "重置筛选",
+    "reset_filters": "重置筛选条件",
     "apply": "应用",
-    "hotels_found": "家酒店",
+    "hotels_found": "找到酒店",
     "loading_more": "加载更多",
     "no_more_Data": "没有更多数据",
     "searching_for_hotels": "正在搜索酒店...",
     "no_hotels_found": "未找到酒店",
     "search_criteria": "请尝试调整筛选条件或搜索关键词",
-    "reset_all_filters": "重置所有筛选",
+    "reset_all_filters": "重置所有筛选条件",
     "filters_search": "筛选与搜索",
     "apply_filters": "应用筛选",
     "hotels": "酒店",
     "sort": "排序",
     "rating": "评分",
-    "low_to_high": "从低到高",
-    "high_to_low": "从高到低",
+    "low_to_high": "价格从低到高",
+    "high_to_low": "价格从高到低",
     "name_a_to_z": "名称（A–Z）",
     "book_now": "立即预订"
   },
   "contact": {
     "contact_us": "联系我们",
     "address": "地址",
-    "email": "邮箱",
+    "email": "电子邮箱",
     "phone": "电话"
   },
   "hotelDetails": {
     "hotelNamePlaceholder": "酒店名称",
-    "aboutThisProperty": "关于本酒店",
+    "aboutThisProperty": "关于此酒店",
     "noAmenities": "未找到设施",
     "showMore": "显示更多",
     "chooseYourRoom": "选择您的房间",
     "noRoomsAvailable": "所选日期无可用房间。",
-    "theToptierWayToTravel": "高端旅行方式",
-    "noBrandStories": "该酒店暂无品牌故事。",
+    "theToptierWayToTravel": "Toptier 的旅行方式",
+    "noBrandStories": "此酒店暂无品牌故事。",
     "needToKnowDetails": "须知详情",
     "frequentlyAskedQuestions": "常见问题",
     "noSimilarHotels": "未找到类似酒店。",
     "readMore": "阅读更多",
     "readLess": "收起",
-    "topRated": "高评分",
+    "topRated": "高分推荐",
     "freeCancellation": "免费取消",
     "bestPriceGuarantee": "最优价格保证",
     "map": "地图",
     "unableToLoad": "无法加载酒店详情",
     "pleaseTryAgain": "请稍后再试。",
-    "allAmenities": "所有设施",
+    "allAmenities": "全部设施",
     "youmightAlsoLike": "您可能也喜欢"
   },
   "bookingForm": {
@@ -204,18 +215,18 @@
       "firstNameRequired": "请输入名字",
       "lastNameRequired": "请输入姓氏",
       "addressRequired": "请输入地址",
-      "invalidEmail": "邮箱地址无效",
+      "invalidEmail": "电子邮箱无效",
       "nationalityRequired": "请选择国籍",
       "currentCountryRequired": "请选择当前所在国家",
       "countryCodeRequired": "请选择国家代码",
       "phoneNumberRequired": "请输入电话号码",
       "titleRequired": "请选择称谓",
-      "atLeastOneTraveller": "至少需要一位旅客",
+      "atLeastOneTraveller": "至少需一位旅客",
       "acceptPolicyRequired": "您必须接受取消政策",
       "cardNameRequired": "请输入持卡人姓名",
-      "invalidCardNumber": "银行卡号无效",
-      "invalidCardExpiry": "有效期无效（MM/YY）",
-      "invalidCardCvv": "CVV无效（3-4位数字）",
+      "invalidCardNumber": "卡号无效",
+      "invalidCardExpiry": "到期日无效（MM/YY）",
+      "invalidCardCvv": "CVV 无效（3-4 位数字）",
       "invalidCardZip": "邮政编码无效"
     },
     "titles": {
@@ -226,23 +237,23 @@
     },
     "personalInformation": {
       "title": "个人信息",
-      "subtitle": "请提供您的个人信息以完成预订。",
+      "subtitle": "请填写您的个人信息以完成预订。",
       "firstNameLabel": "名字",
       "lastNameLabel": "姓氏",
       "addressLabel": "地址"
     },
     "contactInformation": {
       "title": "联系方式",
-      "subtitle": "我们将通过此信息发送您的预订确认。",
-      "emailLabel": "邮箱地址",
+      "subtitle": "我们将通过此信息发送您的预订确认函。",
+      "emailLabel": "电子邮箱地址",
       "nationalityLabel": "国籍",
       "currentCountryLabel": "当前所在国家",
-      "phoneCodeLabel": "国家代码",
+      "phoneCodeLabel": "国家区号",
       "phoneNumberLabel": "电话号码"
     },
     "travelersInformation": {
       "title": "旅客信息",
-      "subtitle": "请提供所有旅客的详细信息。",
+      "subtitle": "请填写所有旅客的详细信息。",
       "adultTraveller": "成人旅客",
       "childTraveller": "儿童旅客",
       "titleLabel": "称谓",
@@ -250,10 +261,10 @@
     },
     "paymentMethod": {
       "title": "支付方式",
-      "subtitle": "安全加密交易，您的个人信息受保护。",
-      "cardInformationTitle": "银行卡信息",
+      "subtitle": "安全加密交易，您的个人信息将受到保护。",
+      "cardInformationTitle": "卡片信息",
       "cardholderNameLabel": "持卡人姓名",
-      "cardDetailsLabel": "卡号信息"
+      "cardDetailsLabel": "卡片详情"
     },
     "cancellationPolicy": {
       "title": "取消政策",
@@ -268,33 +279,33 @@
   "bookingDetails": {
     "pageTitle": "预订详情",
     "bookingSummary": "预订摘要",
-    "roomName": "房型名称",
+    "roomName": "房间名称",
     "checkinDate": "入住日期",
     "checkoutDate": "退房日期",
     "roomQuantity": "房间数量",
     "nights": "晚数",
-    "guests": "住客",
-    "roomPrice": "房价",
-    "toptierFee": "TopTier服务费",
+    "guests": "旅客",
+    "roomPrice": "房间价格",
+    "toptierFee": "Toptier 费用",
     "total": "总计",
     "adults": "成人",
     "children": "儿童"
   },
   "hotelInvoice": {
     "errors": {
-      "noInvoiceFound": "未找到发票详情。"
+      "noInvoiceFound": "未找到账单详情。"
     },
     "header": {
-      "paymentStatus": "支付状态：",
+      "paymentStatus": "付款状态：",
       "bookingStatus": "预订状态：",
       "phone": "电话：",
-      "email": "邮箱：",
+      "email": "电子邮箱：",
       "Agent": "代理",
       "Customer": "客户",
       "login": "登录",
       "signup": "注册"
     },
-    "bookingNote": "已发送取消请求，状态变更后我们将立即更新",
+    "bookingNote": "取消请求已发送。状态变更后我们将立即更新。",
     "bookingInfo": {
       "bookingId": "预订编号",
       "bookingpnr": "PNR",
@@ -307,15 +318,15 @@
       "title": "旅客",
       "travellerType": "旅客类型",
       "table": {
-        "number": "序号",
+        "number": "编号",
         "type": "类型",
         "name": "姓名"
       }
     },
     "hotelInfo": {
       "phone": "电话：",
-      "email": "邮箱：",
-      "website": "官网："
+      "email": "电子邮箱：",
+      "website": "网站："
     },
     "roomDetails": {
       "title": "房间详情",
@@ -327,77 +338,77 @@
     },
     "fareAndTax": {
       "rateCommentTitle": "价格说明",
-      "taxMessage": "本预订预估税费总额：{tax}，需在入住时支付。城市税可能因住宿地点而异。入住时间：14:00 - 00:00。退房时间：12:30 - 12:00。",
+      "taxMessage": "此预订预估税费总额：{tax}，需在入住时支付。城市税可能因住宿地点而异。入住时间 14:00 - 00:00，退房时间 12:30 - 12:00。",
       "taxLabel": "税费",
       "totalLabel": "总计"
     },
     "customer": {
       "title": "客户",
-      "email": "邮箱：",
+      "email": "电子邮箱：",
       "contact": "联系方式：",
       "address": "地址："
     },
     "customerCare": {
       "title": "客户服务",
-      "email": "邮箱：",
+      "email": "电子邮箱：",
       "contact": "联系方式：",
-      "website": "官网："
+      "website": "网站："
     },
     "buttons": {
-      "downloadPdf": "下载PDF",
+      "downloadPdf": "下载 PDF",
       "payNow": "立即支付",
-      "sendToWhatsApp": "发送至WhatsApp",
+      "sendToWhatsApp": "发送至 WhatsApp",
       "requestCancellation": "申请取消"
     },
     "alert": {
-      "pdfNotImplemented": "PDF下载功能将在后续版本中实现。"
+      "pdfNotImplemented": "PDF 下载功能将于稍后上线。"
     }
   },
   "support": {
     "heading": "支持",
     "p_1": "在",
-    "p_3": "，我们热衷于帮助您舒适自信地探索世界。您的支持让我们能持续为每位旅行者提供最佳旅行体验、酒店优惠和灵感。",
+    "p_3": "，我们热衷于帮助您舒适自信地探索世界。您的支持让我们能持续为每位旅行者提供最佳旅行体验、酒店优惠与灵感。",
     "contact_us": "联系我们",
     "empower_travelers": "赋能旅行者",
-    "empower_travelers_p": "您的支持帮助旅行者发现全球隐藏的宝藏和值得信赖的目的地。",
+    "empower_travelers_p": "您的贡献帮助旅行者发现全球隐藏的宝藏与值得信赖的目的地。",
     "sustain_quality": "持续提升品质",
-    "sustain_quality_p": "我们不断优化服务，为所有人创造更优质的旅行体验。",
+    "sustain_quality_p": "我们不断优化服务，为所有人创造更好的旅行体验。",
     "community_growth": "社区成长",
-    "community_growth_p": "加入我们的使命，共建一个热爱探索的全球旅行者社区。"
+    "community_growth_p": "加入我们，共建一个热爱探索的全球旅行者社区。"
   },
   "profilelabels": {
-    "profileHeading": "个人资料",
+    "profileHeading": "个人资料信息",
     "firstName": "名字",
     "lastName": "姓氏",
-    "email": "邮箱",
+    "email": "电子邮箱",
     "password": "密码（可选）",
     "phoneCode": "电话区号",
     "phoneNumber": "电话号码",
     "country": "国家",
-    "state": "州/省",
+    "state": "省/州",
     "city": "城市",
-    "address1": "地址1",
-    "address2": "地址2"
+    "address1": "地址 1",
+    "address2": "地址 2"
   },
   "profileplaceholders": {
     "firstName": "名字",
     "lastName": "姓氏",
-    "email": "邮箱地址",
+    "email": "电子邮箱地址",
     "password": "新密码（留空则保留当前密码）",
     "phoneNumber": "电话号码（例如：923483344559）",
-    "state": "州/省",
+    "state": "省/州",
     "city": "城市",
-    "address1": "地址行1",
-    "address2": "地址行2",
-    "selectCountryCode": "选择国家代码",
+    "address1": "地址行 1",
+    "address2": "地址行 2",
+    "selectCountryCode": "选择国家区号",
     "selectCountry": "选择国家"
   },
   "profiletoasts": {
     "success": "个人资料更新成功！",
-    "error": "个人资料更新失败"
+    "error": "更新个人资料失败"
   },
   "profilebuttons": {
-    "updateProfile": "更新资料",
+    "updateProfile": "更新个人资料",
     "updating": "更新中..."
   },
   "profilemessages": {
@@ -406,7 +417,7 @@
   "profileerrors": {
     "firstNameRequired": "请输入名字",
     "lastNameRequired": "请输入姓氏",
-    "invalidEmail": "邮箱地址无效",
+    "invalidEmail": "电子邮箱无效",
     "phoneRequired": "请输入电话号码",
     "invalidPhone": "请输入有效的国际电话号码",
     "countryCodeRequired": "请选择国家代码",
@@ -414,13 +425,14 @@
   },
   "dashboard": {
     "welcome_back": "欢迎回来，",
-    "overview_text": "这是您旅行账户的快速概览",
+    "overview_text": "以下是您旅行账户的快速概览",
     "wallet_balance": "钱包余额",
+    "cancelled_bookings": "已取消的预订",
     "wallet_balance_sub": "总钱包余额",
     "bookings": "预订",
     "bookings_sub": "总预订数",
     "pending_invoices": "待处理账单",
-    "pending_invoices_sub": "待处理账单",
+    "pending_invoices_sub": "待处理预订",
     "all": "全部",
     "paid": "已支付",
     "unpaid": "未支付",
@@ -430,12 +442,12 @@
     "client_name": "客户姓名",
     "booking_id": "预订编号",
     "pnr": "PNR",
-    "payment": "支付",
+    "payment": "付款",
     "booking": "预订",
     "date": "日期",
     "price": "价格",
     "no_bookings_found": "未找到预订记录。",
-    "no_more_results": "您已查看全部内容。",
+    "no_more_results": "已显示全部结果。",
     "showing": "显示",
     "of": "/",
     "entries": "条记录",
@@ -445,8 +457,8 @@
   "hotel_search": {
     "check_in_out_label": "入住 | 退房",
     "guest_button": {
-      "title": "住客",
-      "guest_title": "住客",
+      "title": "旅客",
+      "guest_title": "旅客",
       "room_title": "房间"
     },
     "nationality_label": "国籍",
@@ -460,10 +472,10 @@
     "years_label": "岁"
   },
   "roomCard": {
-    "loginToFavorite": "请先登录以收藏",
+    "loginToFavorite": "登录后才能添加到收藏夹",
     "favoriteUpdateFailed": "出错了 :x:",
-    "favoriteUpdated": "收藏已更新",
-    "favoriteUpdateError": "收藏更新失败 :x:",
+    "favoriteUpdated": "已更新收藏",
+    "favoriteUpdateError": "更新收藏失败 :x:",
     "noAmenities": "未列出设施",
     "freeBreakfast": "免费早餐",
     "freeCancellation": "免费取消",
@@ -472,9 +484,9 @@
     "close": "关闭"
   },
   "roomOption": {
-    "roomNamePlaceholder": "一居室公寓",
+    "roomNamePlaceholder": "一室公寓",
     "roomImage": "房间图片",
-    "features": "特色",
+    "features": "设施",
     "travellers": "旅客",
     "price": "价格",
     "freeBreakfast": "免费早餐",
@@ -496,27 +508,27 @@
     "bookingDetailsHeading": "预订详情",
     "bookingReferenceLabel": "预订参考号",
     "bookingStatusLabel": "预订状态",
-    "paymentStatusLabel": "支付状态",
+    "paymentStatusLabel": "付款状态",
     "pnrLabel": "PNR",
     "checkInLabel": "入住",
     "checkOutLabel": "退房",
-    "guestDetailsHeading": "住客详情",
-    "noGuestDataMessage": "暂无住客数据。",
+    "guestDetailsHeading": "旅客详情",
+    "noGuestDataMessage": "无旅客数据。",
     "adultsSectionTitle": "成人",
     "childrenSectionTitle": "儿童",
-    "otherGuestsSectionTitle": "其他住客",
+    "otherGuestsSectionTitle": "其他旅客",
     "nameLabel": "姓名",
     "typeLabel": "类型",
     "ageLabel": "年龄",
     "roomDetailsHeading": "房间详情",
-    "roomNameLabel": "房型名称",
-    "roomPriceLabel": "房价",
+    "roomNameLabel": "房间名称",
+    "roomPriceLabel": "房间价格",
     "roomQuantityLabel": "房间数量",
     "adultsLabel": "成人",
     "childrenLabel": "儿童",
-    "invoiceButton": "发票",
+    "invoiceButton": "账单",
     "closeButton": "关闭",
-    "invoiceReferenceNotFound": "未找到发票参考号"
+    "invoiceReferenceNotFound": "未找到账单参考号"
   },
   "dashboardCard": {
     "noimage": "无图片",
@@ -525,27 +537,29 @@
     "bookingdetails": "预订详情",
     "bookingreference": "预订参考号",
     "bookingstatus": "预订状态",
-    "paymentstatus": "支付状态",
+    "paymentstatus": "付款状态",
     "checkin": "入住",
     "checkout": "退房",
-    "guestdetails": "住客详情",
-    "noguest": "暂无住客数据。",
+    "guestdetails": "旅客详情",
+    "noguest": "无旅客数据。",
     "name": "姓名",
     "type": "类型",
     "adults": "成人",
     "age": "年龄",
-    "otherguests": "其他住客",
+    "otherguests": "其他旅客",
     "roomdetails": "房间详情",
-    "roomname": "房型名称",
-    "roomprice": "房价",
+    "roomname": "房间名称",
+    "roomprice": "房间价格",
     "roomqaunitity": "房间数量",
+    "total_nights": "总晚数",
+    "total_price": "总价",
     "childs": "儿童",
-    "invoice": "发票",
+    "invoice": "账单",
     "close": "关闭",
-    "invoicenotfound": "未找到发票参考号"
+    "invoicenotfound": "未找到账单参考号"
   },
   "headermodule": {
-    "hotels": "酒店",
+    "hotels": "Hotelsssssss",
     "flights": "航班",
     "tours": "旅游",
     "cars": "租车",

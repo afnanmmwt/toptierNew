@@ -7,7 +7,6 @@ import { userInfo } from "os";
 import { z } from 'zod';
 import { json } from "stream/consumers";
 import { redirect } from "next/navigation";
-// console.log("base",baseUrl);
 
 
 // ============== COMMON HEADER ================
@@ -213,10 +212,11 @@ export const sign_up = async (signUpData: {
   phone: string;
   phone_country_code: number | string;
   password: string;
+  country:string
   // terms?: boolean;
 }) => {
   try {
-    const formData = new FormData();    
+    const formData = new FormData();
     formData.append("first_name", signUpData.first_name);
     formData.append("last_name", signUpData.last_name);
     formData.append("email", signUpData.email);
@@ -224,7 +224,9 @@ export const sign_up = async (signUpData: {
     formData.append("phone_country_code", String(signUpData.phone_country_code));
     formData.append("password", signUpData.password);
     formData.append("api_key", api_key ?? "");
-    formData.append("user_type", "agent");
+    formData.append("country",signUpData.country)
+    formData.append("user_type", "Customer");
+
 
     // if (signUpData.terms !== undefined) {
     //   formData.append("terms", signUpData.terms ? "1" : "0");
@@ -314,7 +316,6 @@ export async function signIn(
     });
 
     const data = await response.json();
-console.log(data ,"first data");
 
     // Check if login actually succeeded
     if (!response.ok || data?.status === false) {
@@ -349,7 +350,7 @@ export const signOut = async () => {
         ? (userinfo.user_id || userinfo?.user?.user_id || '')
         : '';
  const cookie = await cookies();
-  const token = cookie.get('access-token')?.value || '';
+ const token = cookie.get('access-token')?.value || '';
     const formData = new FormData();
     formData.append('user_id', String(userId)); //always a string
     formData.append('token', String(token));
@@ -440,19 +441,15 @@ export const getAccessToken = async () => {
   return token;
 };
 //------------------------ FORGET PASSWORD -----------------------------//
-export const forget_password = async (payload: {
-  email: string;
-
-  // terms: boolean;
-}) => {
+export const forget_password = async (email:string) => {
   try {
-    const response = await fetch(`${baseUrl}/forget-password`, {
+    const formData=new FormData()
+    formData.append('email',email)
+    formData.append('api_key',api_key ?? "")
+    const response = await fetch(`${baseUrl}/forget_password`, {
       method: "POST",
-      body: new URLSearchParams({
-        email: payload.email,
-        // terms: signUpData.terms.toString(),
-      }).toString(),
-      headers: await getHeaders("application/x-www-form-urlencoded"),
+      body: formData,
+
     });
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.status === false) {
@@ -545,10 +542,28 @@ interface HotelSearchPayload {
 // This function handles ONE module
 export const hotel_search = async (payload: HotelSearchPayload & { modules: string }) => {
   const userinfo = (await getSession()) as any | null;
+  const cookie = await cookies();
+ const agent_ref = cookie.get('agent_ref')?.value || '';
      const userId =
       typeof userinfo === 'object' && userinfo !== null
         ? (userinfo.user_id || userinfo?.user?.user_id || '')
         : '';
+let agent_id = '';
+
+if (agent_ref) {
+  // Priority 1: Use referral if present
+  agent_id = agent_ref;
+} else if (
+  typeof userinfo === 'object' &&
+  userinfo !== null &&
+  (userinfo.user?.type === 'Agent' || userinfo.type === 'Agent')
+) {
+  // Priority 2: If no referral, and user is an Agent → self-assign
+  agent_id = userId;
+} else {
+  // Priority 3: Not an agent and no referral → no agent_id
+  agent_id = '';
+}
 
   const formData = new FormData();
   formData.append("city", String(payload.destination));
@@ -565,7 +580,8 @@ export const hotel_search = async (payload: HotelSearchPayload & { modules: stri
   formData.append("price_from", payload.price_from || "");
   formData.append("price_to", payload.price_to || "");
   formData.append("price_low_to_high", "");
-  formData.append('user_id', userId)
+  formData.append('user_id', userId);
+  formData.append('agent_id',agent_id);
   formData.append("rating", payload.rating || "");
   if (payload.child_age && payload.child_age.length > 0) {
     const formattedAges = payload.child_age.map((age) => ({ ages: age }));
@@ -607,11 +623,9 @@ export const hotel_search_multi = async (
       modules: module, // pass single module
     })
   );
-
   // Use allSettled to avoid one failure breaking all
   const results = await Promise.allSettled(promises);
 // console.log('successful hotels', JSON.parse(results));
-
   const successful = results
     .map((result) => {
       if (result.status === "fulfilled") {
@@ -647,8 +661,29 @@ interface HotelDetailsPayload {
 }
 
 export const hotel_details = async (payload: HotelDetailsPayload) => {
-      const userInfo = (await getSession()) as any | null;
-    const user_id = userInfo?.user?.user_id ?? "";
+       const userinfo = (await getSession()) as any | null;
+  const cookie = await cookies();
+ const agent_ref = cookie.get('agent_ref')?.value || '';
+     const userId =
+      typeof userinfo === 'object' && userinfo !== null
+        ? (userinfo.user_id || userinfo?.user?.user_id || '')
+        : '';
+let agent_id = '';
+
+if (agent_ref) {
+  // Priority 1: Use referral if present
+  agent_id = agent_ref;
+} else if (
+  typeof userinfo === 'object' &&
+  userinfo !== null &&
+  (userinfo.user?.type === 'Agent' || userinfo.type === 'Agent')
+) {
+  // Priority 2: If no referral, and user is an Agent → self-assign
+  agent_id = userId;
+} else {
+  // Priority 3: Not an agent and no referral → no agent_id
+  agent_id = '';
+}
   try {
     const formData = new FormData();
     //  match exactly with API keys
@@ -662,8 +697,8 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
     formData.append("language", payload.language || "en");
     formData.append("currency", payload.currency || "usd");
     formData.append("supplier_name", payload.supplier_name || "hotels");
-    formData.append('user_id',user_id)
-
+    formData.append('user_id',userId || '')
+    formData.append('agent_id',agent_id || '');
      if(payload.child_age && payload.child_age.length > 0) {
     const formattedAges = payload.child_age.map((age: string) => ({ ages: age }));
     formData.append("child_age", JSON.stringify(formattedAges));
@@ -678,9 +713,6 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
       },
     });
     const data = await response.json().catch(() => null);
-        console.log('==================data details', formData)
-
-    console.log('==================data details', data)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }
@@ -783,7 +815,7 @@ export interface BookingPayload {
   checkout: string;
   adults: number;
   childs: number;
-  child_ages: string | number;
+  child_ages: string;
   currency_original: string;
   currency_markup: string;
   payment_date: string;
@@ -811,10 +843,22 @@ export interface BookingPayload {
 
 export const hotel_booking = async (payload: BookingPayload) => {
   try {
-    const userInfo = (await getSession()) as any | null;
-    const user_id = userInfo?.user?.user_id ?? "";
-    const agent_id =
-      userInfo?.user?.user_type === "Agent" ? userInfo.user.user_id : "";
+     const userinfo = (await getSession()) as any | null;
+  const cookie = await cookies();
+ const agent_ref = cookie.get('agent_ref')?.value || '';
+     const userId =
+      typeof userinfo === 'object' && userinfo !== null
+        ? (userinfo.user_id || userinfo?.user?.user_id || '')
+        : '';
+let agent_id = '';
+
+if (agent_ref) {
+  agent_id = agent_ref;
+} else if (
+  userinfo?.user?.user_type === 'Agent'
+) {
+  agent_id = userinfo.user.user_id; // safe and explicit
+}
 
     const formData = new FormData();
 
@@ -883,7 +927,10 @@ formData.append(
     formData.append("checkout", payload.checkout);
     formData.append("adults", String(payload.adults));
     formData.append("childs", String(payload.childs));
-    formData.append("child_ages", String(payload.child_ages));
+ const child_ages = payload?.child_ages.split(',').map(age => ({ ages: Number(age) }));
+// Convert to JSON string
+const ages_json = JSON.stringify(child_ages);
+    formData.append("child_ages",ages_json);
 
     // 🔹 Currency
     formData.append("currency_original", payload.currency_original);
@@ -896,8 +943,8 @@ formData.append(
     formData.append("module_type", payload.module_type);
     formData.append("pnr", payload.pnr);
     formData.append("transaction_id", payload.transaction_id);
-    formData.append("user_id", user_id || payload.user_id);
-
+    formData.append("user_id", userId || payload.user_id);
+    formData.append('agent_id', agent_id || '')
     // 🔹 Cancellation info
     formData.append("cancellation_request", payload.cancellation_request);
     formData.append("cancellation_status", payload.cancellation_status);
@@ -924,7 +971,8 @@ formData.append(
       method: "POST",
       body: formData,
     });
-
+   console.log('children_ages formdata', formData)
+   console.log("children_ages paylaod",payload )
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
@@ -941,7 +989,7 @@ formData.append(
 export const hotel_invoice = async (payload: string) => {
   try {
     const formData = new FormData();
-console.log(formData ,"first data");
+
 
     //  match exactly with API keys
     formData.append("booking_ref_no", payload);
@@ -952,8 +1000,6 @@ console.log(formData ,"first data");
     });
 
     const data = await response.json().catch(() => null);
-console.log(data ,"secound data");
-
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

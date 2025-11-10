@@ -17,21 +17,22 @@ import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
 import { useUser } from "@hooks/use-user";
 import Image from "next/image";
+import useHotelSearch from "@hooks/useHotelSearch";
 
 const HotelsDetails = () => {
-  // ✅ ALL HOOKS MUST BE CALLED UNCONDITIONALLY AT THE TOP
+  //  ALL HOOKS MUST BE CALLED UNCONDITIONALLY AT THE TOP
   const params = useParams();
   const router = useRouter();
   const { currency, locale: language } = useAppSelector((state) => state.root);
   const { user } = useUser();
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-
+const {setLoadingHotelId,loadingHotelId} = useHotelSearch()
   const [searchParams, setSearchParams] = useState({
     checkin: "",
     checkout: "",
     rooms: 1,
-    adults: 2,
+    adults: 1,
     children: 0,
     nationality: "US",
   });
@@ -84,6 +85,7 @@ const HotelsDetails = () => {
     toggleGuestsDropdown,
     onSubmit: handleSearchSubmit,
     handleReserveRoom,
+    roomOptionLoadingId
   } = useHotelDetails({
     initialCheckin: searchParams.checkin,
     initialCheckout: searchParams.checkout,
@@ -192,6 +194,7 @@ const HotelsDetails = () => {
   };
 
   const handleSuggestionClick = (hotel: any) => {
+    setLoadingHotelId(hotel.id)
     const { checkin, checkout, rooms, adults, children, nationality } =
       searchParams;
     const hotelNameSlug = hotel.name.toLowerCase().replace(/\s+/g, "-");
@@ -211,7 +214,10 @@ const HotelsDetails = () => {
     if (typeof window !== "undefined") {
       localStorage.setItem("currentHotel", JSON.stringify(hotelData));
     }
+     setTimeout(() => {
+     setLoadingHotelId(null)
     router.push(newUrl);
+  }, 500);
   };
 
   const getFaqIcon = (question: string) => {
@@ -230,7 +236,7 @@ const HotelsDetails = () => {
     return "mdi:check-circle-outline";
   };
 
-  // ✅ Now safe to conditionally render based on data
+  //  Now safe to conditionally render based on data
   if (!savedForm || !savedhotel) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -661,6 +667,7 @@ const HotelsDetails = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {hotelDetails.rooms.map((room: any, index: number) => (
               <RoomCard
+                loading={roomOptionLoadingId}
                 key={index}
                 room={room}
                 options={""}
@@ -745,6 +752,7 @@ const HotelsDetails = () => {
         <HotelSuggestionSlider
           hotels={featured_hotels}
           onHotelClick={handleSuggestionClick}
+          loading={loadingHotelId}
         />
       )}
 

@@ -48,10 +48,12 @@ const Login = ({ dict }: { dict?: any }) => {
     }
   },[])
   // Handle result of Server Action
+
+
 useEffect(() => {
   if (state.success) {
     toast.success(dict?.login_form?.success_message || "Login successful!");
-
+    setLoading(false); //  stop loading
     checkSession?.().then(() => {
       const { userType, userId } = state;
 
@@ -60,19 +62,23 @@ useEffect(() => {
           .split('; ')
           .find(row => row.startsWith('access-token='))?.split('=')[1];
 
-        // Only redirect externally if lastRoute is NOT "/bookings"
         if (token && lastRoute !== "/bookings") {
           window.location.href = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(token)}&user_id=${userId}`;
           return;
         }
       }
-
-      // Fallback: normal redirect
       router.push(lastRoute === "/bookings" ? "/bookings" : `/${lang}`);
-
     });
   }
-}, [state, router, lang, dict, checkSession, lastRoute]);
+  else if (state.error) {
+    // 👇 handle incorrect credentials
+    setLoading(false);
+    toast.error(state.error || "Invalid email or password");
+
+    // Optionally show error inline:
+    setError("root", { message: state.error || "Login failed" });
+  }
+}, [state, router, lang, dict, checkSession, lastRoute, setError]);
 
   // Client validation only — then submit hidden form
   const onSubmit = useCallback(
@@ -124,7 +130,8 @@ useEffect(() => {
                     placeholder={dict?.login_form?.email_placeholder}
                     size="lg"
                     invalid={!!errors.email}
-                    className={`${direction === "rtl" ? "pr-3" : "pl-0"}`}
+                    className="ps-4"
+                    // className={`${direction === "rtl" ? "pr-3" : "pl-0"}`}
                   />
                 )}
               />
@@ -150,6 +157,7 @@ useEffect(() => {
                     placeholder={dict?.login_form?.password_placeholder}
                     size="lg"
                     invalid={!!errors.password}
+                    className=""
                     suffix={
                       <button type="button" onClick={() => setShowPassword(!showPassword)}>
                         {showPassword ? (

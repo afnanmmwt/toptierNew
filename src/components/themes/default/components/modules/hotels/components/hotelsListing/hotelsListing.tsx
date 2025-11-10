@@ -61,7 +61,7 @@ const onShowMaphandler=(hotel:any)=>{
 
   const { allHotelsData: hotelsData,
       isloadingMore, listRef,
-        detailsBookNowHandler,isProcessingRef,loadMoreData ,noMoreData} = useHotelSearch()
+        detailsBookNowHandler,isProcessingRef,loadMoreData ,noMoreData,loadingHotelId} = useHotelSearch()
   const safeHotelsData = Array.isArray(hotelsData) && hotelsData?.length > 0
     ? hotelsData
     : Array.isArray(hotelsData)
@@ -287,13 +287,7 @@ function getOptionLabel(option: string) {
                 >
                   {dict?.hotel_listing?.reset_filters || "Reset Filters"}
                 </button>
-                {/* <button
-                  onClick={applyFilters}
-                  disabled={!hasActiveFilters}
-                  className="w-full py-3 bg-[#163C8C] border border-[#163C8C] cursor-pointer text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {dict?.hotel_listing?.apply || "Apply"}
-                </button> */}
+
               </div>
             </div>
           </div>}
@@ -445,8 +439,9 @@ function getOptionLabel(option: string) {
                     hotel={hotel}
                     viewMode={viewMode}
                     onBookNow={(hotel: any) => detailsBookNowHandler(hotel)}
-                     setActiveHotelId={setActiveHotelId}
-                        activeHotelId={activeHotelId}
+                    setActiveHotelId={setActiveHotelId}
+                    activeHotelId={activeHotelId}
+                    loading={loadingHotelId}
 
                   />
                 ))}
@@ -476,6 +471,7 @@ function getOptionLabel(option: string) {
                         // //  Pass active state to child
                         setActiveHotelId={setActiveHotelId}
                         activeHotelId={activeHotelId}
+                        loading={loadingHotelId}
                       />
                     ))}
                   </div>

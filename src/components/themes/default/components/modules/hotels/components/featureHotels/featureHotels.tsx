@@ -168,54 +168,58 @@ const FeaturedHotels: React.FC = () => {
     return bgColors[idx % bgColors.length];
   };
 
-  const detailsBookNowHandler = async (hotel: Hotel) => {
-    setLoadingHotelId(hotel.id);
+ const detailsBookNowHandler = async (hotel: Hotel) => {
+  // set the loading hotel ID so spinner appears
+  setLoadingHotelId(hotel.id);
 
-    try {
-      dispatch(setSeletecHotel({}));
-      localStorage.setItem("currentHotel", JSON.stringify(hotel));
+  try {
+    dispatch(setSeletecHotel({}));
+    localStorage.setItem("currentHotel", JSON.stringify(hotel));
 
-      const slugName = hotel.name.toLowerCase().replace(/\s+/g, "-");
-      const today = new Date();
-      const tomorrow = new Date();
-      tomorrow.setDate(today.getDate() + 1);
-      const formatDate = (d: Date) => d.toISOString().split("T")[0];
+    const slugName = hotel.name.toLowerCase().replace(/\s+/g, "-");
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    const formatDate = (d: Date) => d.toISOString().split("T")[0];
 
-      const storedForm = localStorage.getItem("hotelSearchForm");
-      let formData;
+    const storedForm = localStorage.getItem("hotelSearchForm");
+    let formData;
 
-      if (storedForm) {
-        formData = JSON.parse(storedForm);
-      } else {
-        formData = {
-          checkin: formatDate(today),
-          checkout: formatDate(tomorrow),
-          rooms: 1,
-          adults: 2,
-          children: 0,
-          children_ages: [],
-          nationality: "US",
-          destination: hotel?.city || "Dubai",
-          supplier_name:'hotels',
-          latitude: "",
-          longitude: "",
-        };
-        localStorage.setItem("hotelSearchForm", JSON.stringify(formData));
-      }
-
-      const url = `/hotelDetails/${hotel.id}/${slugName}/${formData.checkin}/${formData.checkout}/${formData.rooms}/${formData.adults}/${formData.children}/${formData.nationality}`;
-
-      dispatch(setSeletecHotel(hotel));
-
-      setTimeout(() => {
-        router.push(url);
-      }, 500);
-    } catch (error) {
-      console.error("Booking redirect failed:", error);
-    } finally {
-      setLoadingHotelId(null);
+    if (storedForm) {
+      formData = JSON.parse(storedForm);
+    } else {
+      formData = {
+        checkin: formatDate(today),
+        checkout: formatDate(tomorrow),
+        rooms: 1,
+        adults: 2,
+        children: 0,
+        children_ages: [],
+        nationality: "US",
+        destination: hotel?.city || "Dubai",
+        supplier_name: "hotels",
+        latitude: "",
+        longitude: "",
+      };
+      localStorage.setItem("hotelSearchForm", JSON.stringify(formData));
     }
-  };
+
+    const url = `/hotelDetails/${hotel.id}/${slugName}/${formData.checkin}/${formData.checkout}/${formData.rooms}/${formData.adults}/${formData.children}/${formData.nationality}`;
+
+    dispatch(setSeletecHotel(hotel));
+
+    // short delay to make spinner visible before routing
+    setTimeout(() => {
+      router.push(url);
+    }, 1000);
+  } catch (error) {
+    console.error("Booking redirect failed:", error);
+  } finally {
+    // reset loading state after short delay
+    setTimeout(() => setLoadingHotelId(null), 1500);
+  }
+};
+
 
   if (!Array.isArray(featured_hotels) || featured_hotels.length === 0) {
     return null;
@@ -323,6 +327,8 @@ const FeaturedHotels: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center gap-3 px-2 mb-3">
+
+
               <button
                 onClick={() => detailsBookNowHandler(hotel)}
                 disabled={loadingHotelId === hotel.id}

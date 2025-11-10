@@ -40,7 +40,7 @@ interface HotelInvoiceProps {
 
 const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
   const invoiceRef = useRef<HTMLDivElement>(null);
-
+console.log('invoce data', invoiceDetails)
   const appData = useAppSelector((state) => state.appData?.data?.app);
   // console.log(appData);
   const { locale } = useLocale();
@@ -80,10 +80,11 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
 
   const travellers: Traveller[] = JSON.parse(data.guest || "[]");
   const rooms: RoomData[] = JSON.parse(data.room_data || "[]");
-
+  const child_ages:any[]= JSON.parse(data.child_ages || "[]");
+  let childCounter=0
   const booking_Data = JSON.parse(data.booking_data);
   const invoiceDetailsBooking = JSON.parse(data.booking_data || "{}");
-  const invoiceUrl = `${window.location.origin}/hotel/invoice/${data.booking_ref_no}`;
+  const invoiceUrl = `${window.location.origin}/hotels/invoice/${data.booking_ref_no}`;
   const bookingData = {
     paymentStatus: data.payment_status,
     bookingStatus: data.booking_status,
@@ -832,7 +833,7 @@ View Invoice: ${invoiceUrl}`;
           </div>
         </div>
 
-        {bookingData.paymentStatus === "unpaid" && (
+        {/* {bookingData.paymentStatus === "unpaid" && (
           <div className="paymentSection">
             <div className="paymentTitle">Pay With</div>
 
@@ -895,7 +896,7 @@ View Invoice: ${invoiceUrl}`;
               USD {bookingData.total.replace(/[^0-9.,]/g, "")}
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Booking Details */}
         <div className="content">
@@ -976,19 +977,18 @@ View Invoice: ${invoiceUrl}`;
                 </thead>
                 <tbody>
                   {travellers.map((t, index) => (
-                    <tr key={index} className="tableRow">
-                      <td className="tableCell">{index + 1}</td>
-                      <td className="tableCell">{t.title}</td>
-                      <td className="tableCell">
-                        {t.first_name} {t.last_name}
-                      </td>
-                      <td className="tableCell">
-                        {t.traveller_type === "child"
-                          ? `${t.traveller_type} (${(t as any)?.age} year old)`
-                          : t.traveller_type}
-                      </td>
-                    </tr>
-                  ))}
+  <tr key={index} className="tableRow">
+    <td className="tableCell">{index + 1}</td>
+    <td className="tableCell">{t.title}</td>
+    <td className="tableCell">{t.first_name} {t.last_name}</td>
+    <td className="tableCell">
+      {t.traveller_type === "child"
+        ? `${t.traveller_type} (${child_ages[childCounter++]?.ages} year${child_ages[childCounter-1]?.ages > 1 ? "s" : ""})`
+        : t.traveller_type}
+    </td>
+  </tr>
+))}
+
                 </tbody>
               </table>
             </div>

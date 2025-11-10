@@ -8,7 +8,12 @@ import React, { useState } from "react";
 type RoomItem = {
   room_name?: string;
   room_price?: string;
-  room_qaunitity?: string;
+  room_quantity?: string;
+  room_actual_price_per_night?:string;
+  total_markup_price: string;
+  total_nights:string | number;
+
+
 
   [k: string]: unknown;
 };
@@ -42,6 +47,7 @@ type BookingCardData = {
   childs: string;
   booking_reference?: string;
   guest?: string | any[];
+  child_ages:any[]
 
   // API sometimes returns this as a JSON string (array of rooms)
   room_data?: string | RoomItem[];
@@ -75,11 +81,12 @@ export const toCardData = (b: any): BookingCardData => ({
   country: b.country ?? "",
   adults: String(b.adults ?? ""),
   childs: String(b.childs ?? ""),
+  child_ages:b.child_ages,
   room_data: b.room_data,
   guest: b.guest, // keep raw; we parse safely in the component
-}); 
+});
 // ======================== CARD COMPONENT ========================
-const DashboardCard = ({ data }: { data: BookingCardData }) => {
+const DashboardCard = ({ data }: { data: any }) => {
   const [open, setOpen] = useState(false);
   const ref = data?.booking_ref_no || data?.booking_id;
   const { locale } = useLocale();
@@ -92,7 +99,7 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
   const displayName =
     fullName.length > 20 ? (data.first_name || "").trim() : fullName;
 
-  // Parse room_data safely (stringified JSON array or array)
+
   let roomInfo: RoomItem | null = null;
   try {
     if (typeof data.room_data === "string") {
@@ -104,7 +111,6 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
   } catch {
     roomInfo = null;
   }
-
   return (
     <div className="">
       {/* CARD */}
@@ -187,342 +193,289 @@ const DashboardCard = ({ data }: { data: BookingCardData }) => {
       </div>
 
       {/* MODAL */}
-      {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          onClick={() => setOpen(false)}
-        >
-          <div className="absolute inset-0 bg-black/50"></div>
+  {open && (
+  <div
+    className="fixed inset-0 z-50 flex items-center justify-center"
+    onClick={() => setOpen(false)}
+  >
+    <div className="absolute inset-0 bg-black/50"></div>
 
-          <div
-            className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-[90%] max-h-[535px] md:max-h-[650px] overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header Image */}
-            {data.hotel_img ? (
-              <img
-                src={data.hotel_img}
-                alt={data.hotel_name || "Hotel image"}
-                className="w-full h-40 md:h-56 object-cover"
-              />
-            ) : (
-              <div className="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
-                {dict?.dashboardCard?.noimage}
+    <div
+      className="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-[90%] max-h-[650px] overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Header Image */}
+      {data.hotel_img ? (
+        <img
+          src={data.hotel_img}
+          alt={data.hotel_name || "Hotel image"}
+          className="w-full h-40 md:h-56 object-cover"
+        />
+      ) : (
+        <div className="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
+          {dict?.dashboardCard?.noimage}
+        </div>
+      )}
+
+      <div className="py-3 px-6">
+        <div className="flex flex-col md:flex-row justify-between mt-1 md:mt-2 gap-0.5 md:gap-1">
+          <h3 className="text-xl md:text-2xl font-bold text-gray-900">
+            {data.hotel_name}
+          </h3>
+        </div>
+
+        <p className="text-gray-600 text-sm md:text-base">
+          {data.location} - {data.hotel_address} - {data.country}
+        </p>
+
+        {/* Scrollable sections */}
+        <div className="max-h-50 overflow-y-auto mt-4 space-y-4">
+
+          {/* Booking Details */}
+          <div>
+            <h1 className="text-xl font-semibold">{dict?.dashboardCard?.bookingdetails}</h1>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 py-2 px-4 rounded-lg border border-gray-200">
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.bookingreference}</p>
+                <p className="text-sm font-semibold">{data.booking_ref_no}</p>
               </div>
-            )}
-
-            <div className="py-3 px-6">
-              <div className="flex flex-col md:flex-row justify-between mt-1 md:mt-2 gap-0.5 md:gap-1">
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900">
-                  {data.hotel_name}
-                </h3>
-
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.bookingstatus}</p>
+                <p className="text-sm font-semibold">{data.booking_status}</p>
               </div>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.paymentstatus}</p>
+                <p className="text-sm font-semibold">{data.payment_status}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">PNR</p>
+                <p className="text-sm font-semibold">{data.pnr}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.checkin}</p>
+                <p className="text-sm font-semibold">{data.checkin}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.checkout}</p>
+                <p className="text-sm font-semibold">{data.checkout}</p>
+              </div>
+            </div>
+          </div>
 
-              <p className="text-gray-600 text-sm md:text-base">
-                {data.location} - {data.hotel_address} - {data.country}
-              </p>
+          {/* Guest Details */}
+          <div>
+            <h1 className="text-xl font-semibold">{dict?.dashboardCard?.guestdetails}</h1>
 
-              {/* Scrollable sections */}
-              <div className="max-h-50 overflow-y-auto mt-4 space-y-4">
-                {/* Booking Details */}
-                <div>
-                  <h1 className="text-xl font-semibold">{dict?.dashboardCard?.bookingdetails}</h1>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 py-2 px-4 rounded-lg border border-gray-200">
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.bookingreference}</p>
-                      <p className="text-sm font-semibold">
-                        {data.booking_ref_no}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.bookingstatus}</p>
-                      <p className="text-sm font-semibold">
-                        {data.booking_status}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.paymentstatus}</p>
-                      <p className="text-sm font-semibold">
-                        {data.payment_status}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">PNR</p>
-                      <p className="text-sm font-semibold">{data.pnr}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.checkin}</p>
-                      <p className="text-sm font-semibold">{data.checkin}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.checkout}</p>
-                      <p className="text-sm font-semibold">{data.checkout}</p>
-                    </div>
+            {(() => {
+              let guests: any[] = [];
+              let childAges: { ages: number }[] = [];
+
+              // --- Parse guests safely ---
+              try {
+                if (typeof data?.guest === "string") guests = JSON.parse(data.guest);
+                else if (Array.isArray(data?.guest)) guests = data.guest;
+              } catch {
+                guests = [];
+              }
+
+              // --- Parse child ages safely ---
+              try {
+                if (Array.isArray(data?.child_ages)) childAges = data.child_ages;
+                else if (typeof data?.child_ages === "string") {
+                  const parsed = JSON.parse(data.child_ages);
+                  if (Array.isArray(parsed)) childAges = parsed;
+                }
+              } catch {
+                childAges = [];
+              }
+
+              if (!guests.length) {
+                return (
+                  <div className="mt-2 py-4 px-4 rounded-lg border border-gray-200 text-gray-500 text-sm">
+                    {dict?.dashboardCard?.noguest}
                   </div>
-                </div>
+                );
+              }
 
-                {/* Guest Details */}
-                <div>
-                  <h1 className="text-xl font-semibold">{dict?.dashboardCard?.guestdetails}</h1>
+              const norm = (v: unknown) =>
+                typeof v === "string" ? v.toLowerCase().trim() : "";
 
-                  {(() => {
-                    let guests: any[] = [];
+              const isChild = (g: any) =>
+                ["child", "kid", "chd"].includes(
+                  norm(g?.traveller_type || g?.type || g?.category)
+                );
 
-                    // Safe parse
-                    try {
-                      if (typeof data?.guest === "string") {
-                        guests = JSON.parse(data.guest);
-                      } else if (Array.isArray(data?.guest)) {
-                        guests = data.guest;
-                      }
-                    } catch {
-                      guests = [];
-                    }
+              const isAdult = (g: any) =>
+                ["adult", "adt", "adl"].includes(
+                  norm(g?.traveller_type || g?.type || g?.category)
+                ) ||
+                (!isChild(g) &&
+                  norm(g?.traveller_type || g?.type || g?.category) !== "");
 
-                    // Nothing to show
-                    if (!guests.length) {
-                      return (
-                        <div className="mt-2 py-4 px-4 rounded-lg border border-gray-200 text-gray-500 text-sm">
-                          {dict?.dashboardCard?.noguest}
-                        </div>
-                      );
-                    }
+              const adults = guests.filter(isAdult);
+              const children = guests.filter(isChild);
 
-                    // Normalize type
-                    const norm = (v: unknown) =>
-                      typeof v === "string" ? v.toLowerCase().trim() : "";
+              const NameCell = ({ guest }: { guest: any }) => (
+                <>
+                  <p className="text-xs text-gray-500">{dict?.dashboardCard?.name}</p>
+                  <p className="text-sm font-semibold">
+                    {guest?.title ? `${guest.title} ` : ""}
+                    {guest?.first_name ||
+                      guest?.firstname ||
+                      guest?.given_name ||
+                      ""}{" "}
+                    {guest?.last_name ||
+                      guest?.lastname ||
+                      guest?.family_name ||
+                      ""}
+                  </p>
+                </>
+              );
 
-                    const isChild = (g: any) => {
-                      const t = norm(
-                        g?.traveller_type || g?.type || g?.category
-                      );
-                      return t === "child" || t === "kid" || t === "chd";
-                    };
+              const TypeCell = ({ guest }: { guest: any }) => (
+                <>
+                  <p className="text-xs text-gray-500">{dict?.dashboardCard?.type}</p>
+                  <p className="text-sm font-semibold capitalize">
+                    {guest?.traveller_type || guest?.type || guest?.category || "—"}
+                  </p>
+                </>
+              );
 
-                    const isAdult = (g: any) => {
-                      const t = norm(
-                        g?.traveller_type || g?.type || g?.category
-                      );
-                      return (
-                        t === "adult" ||
-                        t === "adt" ||
-                        t === "adl" ||
-                        (!isChild(g) && t !== "")
-                      );
-                    };
-
-                    // Get age for children (supports multiple field names)
-                    const getAge = (g: any) => {
-                      const raw =
-                        g?.age ?? g?.child_age ?? g?.age_years ?? g?.Age;
-                      const n = Number(raw);
-                      return Number.isFinite(n) && n > 0 ? String(n) : "";
-                    };
-
-                    const adults = guests.filter(isAdult);
-                    const children = guests.filter(isChild);
-
-                    const NameCell = ({ guest }: { guest: any }) => (
-                      <>
-                        <p className="text-xs text-gray-500">{dict?.dashboardCard?.name}</p>
-                        <p className="text-sm font-semibold">
-                          {guest?.title ? `${guest.title} ` : ""}
-                          {guest?.first_name ||
-                            guest?.firstname ||
-                            guest?.given_name ||
-                            ""}{" "}
-                          {guest?.last_name ||
-                            guest?.lastname ||
-                            guest?.family_name ||
-                            ""}
-                        </p>
-                      </>
-                    );
-
-                    const TypeCell = ({ guest }: { guest: any }) => (
-                      <>
-                        <p className="text-xs text-gray-500">{dict?.dashboardCard?.type}</p>
-                        <p className="text-sm font-semibold capitalize">
-                          {guest?.traveller_type ||
-                            guest?.type ||
-                            guest?.category ||
-                            "—"}
-                        </p>
-                      </>
-                    );
-
-                    return (
-                      <div className="mt-2 space-y-6">
-                        {/* Adults */}
-                        {adults.length > 0 && (
-                          <div className="rounded-lg border border-gray-200 overflow-hidden">
-                            <div className="bg-gray-50 px-4 py-2 text-sm font-semibold">
-                               {dict?.dashboardCard?.adults} ({adults.length})
-                            </div>
-                            <div className="divide-y divide-gray-100">
-                              {adults.map((guest, i) => (
-                                <div
-                                  key={`adult-${i}`}
-                                  className="grid grid-cols-2 md:grid-cols-4 gap-3 py-3 px-4 hover:bg-gray-50 transition"
-                                >
-                                  <div>
-                                    <NameCell guest={guest} />
-                                  </div>
-                                  <div>
-                                    <TypeCell guest={guest} />
-                                  </div>
-                                  {/* Extra cells reserved if you later want email/phone/passport etc. */}
-                                  <div className="hidden md:block" />
-                                  <div className="hidden md:block" />
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Children */}
-                        {children.length > 0 && (
-                          <div className="rounded-lg border border-gray-200 overflow-hidden">
-                            <div className="bg-gray-50 px-4 py-2 text-sm font-semibold">
-                               {dict?.dashboardCard?.childs} ({children.length})
-                            </div>
-                            <div className="divide-y divide-gray-100">
-                              {children.map((guest, i) => {
-                                const age = getAge(guest);
-                                return (
-                                  <div
-                                    key={`child-${i}`}
-                                    className="grid grid-cols-2 md:grid-cols-4 gap-3 py-3 px-4 hover:bg-gray-50 transition"
-                                  >
-                                    <div>
-                                      <NameCell guest={guest} />
-                                    </div>
-                                    <div>
-                                      <TypeCell guest={guest} />
-                                    </div>
-                                    <div>
-                                      <p className="text-xs text-gray-500">
-                                        {dict?.dashboardCard?.age}
-                                      </p>
-                                      <p className="text-sm font-semibold">
-                                        {age || "—"}
-                                      </p>
-                                    </div>
-                                    <div className="hidden md:block" />
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* If some guests are neither adult nor child (weird data), show them raw */}
-                        {adults.length + children.length < guests.length && (
-                          <div className="rounded-lg border border-amber-200 overflow-hidden">
-                            <div className="bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800">
-                              {dict?.dashboardCard?.otherguests} (
-                              {guests.length - adults.length - children.length})
-                            </div>
-                            <div className="divide-y divide-gray-100">
-                              {guests
-                                .filter((g) => !isAdult(g) && !isChild(g))
-                                .map((guest, i) => (
-                                  <div
-                                    key={`other-${i}`}
-                                    className="grid grid-cols-2 md:grid-cols-4 gap-3 py-3 px-4 hover:bg-gray-50 transition"
-                                  >
-                                    <div>
-                                      <NameCell guest={guest} />
-                                    </div>
-                                    <div>
-                                      <TypeCell guest={guest} />
-                                    </div>
-                                    <div className="hidden md:block" />
-                                    <div className="hidden md:block" />
-                                  </div>
-                                ))}
-                            </div>
-                          </div>
-                        )}
+              return (
+                <div className="mt-2 space-y-6">
+                  {/* Adults */}
+                  {adults.length > 0 && (
+                    <div className="rounded-lg border border-gray-200 overflow-hidden">
+                      <div className="bg-gray-50 px-4 py-2 text-sm font-semibold">
+                        {dict?.dashboardCard?.adults} ({adults.length})
                       </div>
-                    );
-                  })()}
-                </div>
+                      <div className="divide-y divide-gray-100">
+                        {adults.map((guest, i) => (
+                          <div
+                            key={`adult-${i}`}
+                            className="grid grid-cols-2 md:grid-cols-4 gap-3 py-3 px-4 hover:bg-gray-50 transition"
+                          >
+                            <div><NameCell guest={guest} /></div>
+                            <div><TypeCell guest={guest} /></div>
+                            <div className="hidden md:block" />
+                            <div className="hidden md:block" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-                {/* Room Details */}
-                <div>
-                  <h1 className="text-xl font-semibold">{dict?.dashboardCard?.roomdetails}</h1>
-                  <div className="grid  grid-cols-2 md:grid-cols-3 gap-3 mt-2 py-2 px-4 rounded-lg border border-gray-200">
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomname}</p>
-                      <p className="text-sm font-semibold">
-                        {roomInfo?.room_name || "—"}
-                      </p>
+                  {/* Children */}
+                  {children.length > 0 && (
+                    <div className="rounded-lg border border-gray-200 overflow-hidden">
+                      <div className="bg-gray-50 px-4 py-2 text-sm font-semibold">
+                        {dict?.dashboardCard?.childs} ({children.length})
+                      </div>
+                      <div className="divide-y divide-gray-100">
+                        {children.map((guest, i) => {
+                          const age = childAges[i]?.ages ?? "—";
+                          return (
+                            <div
+                              key={`child-${i}`}
+                              className="grid grid-cols-2 md:grid-cols-4 gap-3 py-3 px-4 hover:bg-gray-50 transition"
+                            >
+                              <div><NameCell guest={guest} /></div>
+                              <div><TypeCell guest={guest} /></div>
+                              <div>
+                                <p className="text-xs text-gray-500">{dict?.dashboardCard?.age}</p>
+                                <p className="text-sm font-semibold">
+                                  {age} year{age > 1 ? "s" : ""}
+                                </p>
+                              </div>
+                              <div className="hidden md:block" />
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomprice}</p>
-                      <p className="text-sm font-semibold">
-                        $
-                        {roomInfo?.room_price
-                          ? `${roomInfo.room_price} ${data.currency_markup}`
-                          : "—"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomqaunitity}</p>
-                      <p className="text-sm font-semibold">
-                        {roomInfo?.room_qaunitity || "—"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.adults}</p>
-                      <p className="text-sm font-semibold">
-                        {data?.adults || "—"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">{dict?.dashboardCard?.childs}</p>
-                      <p className="text-sm font-semibold">
-                        {data?.childs || "—"}
-                      </p>
-                    </div>
-                  </div>
+                  )}
                 </div>
+              );
+            })()}
+          </div>
+
+          {/* Room Details */}
+          <div>
+            <h1 className="text-xl font-semibold">{dict?.dashboardCard?.roomdetails}</h1>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-2 py-2 px-4 rounded-lg border border-gray-200">
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomname}</p>
+                <p className="text-sm font-semibold">
+                  {roomInfo?.room_name || "—"}
+                </p>
               </div>
-              <div className="mt-1 md:mt-3 flex justify-between gap-3">
-                <button
-                  className="cursor-pointer px-4 py-2 rounded-lg bg-blue-900 text-white hover:bg-gray-950"
-                  onClick={() => {
-                    const ref =
-                      data?.booking_ref_no ||
-                      data?.booking_reference ||
-                      data?.booking_id ||
-                      "";
-
-                    if (!ref) {
-                      alert(dict?.dashboardCard?.invoicenotfound);
-                      return;
-                    }
-
-                    const invoiceUrl = `https://toptier-tr-ef19.vercel.app/hotel/invoice/${ref}`;
-                    window.location.href = invoiceUrl;
-                  }}
-                >
-                  {dict?.dashboardCard?.invoice}
-                </button>
-
-                <button
-                  onClick={() => setOpen(false)}
-                  className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
-                >
-                  {dict?.dashboardCard?.close || "Close"}
-                </button>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomprice}</p>
+                <p className="text-sm font-semibold">
+                  {roomInfo?.room_actual_price_per_night
+                    ? `${data.currency_markup} ${roomInfo.room_actual_price_per_night}`
+                    : "—"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.roomqaunitity}</p>
+                <p className="text-sm font-semibold">
+                  {roomInfo?.room_quantity || "—"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.adults}</p>
+                <p className="text-sm font-semibold">{data?.adults || "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.childs}</p>
+                <p className="text-sm font-semibold">{data?.childs || "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.total_nights || "Total Nights"}</p>
+                <p className="text-sm font-semibold">{roomInfo?.total_nights || "—"}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">{dict?.dashboardCard?.total_price || "Total Price"}</p>
+                <p className="text-sm font-semibold">{roomInfo?.total_markup_price || "—"}</p>
               </div>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Footer Buttons */}
+        <div className="mt-3 flex justify-between gap-3">
+          <button
+            className="cursor-pointer px-4 py-2 rounded-lg bg-blue-900 text-white hover:bg-gray-950"
+            onClick={() => {
+              const ref =
+                data?.booking_ref_no ||
+                data?.booking_reference ||
+                data?.booking_id ||
+                "";
+              if (!ref) {
+                alert(dict?.dashboardCard?.invoicenotfound);
+                return;
+              }
+              const invoiceUrl = `https://toptier-tr-ef19.vercel.app/hotels/invoice/${ref}`;
+              window.location.href = invoiceUrl;
+            }}
+          >
+            {dict?.dashboardCard?.invoice}
+          </button>
+
+          <button
+            onClick={() => setOpen(false)}
+            className="cursor-pointer px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            {dict?.dashboardCard?.close || "Close"}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

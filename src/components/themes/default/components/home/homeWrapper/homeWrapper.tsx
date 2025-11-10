@@ -17,7 +17,7 @@ export default function HomeWrapper({ dict }: { dict: any }) {
   const [direction] = useDirection();
   const router = useRouter();
   const { user } = useUser();
-  const searchParams = useSearchParams(); // ✅ Get URL query params
+  const searchParams = useSearchParams(); //  Get URL query params
 
   const lastRoute = sessionStorage.getItem('lastRoute') || '';
 // Capture & store referral code
@@ -34,7 +34,6 @@ useEffect(() => {
       router.replace('/bookings');
     }
   }, [user, router, lastRoute]);
-
   return (
     <div className="bg-white dark:bg-gray-800 min-h-full" dir={direction}>
       <div><HeroSection /></div>

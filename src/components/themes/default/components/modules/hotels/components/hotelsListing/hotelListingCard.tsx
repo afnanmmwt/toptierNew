@@ -10,6 +10,7 @@ import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
 import useCurrency from "@hooks/useCurrency";
 import { useAppDispatch, useAppSelector } from "@lib/redux/store";
+import Spinner from "@components/core/Spinner";
 
 interface HotelListingCardProps {
   hotel: any;
@@ -18,6 +19,7 @@ interface HotelListingCardProps {
   onMapShow?: (hotel: any) => void;
   viewMode: any;
   onBookNow: any;
+  loading: null | string
 }
 
 const HotelCard = memo(function HotelCard({
@@ -27,6 +29,7 @@ const HotelCard = memo(function HotelCard({
   onMapShow,
   activeHotelId,
   setActiveHotelId,
+  loading
 }: HotelListingCardProps) {
   const { user } = useUser();
   // Use number state to match API (0 = not fav, 1 = fav)
@@ -194,11 +197,19 @@ const HotelCard = memo(function HotelCard({
         <div
           className={`flex items-center gap-2 ${viewMode === "list" ? "mt-auto" : ""}`}
         >
+
           <button
+            disabled={loading === hotel.hotel_id}
             className="flex-1 cursor-pointer bg-[#163D8C] hover:bg-gray-800 text-white font-medium py-3 md:py-2.5 px-3 text-sm sm:text-base md:text-sm lg:text-base rounded-full transition-colors duration-200 focus:outline-none"
             onClick={() => onBookNow && onBookNow(hotel)}
           >
-            {dict?.hotel_listing?.book_now || "Book Now"}
+            {loading === hotel.hotel_id ? (
+    <div className="flex items-center justify-center gap-2">
+      <Spinner /> <span></span>
+    </div>
+  ) : (
+    dict?.hotel_listing?.book_now || "Book Now"
+  )}
           </button>
           <button
             onClick={toggleLike}

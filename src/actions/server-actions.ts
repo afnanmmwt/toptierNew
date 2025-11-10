@@ -7,7 +7,6 @@ import { userInfo } from "os";
 import { z } from 'zod';
 import { json } from "stream/consumers";
 import { redirect } from "next/navigation";
-// console.log("base",baseUrl);
 
 
 // ============== COMMON HEADER ================
@@ -213,6 +212,7 @@ export const sign_up = async (signUpData: {
   phone: string;
   phone_country_code: number | string;
   password: string;
+  country:string
   // terms?: boolean;
 }) => {
   try {
@@ -224,7 +224,9 @@ export const sign_up = async (signUpData: {
     formData.append("phone_country_code", String(signUpData.phone_country_code));
     formData.append("password", signUpData.password);
     formData.append("api_key", api_key ?? "");
-    formData.append("user_type", "agent");
+    formData.append("country",signUpData.country)
+    formData.append("user_type", "Customer");
+
 
     // if (signUpData.terms !== undefined) {
     //   formData.append("terms", signUpData.terms ? "1" : "0");
@@ -439,19 +441,15 @@ export const getAccessToken = async () => {
   return token;
 };
 //------------------------ FORGET PASSWORD -----------------------------//
-export const forget_password = async (payload: {
-  email: string;
-
-  // terms: boolean;
-}) => {
+export const forget_password = async (email:string) => {
   try {
-    const response = await fetch(`${baseUrl}/forget-password`, {
+    const formData=new FormData()
+    formData.append('email',email)
+    formData.append('api_key',api_key ?? "")
+    const response = await fetch(`${baseUrl}/forget_password`, {
       method: "POST",
-      body: new URLSearchParams({
-        email: payload.email,
-        // terms: signUpData.terms.toString(),
-      }).toString(),
-      headers: await getHeaders("application/x-www-form-urlencoded"),
+      body: formData,
+
     });
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.status === false) {
@@ -817,7 +815,7 @@ export interface BookingPayload {
   checkout: string;
   adults: number;
   childs: number;
-  child_ages: string | number;
+  child_ages: string;
   currency_original: string;
   currency_markup: string;
   payment_date: string;
@@ -855,18 +853,11 @@ export const hotel_booking = async (payload: BookingPayload) => {
 let agent_id = '';
 
 if (agent_ref) {
-  // Priority 1: Use referral if present
   agent_id = agent_ref;
 } else if (
-  typeof userinfo === 'object' &&
-  userinfo !== null &&
-  (userinfo.user?.type === 'Agent' || userinfo.type === 'Agent')
+  userinfo?.user?.user_type === 'Agent'
 ) {
-  // Priority 2: If no referral, and user is an Agent → self-assign
-  agent_id = userId;
-} else {
-  // Priority 3: Not an agent and no referral → no agent_id
-  agent_id = '';
+  agent_id = userinfo.user.user_id; // safe and explicit
 }
 
     const formData = new FormData();
@@ -936,7 +927,10 @@ formData.append(
     formData.append("checkout", payload.checkout);
     formData.append("adults", String(payload.adults));
     formData.append("childs", String(payload.childs));
-    formData.append("child_ages", String(payload.child_ages));
+ const child_ages = payload?.child_ages.split(',').map(age => ({ ages: Number(age) }));
+// Convert to JSON string
+const ages_json = JSON.stringify(child_ages);
+    formData.append("child_ages",ages_json);
 
     // 🔹 Currency
     formData.append("currency_original", payload.currency_original);
@@ -977,9 +971,9 @@ formData.append(
       method: "POST",
       body: formData,
     });
-
+   console.log('children_ages formdata', formData)
+   console.log("children_ages paylaod",payload )
     const data = await response.json().catch(() => null);
-
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

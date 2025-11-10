@@ -127,6 +127,7 @@ const useHotelSearch = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
 
+const [loadingHotelId, setLoadingHotelId] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const [page, setPage] = useState(1);
 
@@ -353,7 +354,7 @@ const useHotelSearch = () => {
 
         const destinationSlug = form.destination.trim().replace(/\s+/g, "-");
 
-        const url = `/hotel/${destinationSlug}/${params.get(
+        const url = `/hotels/${destinationSlug}/${params.get(
           "checkin"
         )}/${params.get("checkout")}/${params.get("rooms")}/${params.get(
           "adults"
@@ -454,10 +455,11 @@ const useHotelSearch = () => {
     ]
   );
 
-  // DETAISL BOOK NOW HANDLER
+  // DETAISL BOOK NOW HANDLER loadingHotelId, setLoadingHotelId
   const detailsBookNowHandler = async (hotel: any) => {
     // if (!hotel?.hotel_id || !hotel?.name || !hotel?.supplier_name) return;
     dispatch(setSeletecHotel({}));
+    setLoadingHotelId(hotel.hotel_id)
     //  store full hotel object in localStorage
     localStorage.setItem("currentHotel", JSON.stringify(hotel));
     const selectedNationality = localStorage.getItem("hotelSearchForm");
@@ -469,11 +471,12 @@ const useHotelSearch = () => {
        parsedFormData = JSON.parse(selectedNationality); // now it's an object
     }
     //  construct URL
-    const url = `/hotelDetails/${hotel.hotel_id}/${slugName}/${parsedFormData.checkin}/${parsedFormData.checkout}/${form.rooms}/${form.adults}/${parsedFormData.children}/${parsedFormData.nationality}`;
+    const url = `/hotelDetails/${hotel.hotel_id}/${slugName}/${parsedFormData.checkin}/${parsedFormData.checkout}/${parsedFormData.rooms}/${parsedFormData.adults}/${parsedFormData.children}/${parsedFormData.nationality}`;
     dispatch(setSeletecHotel(hotel));
-    //  navigate
+     setTimeout(() => {
+     setLoadingHotelId(null)
     router.push(url);
-
+  }, 500);
   };
 
   // Other utility functions
@@ -501,7 +504,6 @@ const useHotelSearch = () => {
           newForm.children_ages = currentAges.slice(0, newChildrenCount);
         }
       }
-
       return newForm;
     });
 
@@ -614,6 +616,7 @@ const useHotelSearch = () => {
     setSelectedRoom,
     selectedHotel,
     selectedRomm,
+   loadingHotelId, setLoadingHotelId,
 
     // Event handlers
     handleChange,

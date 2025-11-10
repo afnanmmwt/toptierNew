@@ -9,7 +9,7 @@ export interface LayoutProps {
 
 export function Layout({ children }: LayoutProps): React.JSX.Element {
   return (
-   <div className="min-h-screen w-full bg-amber-200 flex flex-col md:flex-row">
+   <div className=" min-h-screen w-full bg-amber-200 flex flex-col md:flex-row">
 
   {/* ------------------ IMAGE SECTION ------------------ */}
   <div

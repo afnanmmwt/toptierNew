@@ -97,11 +97,11 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
   );
 
   // =============== EFFECTS ===============
-  useEffect(() => {
-    if (bookingReference) {
-      dispatch(setBookingReference(bookingReference));
-    }
-  }, [bookingReference, dispatch]);
+  // useEffect(() => {
+  //   if (bookingReference) {
+  //     dispatch(setBookingReference(bookingReference));
+  //   }
+  // }, [bookingReference, dispatch]);
 
   useEffect(() => {
     const country = countryList.find((c) => c.iso === formData.currentCountry);
@@ -165,30 +165,23 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
   // =============== SUBMIT ===============
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
     if (!validate()) {
       toast.error('Please fill all required fields');
       return;
     }
-
     // Check Stripe is loaded
     if (!stripe || !elements) {
       toast.error('Payment system not loaded. Please refresh and try again.');
       return;
     }
-
     const cardElement = elements.getElement(CardElement);
     if (!cardElement) {
       toast.error('Card element not found. Please refresh and try again.');
       return;
     }
-
     setIsProcessingPayment(true);
-
     try {
       // Step 1: Prepare booking payload
-
       const guestPayload = travellers.map((traveller: any, index: number) => ({
         traveller_type: index < adults ? 'adults' : 'child',
         title: traveller.title || 'Mr',

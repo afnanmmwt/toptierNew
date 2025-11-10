@@ -7,11 +7,9 @@ import { getDictionary } from '@src/get-dictionary'
 
 
 export default async function Page({ params }: {
-  params: Promise<{ lang: 'en' | 'ar', invoiceId: string }>
+  params: Promise<{  invoiceId: string }>
 }) {
-  const { lang ,invoiceId} = await params
-  const dict = await getDictionary(lang)
-
+  const { invoiceId} = await params
   const response = await hotel_invoice(invoiceId)
   const result =response?.response
 

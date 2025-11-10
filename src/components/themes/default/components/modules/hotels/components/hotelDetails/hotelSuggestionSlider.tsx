@@ -60,9 +60,10 @@ const HotelSuggestionSlider = ({ hotels, onHotelClick, loading }: HotelSuggestio
             >
               <div className="w-full h-full">
                 <HotelListingCard
+                favourite={false}
                 loading={loading}
                   hotel={hotel}
-                  viewMode="map"
+                  viewMode=""
                   activeHotelId=""
                   setActiveHotelId={() => { }}
                   onBookNow={(selectedHotel: any) => onHotelClick?.(selectedHotel)}

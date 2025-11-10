@@ -1,9 +1,7 @@
 
 import ForgetPassword from '@components/themes/default/components/auth/forgetPassword/forgetPassword'
-import { GuestGuard } from '@lib/auth/guest-guard'
 import { getDictionary } from '@src/get-dictionary'
 import React from 'react'
-import { Layout } from '@components/themes/default/components/auth/layout'
 import { Metadata } from 'next/types'
 export const metadata = { title: `Auth | Forget Password` } satisfies Metadata;
 export default async function Page({ params }: {

@@ -1,18 +1,13 @@
 "use server";
 import { createSession, getSession, logout } from "@lib/session";
 import { baseUrl, api_key } from "./actions";
-import { decodeBearerToken } from "@src/utils/decodeToken";
-import { cookies, headers } from "next/headers";
-import { userInfo } from "os";
+import { cookies } from "next/headers";
 import { z } from 'zod';
-import { json } from "stream/consumers";
-import { redirect } from "next/navigation";
 
 
 // ============== COMMON HEADER ================
 export async function getHeaders(contentType: string = "application/x-www-form-urlencoded") {
   // const domain = await getDomain();
-
   const headers: Record<string, string> = {
     Accept: "application/json",
     // Authorization: `Bearer ${token}`,
@@ -724,12 +719,7 @@ if (agent_ref) {
 };
 
 // ================ COMPLETE BOOKING API ======================
-interface RoomData {
-  id: string;
-  name: string;
-  price: string;
-  currency: string;
-}
+
 
 interface BookingData {
   ResultId: string;
@@ -971,8 +961,7 @@ const ages_json = JSON.stringify(child_ages);
       method: "POST",
       body: formData,
     });
-   console.log('children_ages formdata', formData)
-   console.log("children_ages paylaod",payload )
+
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };

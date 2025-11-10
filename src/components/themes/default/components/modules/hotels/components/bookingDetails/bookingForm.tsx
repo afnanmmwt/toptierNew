@@ -197,7 +197,7 @@ bookingReference
   const travelers = adults + children;
 //================ EXTRACTING VALUES FROM OPTIONS =================
   const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night,subtotal,cc_fee,markup_type,markup_amout,net_profit,markup_price,quantity, per_day,children_ages, service_fee, child, currency } = selectedRoom?.option || {};
-  console.log('selectedRoom?.option ',selectedRoom?.option )
+
 // ============= AGENT FEEE ==================
 const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
  const inDate = new Date(checkin);
@@ -740,7 +740,7 @@ user_id: user?.user_id,
           {dict?.bookingForm?.personalInformation?.subtitle}
         </p>
         <div className="grid grid-cols-1 gap-6">
-          <div className="w-full max-w-2xl">
+          <div className="w-full ">
             <label htmlFor="firstName" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.personalInformation?.firstNameLabel}
             </label>
@@ -758,7 +758,7 @@ user_id: user?.user_id,
             />
             {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
           </div>
-          <div className="w-full max-w-2xl">
+          <div className="w-full ">
             <label htmlFor="lastName" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.personalInformation?.lastNameLabel}
             </label>
@@ -776,7 +776,7 @@ user_id: user?.user_id,
             />
             {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
           </div>
-          <div className="w-full max-w-2xl">
+          <div className="w-full ">
             <label htmlFor="address" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.personalInformation?.addressLabel}
             </label>
@@ -805,7 +805,7 @@ user_id: user?.user_id,
         <p className="text-[#0F172B66] text-base font-medium">
           {dict?.bookingForm?.contactInformation?.subtitle}
         </p>
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label htmlFor="email" className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.contactInformation?.emailLabel}
           </label>
@@ -824,7 +824,7 @@ user_id: user?.user_id,
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
 
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label htmlFor="nationality" className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.contactInformation?.nationalityLabel}
           </label>
@@ -846,7 +846,7 @@ user_id: user?.user_id,
           {errors.nationality && <p className="text-red-500 text-sm mt-1">{errors.nationality.message}</p>}
         </div>
 
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label htmlFor="currentCountry" className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.contactInformation?.currentCountryLabel || "Current Country"}
           </label>
@@ -919,7 +919,7 @@ user_id: user?.user_id,
           {errors.currentCountry && <p className="text-red-500 text-sm mt-1">{errors.currentCountry.message}</p>}
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-full sm:max-w-42">
+          <div className="w-full sm:max-w-50">
             <label htmlFor="phoneCountryCode" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.contactInformation?.phoneCodeLabel || "Country Code"}
             </label>
@@ -1151,7 +1151,7 @@ user_id: user?.user_id,
 
 
       {/* Payment Method */}
-      <div className="flex flex-col gap-3 mb-12">
+      <div className="flex flex-col gap-3 mb-12 w-full">
         <h3 className="text-xl text-[#0F172BE5] font-semibold">
           {dict?.bookingForm?.paymentMethod?.title}
         </h3>
@@ -1165,7 +1165,7 @@ user_id: user?.user_id,
         <h3 className="text-xl text-[#0F172BE5] font-semibold">
           {dict?.bookingForm?.paymentMethod?.cardInformationTitle}
         </h3>
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.paymentMethod?.cardholderNameLabel}
           </label>
@@ -1185,7 +1185,7 @@ user_id: user?.user_id,
             <p className="text-red-500 text-sm mt-1">{errors.cardName.message}</p>
           )}
         </div>
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.paymentMethod?.cardDetailsLabel}
           </label>

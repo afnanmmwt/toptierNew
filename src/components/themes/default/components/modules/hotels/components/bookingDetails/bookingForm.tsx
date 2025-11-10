@@ -174,10 +174,6 @@ bookingReference
   const stripe = useStripe();
   const elements = useElements();
   const dispatch=useAppDispatch()
-
-  // const [bookingReference, setBookingReference] = useState<string>(
-  //   new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14)
-  // );
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const { hotelDetails } = selectedRoom || {};
@@ -196,7 +192,7 @@ bookingReference
   const { adults = 0, children = 0, nationality, checkin, checkout } = saveBookingData;
   const travelers = adults + children;
 //================ EXTRACTING VALUES FROM OPTIONS =================
-  const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night,subtotal,cc_fee,markup_type,markup_amout,net_profit,markup_price,quantity, per_day,children_ages, service_fee, child, currency } = selectedRoom?.option || {};
+  const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night,subtotal,cc_fee,markup_type,markup_amout,net_profit,markup_price,quantity, per_day,children_ages, service_fee, child, currency} = selectedRoom?.option || {};
 
 // ============= AGENT FEEE ==================
 const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
@@ -210,6 +206,8 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
   if (value === null || value === undefined) return "0";
   return String(value).replace(/,/g, "");
 };
+
+
  const booking_data = selectedRoom?.option || {};
   const modified_booking_data = {
   ...booking_data,
@@ -240,6 +238,7 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
     hotel_email,
     hotel_phone,
     hotel_website,
+    tax_percentage
   } = selectedRoom?.hotelDetails || {};
 
 
@@ -263,12 +262,7 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
     iso: c.iso,
     phonecode: c.phonecode,
   }));
-  // const phoneCodeOptions = countryList.map((c) => ({
-  //   value: `+${c.phonecode}`,
-  //   label: `+${c.phonecode}`,
-  //   iso: c.iso,
-  //   phonecode: `${c.phonecode}`,
-  // }));
+
 
   const phoneCodeOptions = countryList.map((c) => {
   const iso = c.phonecode === "1" ? "US" : c.iso;
@@ -279,12 +273,6 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
     phonecode: `${c.phonecode}`,
   };
 });
-useEffect(() => {
-  if (!bookingReference) {
-    const ref_no = new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14);
-    dispatch(setBookingReference(ref_no));
-  }
-}, [bookingReference, dispatch]);
 
   const currentCountry = watch('currentCountry');
   useEffect(() => {
@@ -295,7 +283,6 @@ useEffect(() => {
       }
     }
   }, [currentCountry, countryList, setValue]);
-
   useEffect(() => {
     if (nationality) {
       setValue('nationality', nationality);
@@ -316,7 +303,6 @@ useEffect(() => {
  useEffect(() => {
     // Guard: Only run once, only if user exists, and only if not already saved
     if (!user || hasAutoSaved.current) return;
-
     const {
       firstName,
       lastName,
@@ -356,7 +342,7 @@ const bookingPayload = {
   toptier_fee: sanitizeNumber("0"),
   agent_fee: sanitizeNumber(agent_fee || 0),
   vat: sanitizeNumber(0),
-  tax: sanitizeNumber(0),
+  tax: tax_percentage ? tax_percentage : "0",
   gst: sanitizeNumber(0),
   net_profit: sanitizeNumber(net_profit || 0),
   subtotal: sanitizeNumber(subtotal || 0),
@@ -480,6 +466,7 @@ const bookingPayload = {
         // Reset flag on error so it can retry
         hasAutoSaved.current = false;
       });
+
   }, []); //  FIX:
   //================ SUBMIT BOOKING ======================
   const onSubmit = async (data: BookingFormValues) => {
@@ -532,7 +519,7 @@ const bookingPayload = {
   toptier_fee: "0",
   agent_fee: agent_fee || "0",
   vat: 0,
-  tax: 0,
+ tax: tax_percentage ? tax_percentage : "0",
   gst: 0,
   net_profit: net_profit || 0,
   subtotal: subtotal || 0,

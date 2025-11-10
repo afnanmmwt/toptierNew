@@ -19,7 +19,6 @@ export default function PusherClient() {
     });
 
     const channel = pusher.subscribe('toptiertravel_vip');
-
     // Bind to event (you can use "my-event" or your custom one)
     channel.bind('event', (data: any) => {
 

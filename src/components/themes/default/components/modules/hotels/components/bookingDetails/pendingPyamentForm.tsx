@@ -11,7 +11,6 @@ import { AccordionInfoCard } from '@components/core/accordians/accordian';
 import useDictionary from '@hooks/useDict';
 import useLocale from '@hooks/useLocale';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import { setBookingReference } from '@lib/redux/base';
 import { toast } from 'react-toastify';
 
 export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }) {
@@ -52,9 +51,7 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
       age: g.age || '',
     }))
   );
-
   const [errors, setErrors] = useState<Record<string, string>>({});
-
   // =============== HOOKS ===============
   const { countries: rawCountries } = useCountries();
   const stripe = useStripe();
@@ -134,7 +131,6 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
     if (travellers.length === 0) {
       newErrors.travellers = dict?.bookingForm?.errors?.atLeastOneTraveller || 'At least one traveller required';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -214,7 +210,7 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
         toptier_fee: '0',
         agent_fee: sanitizeNumber(parsedInvoice.agent_fee || '0'),
         vat: 0,
-        tax: 0,
+        tax: parsedInvoice.tax ? parsedInvoice.tax : "0",
         gst: 0,
         net_profit: sanitizeNumber(parsedInvoice.net_profit),
         subtotal: sanitizeNumber(parsedInvoice.subtotal),

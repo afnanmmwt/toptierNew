@@ -955,7 +955,6 @@ const ages_json = JSON.stringify(child_ages);
     formData.append("guest", JSON.stringify(payload.guest));
     formData.append("user_data", JSON.stringify(payload.user_data));
     formData.append("card", JSON.stringify(payload.card));
-
     // 🔹 Send request
     const response = await fetch(`${baseUrl}/hotel_booking`, {
       method: "POST",
@@ -1218,14 +1217,12 @@ formData.append('state', String(payload.state));
 formData.append('city', String(payload.city));
 formData.append('address1', String(payload.address1));
 formData.append('address2', String(payload.address2));
-
   try {
     const response = await fetch(`${baseUrl}/profile_update`, {
       method: "POST",
       body: formData,
 
     });
-
     const data = await response.json().catch(() => null);
     const userData=data.data[0]
 

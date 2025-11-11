@@ -81,14 +81,14 @@ export const RoomCard = ({ room, getAmenityIcon, options, onReserve,loading }: R
               "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop";
           }}
         />
-        <div className="absolute top-2 right-2 bg-[#EBEFF4] w-7 h-7 rounded-full flex items-center justify-center">
+        {/* <div className="absolute top-2 right-2 bg-[#EBEFF4] w-7 h-7 rounded-full flex items-center justify-center">
           <svg width="3" height="14" viewBox="0 0 3 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M1.63417 4.8692C1.34474 4.8692 1.06716 4.98418 0.862492 5.18884C0.657829 5.3935 0.542851 5.67108 0.542851 5.96052V12.5085C0.542851 12.7979 0.657829 13.0755 0.862492 13.2801C1.06716 13.4848 1.34474 13.5998 1.63417 13.5998C1.92361 13.5998 2.20119 13.4848 2.40586 13.2801C2.61052 13.0755 2.7255 12.7979 2.7255 12.5085V5.96052C2.7255 5.67108 2.61052 5.3935 2.40586 5.18884C2.20119 4.98418 1.92361 4.8692 1.63417 4.8692ZM1.63417 0.503906C1.36437 0.503906 1.10062 0.583912 0.876291 0.733807C0.651957 0.883703 0.47711 1.09675 0.373861 1.34602C0.270611 1.59529 0.243596 1.86957 0.296232 2.13419C0.348868 2.39881 0.478791 2.64188 0.669572 2.83266C0.860352 3.02344 1.10342 3.15337 1.36804 3.206C1.63266 3.25864 1.90695 3.23162 2.15621 3.12837C2.40548 3.02512 2.61853 2.85028 2.76843 2.62594C2.91832 2.40161 2.99833 2.13786 2.99833 1.86806C2.99833 1.50626 2.8546 1.15929 2.59878 0.903458C2.34295 0.647629 1.99597 0.503906 1.63417 0.503906Z"
               fill="black"
             />
           </svg>
-        </div>
+        </div> */}
       </div>
 
       {/* Content */}
@@ -229,7 +229,7 @@ export const RoomCard = ({ room, getAmenityIcon, options, onReserve,loading }: R
               </PopupContainer>
             )}
 
-            <button
+            {/* <button
               onClick={toggleLike}
               className="bg-[#EBEFF4] cursor-pointer hover:bg-gray-200 rounded-full p-4 transition-colors"
               aria-label={`${isFav === 1 ? "Unlike" : "Like"} ${room.name}`}
@@ -245,7 +245,7 @@ export const RoomCard = ({ room, getAmenityIcon, options, onReserve,loading }: R
                   fill={isFav === 1 ? "#EF4444" : "none"}
                 />
               </svg>
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

@@ -174,10 +174,6 @@ bookingReference
   const stripe = useStripe();
   const elements = useElements();
   const dispatch=useAppDispatch()
-
-  // const [bookingReference, setBookingReference] = useState<string>(
-  //   new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14)
-  // );
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const { hotelDetails } = selectedRoom || {};
@@ -196,8 +192,8 @@ bookingReference
   const { adults = 0, children = 0, nationality, checkin, checkout } = saveBookingData;
   const travelers = adults + children;
 //================ EXTRACTING VALUES FROM OPTIONS =================
-  const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night,subtotal,cc_fee,markup_type,markup_amout,net_profit,markup_price,quantity, per_day,children_ages, service_fee, child, currency } = selectedRoom?.option || {};
-  console.log('selectedRoom?.option ',selectedRoom?.option )
+  const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night,subtotal,cc_fee,markup_type,markup_amout,net_profit,markup_price,quantity, per_day,children_ages, service_fee, child, currency} = selectedRoom?.option || {};
+
 // ============= AGENT FEEE ==================
 const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
  const inDate = new Date(checkin);
@@ -210,6 +206,8 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
   if (value === null || value === undefined) return "0";
   return String(value).replace(/,/g, "");
 };
+
+
  const booking_data = selectedRoom?.option || {};
   const modified_booking_data = {
   ...booking_data,
@@ -240,6 +238,7 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
     hotel_email,
     hotel_phone,
     hotel_website,
+    tax_percentage
   } = selectedRoom?.hotelDetails || {};
 
 
@@ -263,12 +262,7 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
     iso: c.iso,
     phonecode: c.phonecode,
   }));
-  // const phoneCodeOptions = countryList.map((c) => ({
-  //   value: `+${c.phonecode}`,
-  //   label: `+${c.phonecode}`,
-  //   iso: c.iso,
-  //   phonecode: `${c.phonecode}`,
-  // }));
+
 
   const phoneCodeOptions = countryList.map((c) => {
   const iso = c.phonecode === "1" ? "US" : c.iso;
@@ -279,12 +273,6 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
     phonecode: `${c.phonecode}`,
   };
 });
-useEffect(() => {
-  if (!bookingReference) {
-    const ref_no = new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14);
-    dispatch(setBookingReference(ref_no));
-  }
-}, [bookingReference, dispatch]);
 
   const currentCountry = watch('currentCountry');
   useEffect(() => {
@@ -295,7 +283,6 @@ useEffect(() => {
       }
     }
   }, [currentCountry, countryList, setValue]);
-
   useEffect(() => {
     if (nationality) {
       setValue('nationality', nationality);
@@ -316,7 +303,6 @@ useEffect(() => {
  useEffect(() => {
     // Guard: Only run once, only if user exists, and only if not already saved
     if (!user || hasAutoSaved.current) return;
-
     const {
       firstName,
       lastName,
@@ -356,7 +342,7 @@ const bookingPayload = {
   toptier_fee: sanitizeNumber("0"),
   agent_fee: sanitizeNumber(agent_fee || 0),
   vat: sanitizeNumber(0),
-  tax: sanitizeNumber(0),
+  tax: tax_percentage ? tax_percentage : "0",
   gst: sanitizeNumber(0),
   net_profit: sanitizeNumber(net_profit || 0),
   subtotal: sanitizeNumber(subtotal || 0),
@@ -480,6 +466,7 @@ const bookingPayload = {
         // Reset flag on error so it can retry
         hasAutoSaved.current = false;
       });
+
   }, []); //  FIX:
   //================ SUBMIT BOOKING ======================
   const onSubmit = async (data: BookingFormValues) => {
@@ -532,7 +519,7 @@ const bookingPayload = {
   toptier_fee: "0",
   agent_fee: agent_fee || "0",
   vat: 0,
-  tax: 0,
+ tax: tax_percentage ? tax_percentage : "0",
   gst: 0,
   net_profit: net_profit || 0,
   subtotal: subtotal || 0,
@@ -740,7 +727,7 @@ user_id: user?.user_id,
           {dict?.bookingForm?.personalInformation?.subtitle}
         </p>
         <div className="grid grid-cols-1 gap-6">
-          <div className="w-full max-w-2xl">
+          <div className="w-full ">
             <label htmlFor="firstName" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.personalInformation?.firstNameLabel}
             </label>
@@ -758,7 +745,7 @@ user_id: user?.user_id,
             />
             {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>}
           </div>
-          <div className="w-full max-w-2xl">
+          <div className="w-full ">
             <label htmlFor="lastName" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.personalInformation?.lastNameLabel}
             </label>
@@ -776,7 +763,7 @@ user_id: user?.user_id,
             />
             {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName.message}</p>}
           </div>
-          <div className="w-full max-w-2xl">
+          <div className="w-full ">
             <label htmlFor="address" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.personalInformation?.addressLabel}
             </label>
@@ -805,7 +792,7 @@ user_id: user?.user_id,
         <p className="text-[#0F172B66] text-base font-medium">
           {dict?.bookingForm?.contactInformation?.subtitle}
         </p>
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label htmlFor="email" className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.contactInformation?.emailLabel}
           </label>
@@ -824,7 +811,7 @@ user_id: user?.user_id,
           {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
 
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label htmlFor="nationality" className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.contactInformation?.nationalityLabel}
           </label>
@@ -846,7 +833,7 @@ user_id: user?.user_id,
           {errors.nationality && <p className="text-red-500 text-sm mt-1">{errors.nationality.message}</p>}
         </div>
 
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label htmlFor="currentCountry" className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.contactInformation?.currentCountryLabel || "Current Country"}
           </label>
@@ -869,7 +856,7 @@ user_id: user?.user_id,
                   singleValue: () =>
                     'flex items-center gap-2 text-gray-800 font-medium truncate',
                   placeholder: () => 'text-gray-400 font-normal',
-                  // ✅ ONLY CHANGE: arrow position based on locale
+                  //  ONLY CHANGE: arrow position based on locale
                   indicatorsContainer: () =>
                     locale?.startsWith('ar') ? 'absolute left-4' : 'absolute right-4',
                 }}
@@ -919,7 +906,7 @@ user_id: user?.user_id,
           {errors.currentCountry && <p className="text-red-500 text-sm mt-1">{errors.currentCountry.message}</p>}
         </div>
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="w-full sm:max-w-42">
+          <div className="w-full sm:max-w-50">
             <label htmlFor="phoneCountryCode" className="block text-base font-medium text-[#5B697E] mb-2">
               {dict?.bookingForm?.contactInformation?.phoneCodeLabel || "Country Code"}
             </label>
@@ -1151,7 +1138,7 @@ user_id: user?.user_id,
 
 
       {/* Payment Method */}
-      <div className="flex flex-col gap-3 mb-12">
+      <div className="flex flex-col gap-3 mb-12 w-full">
         <h3 className="text-xl text-[#0F172BE5] font-semibold">
           {dict?.bookingForm?.paymentMethod?.title}
         </h3>
@@ -1165,7 +1152,7 @@ user_id: user?.user_id,
         <h3 className="text-xl text-[#0F172BE5] font-semibold">
           {dict?.bookingForm?.paymentMethod?.cardInformationTitle}
         </h3>
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.paymentMethod?.cardholderNameLabel}
           </label>
@@ -1185,7 +1172,7 @@ user_id: user?.user_id,
             <p className="text-red-500 text-sm mt-1">{errors.cardName.message}</p>
           )}
         </div>
-        <div className="w-full max-w-2xl">
+        <div className="w-full ">
           <label className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.paymentMethod?.cardDetailsLabel}
           </label>

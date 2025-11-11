@@ -197,7 +197,7 @@ const phoneCodeOptions = (countries || []).map((c: any) => ({
 
   return (
     <div className="bg-gray-50 flex justify-center">
-      <div className="bg-white shadow-md rounded-xl px-8 py-5 w-full max-w-6xl">
+      <div className="bg-white rounded-xl px-8 py-5 w-full max-w-6xl">
         <h2 className="text-2xl font-semibold mb-6">
           {dict?.profilelabels?.profileHeading || "Profile Information"}
         </h2>

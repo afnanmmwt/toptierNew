@@ -48,7 +48,7 @@ const DashboardLayout = ({ children, }: DashboardLayoutProps) => {
 
     return (
         <Main>
-            <div className="flex min-h-screen  py-6 w-full mx-auto bg-[#DFE5EC] dark:bg-gray-800 dark:text-gray-50">
+            <div className="flex h-auto  py-6 w-full mx-auto bg-[#DFE5EC] dark:bg-gray-800 dark:text-gray-50">
                 <div className='w-full max-w-[1200px] mx-auto h-full flex md:px-6  '>
                 <div className='w-full h-full flex  gap-3.5 rounded-xl bg-[#DFE5EC] dark:bg-gray-800 dark:text-gray-50'>
                     {/* sidebar  */}

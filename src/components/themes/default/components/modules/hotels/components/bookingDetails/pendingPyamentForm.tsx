@@ -357,7 +357,7 @@ export default function PendingPaymentForm({ invoiceData }: { invoiceData: any }
       }
 
     } catch (error: any) {
-      console.error('💥 Payment/Booking error:', error);
+      console.error(' Payment/Booking error:', error);
       toast.error(error.message || 'An error occurred. Please try again.');
       setIsProcessingPayment(false);
     }

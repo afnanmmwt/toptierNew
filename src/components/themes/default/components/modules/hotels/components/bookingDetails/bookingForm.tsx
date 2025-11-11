@@ -192,10 +192,11 @@ bookingReference
   const { adults = 0, children = 0, nationality, checkin, checkout } = saveBookingData;
   const travelers = adults + children;
 //================ EXTRACTING VALUES FROM OPTIONS =================
-  const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night,subtotal,cc_fee,markup_type,markup_amout,net_profit,markup_price,quantity, per_day,children_ages, service_fee, child, currency} = selectedRoom?.option || {};
+  const { price, id: option_id, currency: booking_currency, extrabeds_quantity, extrabed_price, markup_price_per_night,subtotal,cc_fee,markup_type,markup_amount,net_profit,markup_price,quantity, per_day,children_ages,  cancellation} = selectedRoom?.option || {};
 
 // ============= AGENT FEEE ==================
-const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
+const agent_fee= markup_type === "user_markup" ? markup_amount : ""
+
  const inDate = new Date(checkin);
     const outDate = new Date(checkout);
     const total_nights = Math.ceil(
@@ -206,8 +207,6 @@ const agent_fee=markup_type ==="user_markup" ? markup_amout : ""
   if (value === null || value === undefined) return "0";
   return String(value).replace(/,/g, "");
 };
-
-
  const booking_data = selectedRoom?.option || {};
   const modified_booking_data = {
   ...booking_data,
@@ -566,7 +565,7 @@ const bookingPayload = {
     room_quantity: quantity || 1,
     room_extrabed_price: sanitizeNumber(extrabed_price || 0),
     room_extrabed: extrabeds_quantity || 0,
-    room_actual_price_per_night: sanitizeNumber(markup_price_per_night),
+    room_actual_price_per_night: sanitizeNumber(per_day),
     total_nights: total_nights,
     total_markup_price: sanitizeNumber(markup_price),
     total_actual_price: sanitizeNumber(price),
@@ -888,7 +887,7 @@ user_id: user?.user_id,
                       <span>{data.label}</span>
                     </div>
                   ),
-                  // ✅ ONLY CHANGE: keep arrow rotation, but no margin tricks
+                  //  ONLY CHANGE: keep arrow rotation, but no margin tricks
                   DropdownIndicator: () => (
                     <Icon
                       icon="mdi:keyboard-arrow-down"
@@ -1138,20 +1137,23 @@ user_id: user?.user_id,
 
 
       {/* Payment Method */}
-      <div className="flex flex-col gap-3 mb-12 w-full">
+      {/* <div className="flex flex-col gap-3 mb-12 w-full">
         <h3 className="text-xl text-[#0F172BE5] font-semibold">
           {dict?.bookingForm?.paymentMethod?.title}
         </h3>
         <p className="text-[#0F172B66] text-base font-medium">
           {dict?.bookingForm?.paymentMethod?.subtitle}
         </p>
-      </div>
+      </div> */}
 
       {/* Card Information */}
       <div className="flex flex-col gap-3 mb-12">
         <h3 className="text-xl text-[#0F172BE5] font-semibold">
           {dict?.bookingForm?.paymentMethod?.cardInformationTitle}
         </h3>
+         <p className="text-[#0F172B66] text-base font-medium">
+          {dict?.bookingForm?.paymentMethod?.subtitle}
+        </p>
         <div className="w-full ">
           <label className="block text-base font-medium text-[#5B697E] mb-2">
             {dict?.bookingForm?.paymentMethod?.cardholderNameLabel}
@@ -1200,7 +1202,7 @@ user_id: user?.user_id,
       <div className="flex flex-col gap-4 mt-3">
 
 
-        {hotelDetails?.cancellation !== "" && (
+        {hotelDetails?.cancellation !== "" && cancellation ==="1" && (
           <>
             <h3 className="text-xl text-[#0F172BE5] font-semibold">
               {dict?.bookingForm?.cancellationPolicy?.title}

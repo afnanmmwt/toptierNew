@@ -69,8 +69,7 @@ export default function PendingPaymentDetails({ invoiceData }: { invoiceData: an
 
   const roomName = roomData?.room_name || "Standard Room";
   const roomPrice = roomData?.room_price_per_night || 0;
-  const total = subtotal || price_markup;
-
+  const total = price_markup;
   return (
     <section className="bg-[#F9FAFB] w-full">
       <div className="min-h-screen w-full max-w-[1200px] mx-auto justify-between flex flex-col md:flex-row lg:flex-row p-4 md:p-6 lg:p-12 mb-6 gap-8 appHorizantalSpacing">

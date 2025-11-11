@@ -40,7 +40,7 @@ interface HotelInvoiceProps {
 
 const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
   const invoiceRef = useRef<HTMLDivElement>(null);
-console.log('invoce data', invoiceDetails)
+
   const appData = useAppSelector((state) => state.appData?.data?.app);
   // console.log(appData);
   const { locale } = useLocale();

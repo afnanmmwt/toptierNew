@@ -476,7 +476,7 @@
     "child_age_label": "Child Age",
     "years_label": "years"
   },
-  "roomCard": {
+  "roomCard": { 
     "loginToFavorite": "User must be logged in to mark as favourite",
     "favoriteUpdateFailed": "Something went wrong :x:",
     "favoriteUpdated": "Updated favourites",

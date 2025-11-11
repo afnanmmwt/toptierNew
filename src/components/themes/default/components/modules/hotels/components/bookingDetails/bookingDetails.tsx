@@ -82,7 +82,7 @@ const [roomPrice, setRoomPrice] = useState<string>(() => {
 
   return (
     <section className="bg-[#F9FAFB] w-full">
-      <div className="min-h-screen w-full max-w-[1200px] mx-auto justify-between flex flex-col md:flex-row lg:flex-row p-4 md:p-6 lg:p-12 mb-6 gap-8 appHorizantalSpacing">
+      <div className="min-h-screen w-full max-w-[1200px] mx-auto justify-between flex flex-col  lg:flex-row p-4 md:p-6 lg:p-12 mb-6 gap-8 appHorizantalSpacing">
         {/* Form */}
         <div className="flex-1 space-y-8">
           {/* Back Button and Header */}

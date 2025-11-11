@@ -1,5 +1,4 @@
-// import React from 'react'
-// import { getDictionary } from '@src/get-dictionary'
+
 import { DashboardMain } from '@components/themes/layout'
 import TransitionLayout from '@src/utils/pageTransition'
 import { Metadata } from 'next/types'

@@ -8,7 +8,7 @@ import SwiperImageSlider from "./imageSlider";
 import { Icon } from "@iconify/react";
 import { RoomCard } from "./roomCard";
 import { AccordionInfoCard } from "@components/core/accordians/accordian";
-import { useAppSelector } from "@lib/redux/store";
+import { useAppDispatch, useAppSelector } from "@lib/redux/store";
 import { Skeleton } from "@components/core/skeleton";
 import HotelSuggestionSlider from "./hotelSuggestionSlider";
 import { useHotelDetails } from "@hooks/useHotelDetails";
@@ -18,6 +18,7 @@ import useDictionary from "@hooks/useDict";
 import { useUser } from "@hooks/use-user";
 import Image from "next/image";
 import useHotelSearch from "@hooks/useHotelSearch";
+import { setBookingReference } from "@lib/redux/base";
 
 const HotelsDetails = () => {
   //  ALL HOOKS MUST BE CALLED UNCONDITIONALLY AT THE TOP
@@ -115,7 +116,10 @@ const {setLoadingHotelId,loadingHotelId} = useHotelSearch()
   const parsedForm = savedForm ? JSON.parse(savedForm) : null;
   const parsedHotel = savedhotel ? JSON.parse(savedhotel) : null;
   const supplier_name = parsedHotel?.supplier_name || "";
-
+  const {
+bookingReference
+} = useAppSelector((state:any) => state.root);
+ const dispatch=useAppDispatch()
   const { data: hotelDetails, isLoading } = useQuery({
     queryKey: ["hotel-details", { hotel_id, ...searchParams }],
     queryFn: () =>
@@ -673,6 +677,10 @@ const {setLoadingHotelId,loadingHotelId} = useHotelSearch()
                 options={""}
                 getAmenityIcon={getAmenityIcon}
                 onReserve={(room, option) => {
+                   dispatch(setBookingReference(""));
+                      const ref=    new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14);
+                      dispatch(setBookingReference(ref));
+
                   handleReserveRoom(room, option, hotelDetails);
                 }}
               />

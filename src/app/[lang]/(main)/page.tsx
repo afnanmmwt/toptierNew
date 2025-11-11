@@ -4,8 +4,6 @@ import { getDictionary } from '@src/get-dictionary'
 // import { HomeWrapper } from '@components/themes/default'
 import TransitionLayout from '@src/utils/pageTransition'
 import HomeWrapper from '@components/themes/default/components/home/homeWrapper/homeWrapper'
-import { fetch_gateway } from '@src/actions'
-
 export default async function Page({ params }: {
   params: Promise<{ lang: 'en' | 'ar' | 'fr'| 'tr' | 'ru' | 'ge' | 'ch' }>
 }) {

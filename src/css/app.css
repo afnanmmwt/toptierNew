@@ -671,6 +671,7 @@ body:is(.dark *) {
 
 .hotelCard {
   display: flex;
+  gap: 40px;
   flex-direction: column;
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
@@ -685,7 +686,7 @@ body:is(.dark *) {
 }
 
 .hotelImage {
-  width: 350px; /* ← Increased from 300px */
+  width: 500px; /* ← Increased from 300px */
   height: 290px;
   object-fit: cover;
 }
@@ -706,7 +707,7 @@ body:is(.dark *) {
 }
 
 .hotelName {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #111827;
   margin-bottom: 0.25rem;
@@ -720,17 +721,17 @@ body:is(.dark *) {
 
 .star {
   color: #f97316;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 
 .hotelAddress {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #4b5563;
   margin-bottom: 0.75rem;
 }
 
 .hotelContact {
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #374151;
   display: flex;
   flex-direction: column;

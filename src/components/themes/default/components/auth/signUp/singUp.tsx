@@ -74,12 +74,11 @@ const phoneCodeOptions = countryList.map((c) => {
     last_name: zod.string().min(1, { message: dict?.errors?.last_name_required }),
     email: zod.string().email({ message: dict?.errors?.email_invalid }),
     country: zod.string().min(1, { message: dict?.errors?.country_required }), //  Fixed
-    phone: zod
-      .string()
-      .min(8, { message: dict?.errors?.phone_number_required })
-      .regex(/^\+?[1-9]\d{7,14}$/, {
-        message: dict?.errors?.phone_number_invalid,
-      }),
+   // NEW (required only)
+phone: zod
+  .string()
+  .trim()
+  .min(1, { message: dict?.errors?.phone_number_required }),
     phone_country_code: zod.string().min(1, { message: dict?.errors?.country_code_required }),
     password: zod.string().min(6, { message: dict?.errors?.password_min_length }),
     terms: zod.boolean().refine((val) => val === true, {

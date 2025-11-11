@@ -1,18 +1,13 @@
 "use server";
 import { createSession, getSession, logout } from "@lib/session";
 import { baseUrl, api_key } from "./actions";
-import { decodeBearerToken } from "@src/utils/decodeToken";
-import { cookies, headers } from "next/headers";
-import { userInfo } from "os";
+import { cookies } from "next/headers";
 import { z } from 'zod';
-import { json } from "stream/consumers";
-import { redirect } from "next/navigation";
 
 
 // ============== COMMON HEADER ================
 export async function getHeaders(contentType: string = "application/x-www-form-urlencoded") {
   // const domain = await getDomain();
-
   const headers: Record<string, string> = {
     Accept: "application/json",
     // Authorization: `Bearer ${token}`,
@@ -724,12 +719,7 @@ if (agent_ref) {
 };
 
 // ================ COMPLETE BOOKING API ======================
-interface RoomData {
-  id: string;
-  name: string;
-  price: string;
-  currency: string;
-}
+
 
 interface BookingData {
   ResultId: string;
@@ -965,14 +955,12 @@ const ages_json = JSON.stringify(child_ages);
     formData.append("guest", JSON.stringify(payload.guest));
     formData.append("user_data", JSON.stringify(payload.user_data));
     formData.append("card", JSON.stringify(payload.card));
-
     // 🔹 Send request
     const response = await fetch(`${baseUrl}/hotel_booking`, {
       method: "POST",
       body: formData,
     });
-   console.log('children_ages formdata', formData)
-   console.log("children_ages paylaod",payload )
+
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
@@ -1229,14 +1217,12 @@ formData.append('state', String(payload.state));
 formData.append('city', String(payload.city));
 formData.append('address1', String(payload.address1));
 formData.append('address2', String(payload.address2));
-
   try {
     const response = await fetch(`${baseUrl}/profile_update`, {
       method: "POST",
       body: formData,
 
     });
-
     const data = await response.json().catch(() => null);
     const userData=data.data[0]
 

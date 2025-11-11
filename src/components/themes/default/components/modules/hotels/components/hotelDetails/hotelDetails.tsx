@@ -678,7 +678,6 @@ bookingReference
                 getAmenityIcon={getAmenityIcon}
                 onReserve={(room, option) => {
                    dispatch(setBookingReference(""));
-
                       const ref=    new Date().toISOString().replace(/[-T:.Z]/g, "").slice(0, 14);
                       dispatch(setBookingReference(ref));
 

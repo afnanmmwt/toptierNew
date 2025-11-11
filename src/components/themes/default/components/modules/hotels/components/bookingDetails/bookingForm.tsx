@@ -856,7 +856,7 @@ user_id: user?.user_id,
                   singleValue: () =>
                     'flex items-center gap-2 text-gray-800 font-medium truncate',
                   placeholder: () => 'text-gray-400 font-normal',
-                  // ✅ ONLY CHANGE: arrow position based on locale
+                  //  ONLY CHANGE: arrow position based on locale
                   indicatorsContainer: () =>
                     locale?.startsWith('ar') ? 'absolute left-4' : 'absolute right-4',
                 }}

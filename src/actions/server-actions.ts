@@ -955,7 +955,6 @@ const ages_json = JSON.stringify(child_ages);
     formData.append("guest", JSON.stringify(payload.guest));
     formData.append("user_data", JSON.stringify(payload.user_data));
     formData.append("card", JSON.stringify(payload.card));
-console.log('===============booking ', formData)
     // 🔹 Send request
     const response = await fetch(`${baseUrl}/hotel_booking`, {
       method: "POST",
@@ -1225,7 +1224,6 @@ formData.append('address2', String(payload.address2));
 
     });
     const data = await response.json().catch(() => null);
-    console.log("updte profile ", data)
     const userData=data.data[0]
 
     if (!response.ok || data?.status === false) {

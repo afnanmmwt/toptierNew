@@ -252,7 +252,7 @@ export default function HotelSearch() {
                 className={`w-full flex items-center justify-between ${direction === "ltr" ? "pl-10 pr-4" : "pr-12 pl-4"} py-2.5 text-xs hover:bg-gray-100 hover:border-gray-300 border border-gray-200 rounded-xl text-gray-900 dark:bg-gray-800 dark:border-gray-600 cursor-pointer dark:hover:bg-gray-700 dark:hover:border-gray-500 transition-all duration-200`}
               >
                 {/* Person Icon on RIGHT side in RTL */}
-                <div className={`absolute ${direction === "rtl" ? "right-3" : "left-4"} bottom-1 transform -translate-y-1/2 text-gray-400`}>
+                <div className={`absolute ${direction === "rtl" ? "right-3" : "left-3"} bottom-1.5 transform -translate-y-1/2 text-gray-400`}>
                   <svg width="19" height="19" viewBox="0 0 14 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7.01698 6.91855C8.65463 6.91855 9.98221 5.59097 9.98221 3.95332C9.98221 2.31568 8.65463 0.988098 7.01698 0.988098C5.37933 0.988098 4.05176 2.31568 4.05176 3.95332C4.05176 5.59097 5.37933 6.91855 7.01698 6.91855Z" stroke="#8C96A5" strokeWidth="1.11196" />
                     <path d="M12.9476 12.4783C12.9476 14.3205 12.9476 15.8142 7.01712 15.8142C1.08667 15.8142 1.08667 14.3205 1.08667 12.4783C1.08667 10.6362 3.74203 9.14246 7.01712 9.14246C10.2922 9.14246 12.9476 10.6362 12.9476 12.4783Z" stroke="#8C96A5" strokeWidth="1.11196" />

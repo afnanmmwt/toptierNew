@@ -31,8 +31,8 @@ export async function POST(req: Request) {
     const userinfo = (await getSession()) as any;
     const user_id = userinfo?.user?.user_id ?? "";
 
-    const { amount, currency, email, booking_ref_no, module_type } = await req.json();
-   
+    const { amount, currency, email, booking_ref_no } = await req.json();
+
     if (!amount || !currency || !email || !booking_ref_no) {
       throw new Error("Missing required payment parameters");
     }

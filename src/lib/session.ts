@@ -57,8 +57,8 @@ export async function createSession(user: any) {
 export async function logout() {
   (await cookies()).set("access-token", "", { expires: new Date(0) });
   (await cookies()).set("agent_ref", "", { expires: new Date(0) });
-
-
+    sessionStorage.removeItem('lastRoute')
+    localStorage.removeItem('adminRef')
 }
 
 export async function getSession() {

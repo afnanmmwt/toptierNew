@@ -1,6 +1,5 @@
 "use client";
 import { Icon } from "@iconify/react";
-import useDirection from "@hooks/useDirection";
 import Input from "@components/core/input";
 import { z as zod } from "zod";
 import { useForm, Controller } from "react-hook-form";
@@ -15,23 +14,17 @@ import Button from "@components/core/button";
 import Alert from "@components/core/alert";
 import { toast } from "react-toastify";
 import Link from "next/link";
-import { useAppSelector } from "@lib/redux/store";
-import { mode as selectMode } from "@lib/redux/base/selectors";
-import useDarkMode from "@hooks/useDarkMode";
 import useCountries from "@hooks/useCountries";
 import Select from "@components/core/select"; // Import Select
 import useLocale from "@hooks/useLocale"; //  Required for RTL
 
 export default function SignUpForm() {
   const { lang } = useParams();
-  const { data: dict, isLoading } = useDictionary(lang as any);
+  const { data: dict } = useDictionary(lang as any);
   const { locale } = useLocale(); //  For RTL support
-  const [direction] = useDirection();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isDarkMode] = useDarkMode();
-  const mode = useAppSelector(selectMode);
   const { countries: rawCountries } = useCountries();
 
   //  Modal state
@@ -116,7 +109,7 @@ phone: zod
     resolver: zodResolver(schema),
   });
 
-  // ✅ Sync phone code when country changes
+  //  Sync phone code when country changes
   const countryValue = watch("country");
   useEffect(() => {
     if (countryValue) {
@@ -160,6 +153,7 @@ phone: zod
           password: values.password,
         });
       } catch (err) {
+        console.log(err)
         setLoading(false);
         toast.error(dict?.errors?.something_went_wrong || "Something went wrong");
       }
@@ -168,7 +162,6 @@ phone: zod
   );
 
   // Helper
-  const getCountryByIso = (iso: string) => countryList.find((c) => c.iso === iso);
 
   return (
     <div className="relative w-full min-h-screen flex flex-col lg:flex-row border-t border-gray-300">

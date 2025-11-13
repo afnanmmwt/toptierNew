@@ -3,33 +3,23 @@
 
 import { useRouter } from "next/navigation";
 import BookingForm from "./bookingForm";
-import { useAppDispatch, useAppSelector } from "@lib/redux/store";
+import {  useAppSelector } from "@lib/redux/store";
 import Image from "next/image";
-import useCurrency from "@hooks/useCurrency";
 import useDictionary from "@hooks/useDict";
 import useLocale from "@hooks/useLocale";
 import StripeProvider from "@lib/stripeProvider";
 import getCurrencySymbol from "@src/utils/getCurrencySymbals";
-import { useState, useEffect } from "react";
-import { set } from "lodash";
-import { setSeletecRoom } from "@lib/redux/base";
-import { useUser } from "@hooks/use-user";
+import { useState } from "react";
+
 
 export default function BookingDetails() {
   const selectedRoom = useAppSelector((state) => state.root.selectedRoom);
   const curruntBooking = localStorage.getItem("hotelSearchForm");
   const saveBookingData = curruntBooking ? JSON.parse(curruntBooking) : {};
   const router = useRouter();
-  const { priceRateConverssion } = useCurrency();
-  const { user } = useUser();
-  // const user_type = user?.user_type ?? ""; //  Step 3: safely extract
-  // const isAgent = user_type !== "Customer"; // Agent/Admin => true
-
-  const { hotelDetails, room, option } = selectedRoom || {};
+  const { hotelDetails, option } = selectedRoom || {};
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-
-  // const dispatch = useAppDispatch();
   const {
     checkin,
     checkout,
@@ -38,7 +28,6 @@ export default function BookingDetails() {
     rooms = 1,
   } = saveBookingData;
   const {
-    price = 0,
     markup_price,
     markup_price_per_night = 0,
     currency = "USD",
@@ -50,7 +39,6 @@ export default function BookingDetails() {
     1,
     (checkoutDate.getTime() - checkinDate.getTime()) / (1000 * 60 * 60 * 24)
   );
-  const persons = Number(adults) + Number(children);
 
   // Editable fields state
   const [quantity, setQuantity] = useState<string>(String(rooms || 1));
@@ -65,20 +53,6 @@ const [roomPrice, setRoomPrice] = useState<string>(() => {
 // final calcualtion
 
 
-  // Input handler for numeric fields
-  const handleQuantityChange = (value: string) => {
-    // Allow empty or valid integer (no decimals for quantity)
-    if (value === "" || /^\d*$/.test(value)) {
-      setQuantity(value);
-    }
-  };
-
-  const handleRoomPriceChange = (value: string) => {
-    // Allow empty or valid decimal number
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
-      setRoomPrice(value);
-    }
-  };
 
   return (
     <section className="bg-[#F9FAFB] w-full">

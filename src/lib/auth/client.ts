@@ -1,7 +1,7 @@
 "use client";
 
 import type { User } from "@src/@types/user";
-import { getUser as userData, signIn, signOut } from "@src/actions";
+import { getUser as userData, signOut } from "@src/actions";
 
 export interface SignInWithPasswordParams {
   email: string;
@@ -16,11 +16,7 @@ class AuthClient {
   async signInWithPassword(
     params: SignInWithPasswordParams
   ): Promise<{ error?: string }> {
-    const { email, password } = params;
-    // const response = await signIn({ email, password });
-    // if (response.error) {
-    //   return { error: response.error };
-    // }
+
 
     return {};
   }
@@ -45,7 +41,7 @@ class AuthClient {
   async signOut(): Promise<{ error?: string }> {
     sessionStorage.removeItem('lastRoute');
     await signOut();
-  
+
 
     return {};
   }

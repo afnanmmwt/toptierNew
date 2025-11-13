@@ -548,17 +548,20 @@ let agent_id = '';
 if (agent_ref) {
   // Priority 1: Use referral if present
   agent_id = agent_ref;
-} else if (
-  typeof userinfo === 'object' &&
-  userinfo !== null &&
-  (userinfo.user?.type === 'Agent' || userinfo.type === 'Agent')
-) {
-  // Priority 2: If no referral, and user is an Agent → self-assign
-  agent_id = userId;
-} else {
-  // Priority 3: Not an agent and no referral → no agent_id
-  agent_id = '';
+}else{
+   agent_id = userId;
 }
+// else if (
+//   typeof userinfo === 'object' &&
+//   userinfo !== null &&
+//   (userinfo.user?.type === 'Agent' || userinfo.type === 'Agent')
+// ) {
+//   // Priority 2: If no referral, and user is an Agent → self-assign
+//   agent_id = userId;
+// } else {
+//   // Priority 3: Not an agent and no referral → no agent_id
+//   agent_id = '';
+// }
 
   const formData = new FormData();
   formData.append("city", String(payload.destination));
@@ -575,8 +578,8 @@ if (agent_ref) {
   formData.append("price_from", payload.price_from || "");
   formData.append("price_to", payload.price_to || "");
   formData.append("price_low_to_high", "");
-  formData.append('user_id', userId);
-  formData.append('agent_id',agent_id);
+  formData.append('user_id', agent_id);
+  // formData.append('agent_id',agent_id);
   formData.append("rating", payload.rating || "");
   if (payload.child_age && payload.child_age.length > 0) {
     const formattedAges = payload.child_age.map((age) => ({ ages: age }));
@@ -594,7 +597,6 @@ if (agent_ref) {
     });
 
     const data = await response.json().catch(() => null);
-
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong", module: payload.modules };
     }
@@ -633,7 +635,6 @@ export const hotel_search_multi = async (
     })
     .filter(Boolean) // remove nulls
     .flat(); // flatten into single array
-
   return {
     success: successful,
     total: successful.length,
@@ -664,21 +665,26 @@ export const hotel_details = async (payload: HotelDetailsPayload) => {
         ? (userinfo.user_id || userinfo?.user?.user_id || '')
         : '';
 let agent_id = '';
-
 if (agent_ref) {
   // Priority 1: Use referral if present
   agent_id = agent_ref;
-} else if (
-  typeof userinfo === 'object' &&
-  userinfo !== null &&
-  (userinfo.user?.type === 'Agent' || userinfo.type === 'Agent')
-) {
-  // Priority 2: If no referral, and user is an Agent → self-assign
-  agent_id = userId;
-} else {
-  // Priority 3: Not an agent and no referral → no agent_id
-  agent_id = '';
+}else{
+  agent_id=userId
 }
+
+
+// else if (
+//   typeof userinfo === 'object' &&
+//   userinfo !== null &&
+//   (userinfo.user?.type === 'Agent' || userinfo.type === 'Agent')
+// ) {
+//   // Priority 2: If no referral, and user is an Agent → self-assign
+//   agent_id = userId;
+// }
+//  else {
+//   // Priority 3: Not an agent and no referral → no agent_id
+//   agent_id = '';
+// }
   try {
     const formData = new FormData();
     //  match exactly with API keys
@@ -692,8 +698,8 @@ if (agent_ref) {
     formData.append("language", payload.language || "en");
     formData.append("currency", payload.currency || "usd");
     formData.append("supplier_name", payload.supplier_name || "hotels");
-    formData.append('user_id',userId || '')
-    formData.append('agent_id',agent_id || '');
+    formData.append('user_id',agent_id || '')
+    // formData.append('agent_id',agent_id || '');
      if(payload.child_age && payload.child_age.length > 0) {
     const formattedAges = payload.child_age.map((age: string) => ({ ages: age }));
     formData.append("child_age", JSON.stringify(formattedAges));
@@ -844,10 +850,13 @@ let agent_id = '';
 
 if (agent_ref) {
   agent_id = agent_ref;
-} else if (
+}
+else if (
   userinfo?.user?.user_type === 'Agent'
 ) {
   agent_id = userinfo.user.user_id; // safe and explicit
+}else{
+  agent_id=""
 }
 
     const formData = new FormData();
@@ -888,7 +897,6 @@ formData.append(
     formData.append("agent_payment_status", payload.agent_payment_status);
     formData.append("agent_payment_date", payload.agent_payment_date);
     formData.append("iata", "0");
-    formData.append("agent_id", agent_id || payload.agent_id || "");
 
     // 🔹 Customer info
     formData.append("first_name", payload.first_name);
@@ -917,12 +925,18 @@ formData.append(
     formData.append("checkout", payload.checkout);
     formData.append("adults", String(payload.adults));
     formData.append("childs", String(payload.childs));
- const child_ages = payload?.child_ages.split(',').map(age => ({ ages: Number(age) }));
+    let child_ages:any[]=[];
+
+if (payload.child_ages && payload.child_ages !== "0") {
+  child_ages = payload.child_ages
+    .split(',')
+    .map(age => ({ ages: Number(age) }));
+}
+
 // Convert to JSON string
 const ages_json = JSON.stringify(child_ages);
-    formData.append("child_ages",ages_json);
-
-    // 🔹 Currency
+const ages=child_ages.length > 0 ? ages_json : ""
+formData.append("child_ages",ages );
     formData.append("currency_original", payload.currency_original);
     formData.append("currency_markup", payload.currency_markup);
 
@@ -960,7 +974,6 @@ const ages_json = JSON.stringify(child_ages);
       method: "POST",
       body: formData,
     });
-
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };

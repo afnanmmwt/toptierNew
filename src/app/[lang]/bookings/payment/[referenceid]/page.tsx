@@ -1,20 +1,18 @@
-import React from 'react';
-import { getDictionary } from '@src/get-dictionary';
-import TransitionLayout from '@src/utils/pageTransition';
-import PendingPaymentDetails from '@components/themes/default/components/modules/hotels/components/bookingDetails/pendingPaymentDetails';
-import { hotel_invoice } from '@src/actions';
+import React from "react";
+import { getDictionary } from "@src/get-dictionary";
+import TransitionLayout from "@src/utils/pageTransition";
+import PendingPaymentDetails from "@components/themes/default/components/modules/hotels/components/bookingDetails/pendingPaymentDetails";
+import { hotel_invoice } from "@src/actions";
 
-export default async function Page({ params }: {
-  params: Promise<{ lang: 'en' | 'ar', referenceid: string }>
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ referenceid: string }>;
 }) {
-  const { lang, referenceid } = await params;
-
-  const dict = await getDictionary(lang);
+  const { referenceid } = await params;
   const invoice_response = await hotel_invoice(referenceid);
   const status = invoice_response?.status;
   const result = invoice_response?.response?.[0];
-
-
   return (
     <TransitionLayout>
       <div className="flex flex-col bg-white dark:bg-gray-900 dark:text-gray-50 min-h-screen items-center justify-center p-6">
@@ -36,4 +34,4 @@ export default async function Page({ params }: {
   );
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";

@@ -1,17 +1,17 @@
-import React from 'react'
-import TransitionLayout from '@src/utils/pageTransition'
-import { HotelInvoice } from '@components/themes/default'
-import { hotel_invoice } from '@src/actions'
-import { Icon } from '@iconify/react'
-import { getDictionary } from '@src/get-dictionary'
+import React from "react";
+import TransitionLayout from "@src/utils/pageTransition";
+import { HotelInvoice } from "@components/themes/default";
+import { hotel_invoice } from "@src/actions";
+import { Icon } from "@iconify/react";
 
-
-export default async function Page({ params }: {
-  params: Promise<{  invoiceId: string }>
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ invoiceId: string }>;
 }) {
-  const { invoiceId} = await params
-  const response = await hotel_invoice(invoiceId)
-  const result =response?.response
+  const { invoiceId } = await params;
+  const response = await hotel_invoice(invoiceId);
+  const result = response?.response;
 
   return (
     <TransitionLayout>
@@ -29,15 +29,12 @@ export default async function Page({ params }: {
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100">
               Invoice Not Found
             </h2>
-            <p className="text-gray-600 dark:text-gray-300 max-w-md">
-
-            </p>
-
+            <p className="text-gray-600 dark:text-gray-300 max-w-md"></p>
           </div>
         )}
       </div>
     </TransitionLayout>
-  )
+  );
 }
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";

@@ -3,16 +3,7 @@ import React from 'react'
 import { getDictionary } from '@src/get-dictionary'
 import TransitionLayout from '@src/utils/pageTransition'
 import { BookingDetails } from '@components/themes/default'
-
-
-
-export default async function Page({ params }: {
-  params: Promise<{ lang: 'en' | 'ar' }>
-}) {
-  const { lang } = await params
-  const dict = await getDictionary(lang)
-
-
+export default async function Page() {
   return (
     // <div>home page</div>
     <TransitionLayout>

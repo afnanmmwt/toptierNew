@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import Spinner from "@components/core/Spinner";
 import useDictionary from "@hooks/useDict";
 import useLocale from "@hooks/useLocale";
-import useCurrency from "@hooks/useCurrency";
 import getCurrencySymbals  from "@src/utils/getCurrencySymbals";
 
 interface Hotel {
@@ -40,7 +39,7 @@ const FeaturedHotels: React.FC = () => {
   const { user } = useUser();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { priceRateConverssion } = useCurrency();
+
 
   const amenityIcons: Record<string, string> = {
     pool: "mdi:pool",
@@ -149,6 +148,7 @@ const FeaturedHotels: React.FC = () => {
       );
       toast.success(res?.message || "Updated favourites ");
     } catch (err) {
+      console.log(err)
       toast.error(dict?.featured_hotels?.something_wrong || "Something went wrong");
     }
   };

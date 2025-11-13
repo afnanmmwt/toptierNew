@@ -12,11 +12,6 @@ import Alert from "@components/core/alert";
 import Link from "next/link";
 import Button from "@components/core/button";
 import useDarkMode from "@hooks/useDarkMode";
-import { toast } from "react-toastify";
-
-
-
-
 export default function ForgetPassword({ dict }: { dict?: any }) {
   const schema = zod.object({
   email: zod.string().min(1, { message:  dict?.errors?.email_invalid }).email(),

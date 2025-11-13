@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useUser } from '@src/hooks/use-user';
 
-export default function HomeWrapper({ dict }: { dict: any }) {
+export default function HomeWrapper() {
   const [direction] = useDirection();
   const router = useRouter();
   const { user } = useUser();

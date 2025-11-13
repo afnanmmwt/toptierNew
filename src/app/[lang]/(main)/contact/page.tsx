@@ -2,9 +2,6 @@ import React from 'react'
 import TransitionLayout from '@src/utils/pageTransition'
 import Contactus from '@components/themes/default/components/home/contactUs/contactus'
 export default async function Page() {
-
-
-
   return (
     // <div>home page</div>
     <TransitionLayout>

@@ -2,7 +2,6 @@
 import createMiddleware from "next-intl/middleware";
 import { locales, defaultLocale } from "../next-intl";
 import { NextRequest ,NextResponse} from "next/server";
-import { updateSession } from "@lib/session";
 
 export default async function middleware(request: NextRequest) {
   const hostname = request.nextUrl.hostname;

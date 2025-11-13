@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getAccessToken, signOut, verify_token } from "@src/actions";
 import { useUser } from "@hooks/use-user";
@@ -19,16 +18,6 @@ export default function ProfileDropdown() {
   const [isRTL, setIsRTL] = useState(false);
   const { locale } = useLocale();
     const { data: dict } = useDictionary(locale as any);
-// useEffect(()=>{
-//   const clearAccessToken = () => {
-//   document.cookie =
-//     "access-token=; path=/; domain=.toptiertravel.vip; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-// };
-//   if(user){
-// clearAccessToken()
-//   }
-// },[user])
-
   useEffect(() => {
     try {
       const d =
@@ -72,20 +61,7 @@ const defaultImage =
     : "https://images.unsplash.com/photo-1633332755192-727a05c4013d";
 
   // Safe URL resolver for profile photos
-  const getValidSrc = (src?: string) => {
-    try {
-      if (src && src.trim() !== "") {
-        if (src.startsWith("/")) {
-          return `${process.env.NEXT_PUBLIC_BASE_URL || ""}${src}`;
-        }
-        new URL(src); // throws if invalid absolute URL
-        return src;
-      }
-    } catch {
-      return defaultImage;
-    }
-    return defaultImage;
-  };
+
 const handleDashboardClick =async() =>{
      if (!user) return;
       (async () => {

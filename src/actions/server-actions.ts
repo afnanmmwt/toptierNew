@@ -1282,7 +1282,7 @@ formData.append('address2', String(payload.address2));
 
     });
     const data = await response.json().catch(() => null);
-    const userData=data.data[0]
+
 
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Failed to update profile" };

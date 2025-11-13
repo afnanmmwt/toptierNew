@@ -9,17 +9,21 @@ import PendingPaymentForm from "./pendingPyamentForm";
 import { useUser } from "@hooks/use-user";
 import { useEffect } from "react";
 
-export default function PendingPaymentDetails({ invoiceData }: { invoiceData: any }) {
-  const {user}=useUser()
+export default function PendingPaymentDetails({
+  invoiceData,
+}: {
+  invoiceData: any;
+}) {
+  const { user } = useUser();
   const router = useRouter();
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-const pathname = usePathname();
-useEffect(()=>{
-  if(!user){
-    localStorage.setItem('adminRef',pathname)
-  }
-},[user,pathname])
+  const pathname = usePathname();
+  useEffect(() => {
+    if (!user) {
+      localStorage.setItem("adminRef", pathname);
+    }
+  }, [user, pathname]);
   if (!invoiceData) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-600">
@@ -28,36 +32,11 @@ useEffect(()=>{
     );
   }
 
-  // ✅ Parse nested JSON fields safely
-  const bookingData = (() => {
-    try {
-      return JSON.parse(invoiceData.booking_data || "{}");
-    } catch {
-      return {};
-    }
-  })();
-
   const roomData = (() => {
     try {
       return JSON.parse(invoiceData.room_data || "[]")[0];
     } catch {
       return {};
-    }
-  })();
-
-  const userData = (() => {
-    try {
-      return JSON.parse(invoiceData.user_data || "{}");
-    } catch {
-      return {};
-    }
-  })();
-
-  const guestList = (() => {
-    try {
-      return JSON.parse(invoiceData.guest || "[]");
-    } catch {
-      return [];
     }
   })();
 
@@ -72,7 +51,6 @@ useEffect(()=>{
     booking_nights,
     currency_original,
     price_markup,
-    subtotal,
   } = invoiceData;
 
   const roomName = roomData?.room_name || "Standard Room";
@@ -114,7 +92,7 @@ useEffect(()=>{
           <div className="border-b border-[#CACACA] mb-8"></div>
 
           <StripeProvider>
-            <PendingPaymentForm  invoiceData={invoiceData}/>
+            <PendingPaymentForm invoiceData={invoiceData} />
           </StripeProvider>
         </div>
 
@@ -189,7 +167,9 @@ useEffect(()=>{
                 <span className="font-semibold text-[#0F172B]">
                   {adults} {dict?.bookingDetails?.adults || "Adults"}
                   {childs > 0
-                    ? `, ${childs} ${dict?.bookingDetails?.children || "Children"}`
+                    ? `, ${childs} ${
+                        dict?.bookingDetails?.children || "Children"
+                      }`
                     : ""}
                 </span>
               </div>

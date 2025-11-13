@@ -483,6 +483,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
 
     .pdf-rendering .hotelCard {
       display: flex !important;
+      gap: 40px !important;
       flex-direction: row !important;
       border: 1px solid #e5e7eb !important;
       border-radius: 6px !important;
@@ -491,8 +492,8 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     }
 
     .pdf-rendering .hotelImage {
-      width: 280px !important; /* Reduced from 300px */
-      height: 150px !important;
+      width: 350px !important; /* Reduced from 300px */
+      height: 210px !important;
       object-fit: cover !important;
     }
 
@@ -505,7 +506,7 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     }
 
     .pdf-rendering .hotelName {
-      font-size: 14px !important;
+      font-size: 1.25rem !important;
       font-weight: 700 !important;
       color: #111827 !important;
       margin-bottom: 4px !important;
@@ -514,22 +515,22 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     .pdf-rendering .starRating {
       display: flex !important;
       align-items: center !important;
-      margin-bottom: 6px !important;
+      margin-bottom: 12px !important;
     }
 
     .pdf-rendering .star {
       color: #f97316 !important;
-      font-size: 12px !important;
+      font-size: 1rem !important;
     }
 
     .pdf-rendering .hotelAddress {
-      font-size: 11px !important;
+      font-size: 0.75rem !important;
       color: #4b5563 !important;
-      margin-bottom: 6px !important;
+      margin-bottom: 12px !important;
     }
 
     .pdf-rendering .hotelContact {
-      font-size: 11px !important;
+      font-size: 0.75rem !important;
       color: #374151 !important;
       display: flex !important;
       flex-direction: column !important;
@@ -1093,7 +1094,7 @@ View Invoice: ${invoiceUrl}`;
                 {dict?.hotelInvoice?.fareAndTax?.taxLabel}
               </span>
               <span className="taxLabel">
-                {"%"} {invoiceDetails[0].tax}
+                 {invoiceDetails[0].tax} {"%"}
               </span>
             </div>
             <div className="totalRow">

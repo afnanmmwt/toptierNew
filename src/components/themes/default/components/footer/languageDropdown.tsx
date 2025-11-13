@@ -40,6 +40,7 @@ export default function LanguageDropdown() {
   const changeLocale = useChangeLocale(); // 👈 to update the URL
   const { languages } = useAppSelector((state) => state.appData?.data);
   const dropdownRef = useRef<HTMLDivElement>(null);
+   const [isRTL, setIsRTL] = useState(false); // 👈 RTL state
 
   const [open, setOpen] = useState(false);
 
@@ -57,6 +58,14 @@ export default function LanguageDropdown() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+   // detect RTL from <html dir="...">
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      const dir = document.documentElement.getAttribute("dir") || "ltr";
+      setIsRTL(dir.toLowerCase() === "rtl");
+    }
+  }, []);
+
   return (
     <div className="relative" ref={dropdownRef}>
       {/* Dropdown Trigger */}
@@ -69,7 +78,7 @@ export default function LanguageDropdown() {
           {selectedLang?.name ?? "English"}
         </span>
         <svg
-          className={`w-3.5 h-3.5 ml-2  transition-transform ${open ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 ml-2  transition-transform ${open ? "rotate-180" : ""} ${isRTL ? "absolute -right-1" : ""}  `}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

@@ -2,11 +2,12 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { z } from 'zod';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import useHotelSearch from './useHotelSearch';
 import { useAppDispatch } from '@lib/redux/store';
 import { setSeletecRoom } from '@lib/redux/base';
 import { toast } from 'react-toastify';
+import { useUser } from './use-user';
 
 // ✅ Updated: Add children_ages
 export interface HotelForm {
@@ -63,7 +64,7 @@ interface UseHotelDetailsOptions {
 export const useHotelDetails = ({
   initialCheckin,
   initialCheckout,
-  initialNationality = "PK",
+  initialNationality = "US", // 👈 Default United States
   initialCurrency = "USD",
   onSearchSuccess,
   onSearchError,
@@ -72,7 +73,7 @@ export const useHotelDetails = ({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { setSelectedRoom } = useHotelSearch();
-
+  const pathname = usePathname();
   const formatDate = (date: Date) => {
     return date.toISOString().split("T")[0];
   };
@@ -86,16 +87,15 @@ export const useHotelDetails = ({
 const storedForm = typeof window !== "undefined"
   ? localStorage.getItem("hotelSearchForm")
   : null;
-
+const {user}=useUser()
 let initialForm: HotelForm = {
-
   checkin: defaultCheckin,
   checkout: defaultCheckout,
   rooms: 1,
   adults: 2,
   children: 0,
   children_ages: [],
-  nationality: initialNationality || "PK",
+  nationality: initialNationality || "US",
   currency: initialCurrency || "USD",
 
 };
@@ -127,6 +127,7 @@ const [form, setForm] = useState<HotelForm>(initialForm);
   const guestsDropdownRef = useRef<HTMLDivElement | null>(null);
   const totalGuests = form.adults + form.children;
   const isFormValid = Object.keys(errors).length === 0;
+  const [roomOptionLoadingId, setRommOptionLoadingId]=useState<null>(null)
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -215,14 +216,23 @@ const [form, setForm] = useState<HotelForm>(initialForm);
       if (!currentHotelString) {
         throw new Error("No current hotel found in storage");
       }
+  //  store full hotel object in localStorage
 
+    const formData = localStorage.getItem("hotelSearchForm");
+    //  generate slug
+    let parsedFormData:any;
+    let suplier_name;
+    if (formData) {
+       parsedFormData = JSON.parse(formData); // now it's an object
+    }
       const currentHotel = JSON.parse(currentHotelString);
       const nationality = form.nationality;
       const slugName = currentHotel.name.toLowerCase().replace(/\s+/g, "-");
       // const supplier=storedForm?.suplier_name
       //  Include children_ages in URL
       const childrenAgesParam = form.children_ages?.join(",") || "";
-      const url = `/hotelDetails/${currentHotel.hotel_id}/${slugName}/${form.checkin}/${form.checkout}/${form.rooms}/${form.adults}/${form.children}/${nationality}/${childrenAgesParam}`;
+      const url = `/hotelDetails/${currentHotel.hotel_id}/${slugName}/${parsedFormData.checkin}/${parsedFormData.checkout}/${parsedFormData.rooms}/${parsedFormData.adults}/${parsedFormData.children}/${nationality}/${childrenAgesParam}`;
+
 
       if (onSearchRefetch) {
         onSearchRefetch(form);
@@ -258,7 +268,24 @@ const [form, setForm] = useState<HotelForm>(initialForm);
       room,
       option,
     };
+setRommOptionLoadingId(option.id)
     dispatch(setSeletecRoom(roomData));
+    if(!user){
+        setTimeout(() => {
+          setRommOptionLoadingId(null)
+     sessionStorage.setItem('lastRoute', "/bookings");
+  router.replace('/auth/login');
+  }, 500);
+
+    }
+    else{
+       setTimeout(() => {
+          setRommOptionLoadingId(null)
+ router.push(`/bookings`);
+  }, 500);
+    }
+
+
   };
 
   const resetForm = useCallback(() => {
@@ -301,5 +328,6 @@ const [form, setForm] = useState<HotelForm>(initialForm);
     validateForm,
     formatDate,
     handleReserveRoom,
+    roomOptionLoadingId
   };
 };

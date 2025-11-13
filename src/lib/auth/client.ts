@@ -17,10 +17,10 @@ class AuthClient {
     params: SignInWithPasswordParams
   ): Promise<{ error?: string }> {
     const { email, password } = params;
-    const response = await signIn({ email, password });
-    if (response.error) {
-      return { error: response.error };
-    }
+    // const response = await signIn({ email, password });
+    // if (response.error) {
+    //   return { error: response.error };
+    // }
 
     return {};
   }
@@ -43,7 +43,9 @@ class AuthClient {
   }
 
   async signOut(): Promise<{ error?: string }> {
+    sessionStorage.removeItem('lastRoute');
     await signOut();
+  
 
     return {};
   }

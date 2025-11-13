@@ -8,7 +8,7 @@ import { Metadata } from 'next/types'
 export const generateMetadata = async (): Promise<Metadata> => {
   const data = await fetchAppData({ language: 'en', currency: 'usd' });
   const appData=data.app
-  // console.log('appp DAta',data.data.app)
+ 
   const meta_data = data.data.app
   if (!meta_data) {
     return {
@@ -18,7 +18,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   }
 
   const { agency_name, meta_title, domain, meta_description, logo, favicon_img } = meta_data
-  // console.log('adfff', data, favicon)
+ 
 
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),

@@ -1,7 +1,7 @@
 {
   "home_page": {
     "hero_section": {
-      "where_to": "Où aller ?",
+      "where_to": "Destination ?",
       "hotel_search_placeholder": "Rechercher une ville ou un hôtel...",
       "check_in": "Arrivée",
       "check_out": "Départ",
@@ -12,7 +12,7 @@
       "child_age": "Âge de l’enfant",
       "years": "ans",
       "nationality": "Nationalité",
-      "search_homes": "Rechercher des logements",
+      "search_hotels": "Rechercher des hôtels",
       "searching": "Recherche en cours...",
       "signup": "S’inscrire",
       "login": "Se connecter"
@@ -33,23 +33,34 @@
     "email_label": "E-mail",
     "email_placeholder": "Adresse e-mail",
     "password_label": "Mot de passe",
-    "password_placeholder": "Saisir le mot de passe",
+    "password_placeholder": "Entrez votre mot de passe",
     "human_label": "Je ne suis pas un robot",
     "agree_text": "J’accepte les",
     "terms_of_use": "Conditions d’utilisation",
-    "and": "et la",
+    "and": "et",
+    "phone_code_label": "Indicatif pays",
     "privacy_policy": "Politique de confidentialité",
     "create_account_button": "Créer un compte",
-    "success_message": "Inscription réussie ! 🎉"
+    "success_message": "Inscription réussie ! Veuillez vérifier votre e-mail pour validation 🎉"
+  },
+  "forget_password": {
+    "title": "Mot de passe oublié",
+    "subtitle": "Entrez votre e-mail pour recevoir un lien de réinitialisation",
+    "label": "E-mail",
+    "email_placeholder": "Entrez votre e-mail",
+    "submit": "Envoyer",
+    "back_to": "Retour à",
+    "login": "Connexion",
+    "success_message": "Inscription réussie ! Veuillez vérifier votre e-mail pour validation 🎉"
   },
   "errors": {
     "first_name_required": "Le prénom est requis",
     "last_name_required": "Le nom est requis",
     "email_invalid": "Adresse e-mail invalide",
-    "phone_number_required": "Le numéro de téléphone est requis",
-    "phone_number_invalid": "Veuillez saisir un numéro de téléphone international valide",
+    "phone_number_required": "Numéro de téléphone requis",
+    "phone_number_invalid": "Veuillez entrer un numéro de téléphone international valide",
     "country_code_required": "L’indicatif pays est requis",
-    "password_min_length": "Le mot de passe doit comporter au moins 6 caractères",
+    "password_min_length": "Le mot de passe doit contenir au moins 6 caractères",
     "terms_required": "Vous devez accepter les conditions générales",
     "human_required": "Veuillez confirmer que vous n’êtes pas un robot"
   },
@@ -69,33 +80,34 @@
     "login_button": "Se connecter"
   },
   "featured_dest": {
-    "dest_heading": "Destination vedette",
-    "dest_subheading": "Découvrez les lieux de voyage les plus époustouflants et recherchés, sélectionnés pour des expériences inoubliables à travers le monde.",
-    "no_featured_dest": "Aucune destination vedette",
+    "dest_heading": "Destinations phares",
+    "dest_subheading": "Découvrez les destinations les plus spectaculaires et recherchées, sélectionnées pour des expériences inoubliables à travers le monde.",
+    "no_featured_dest": "Aucune destination phare",
     "dest_explore": "Explorer maintenant",
     "error": "Vous devez être connecté pour ajouter aux favoris"
   },
   "featured_hotels": {
-    "heading": "Hôtels vedettes",
-    "subheading": "Profitez d’un confort de classe mondiale et d’une hospitalité incomparable au cœur du paradis.",
+    "heading": "Hôtels recommandés",
+    "subheading": "Profitez d’un confort de classe mondiale et d’une hospitalité exceptionnelle au cœur du paradis.",
     "no_amenities": "Aucun équipement trouvé",
-    "book_now": "Réserver maintenant",
+    "book_now": "Réserver",
     "loading": "Chargement...",
+    "cancelling": "Annulation en cours...",
     "per_night": "/nuit",
     "error_login_required": "Vous devez être connecté pour ajouter aux favoris",
     "error_failed_fav": "Échec de la mise à jour des favoris",
     "success_updated_fav": "Favoris mis à jour",
-    "something_wrong": "Une erreur s’est produite"
+    "something_wrong": "Une erreur est survenue"
   },
   "offer_sec": {
     "offer_heading": "Pourquoi nous choisir ?",
-    "offer_subheading": "Profitez de services de voyage inégalés avec nous, où votre satisfaction est notre priorité absolue."
+    "offer_subheading": "Profitez de services de voyage exceptionnels où votre satisfaction est notre priorité absolue."
   },
   "testi_sec": {
     "testi_see_room": "Voir la chambre",
-    "testi_heading": "Ce que nos ",
-    "testi_heading_2": "clients disent",
-    "testi_subheading": "Découvrez pourquoi les voyageurs nous font confiance – avis réels sur le confort, la commodité et des séjours inoubliables",
+    "testi_heading": "Ce que disent ",
+    "testi_heading_2": "nos clients",
+    "testi_subheading": "Découvrez pourquoi les voyageurs nous font confiance — avis authentiques sur le confort, la praticité et des séjours inoubliables",
     "testi_autoplay": "Lecture automatique • Appuyez pour mettre en pause"
   },
   "news_letter_sec": {
@@ -110,12 +122,30 @@
       "email_invalid": "Adresse e-mail invalide"
     }
   },
+  "header": {
+    "paymentStatus": "Statut du paiement :",
+    "bookingStatus": "Statut de la réservation :",
+    "phone": "Téléphone :",
+    "email": "E-mail :",
+    "Agent": "Agent",
+    "Customer": "Client",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "hotels": "Hôtels",
+    "contact": "Contact",
+    "support": "Assistance",
+    "agents": "Agents",
+    "customers": "Clients",
+    "myprofile": "Mon profil",
+    "dashboard": "Tableau de bord",
+    "logout": "Déconnexion"
+  },
   "footer": {
-    "subheading": "Accédez à des séjours extraordinaires grâce à nos hôtels soigneusement sélectionnés et à un accès exclusif aux plus belles destinations du monde.",
+    "subheading": "Profitez de séjours extraordinaires grâce à nos hôtels sélectionnés par des experts et à un accès exclusif aux meilleures destinations du monde.",
     "connect": "Restez connecté",
-    "subconnect": "Abonnez-vous pour recevoir des conseils de voyage, des offres exclusives et les dernières actualités.",
+    "subconnect": "Abonnez-vous pour recevoir des conseils voyage, des offres exclusives et les dernières actualités.",
     "email_placeholder": "Entrez votre e-mail",
-    "subscribing": "Abonnement en cours...",
+    "subscribing": "Inscription en cours...",
     "subscribe": "S’abonner",
     "success": "Abonné avec succès",
     "copyright": "Tous droits réservés.",
@@ -128,7 +158,7 @@
     "advanced_search": "Recherche avancée",
     "search_hotels": "Rechercher des hôtels",
     "search_by_hotel_name": "rechercher par nom d’hôtel",
-    "per_night": "(par nuit)",
+    "per_night": "nuit",
     "price_range": "Fourchette de prix",
     "hotel_stars": "Étoiles de l’hôtel",
     "stars": "étoiles",
@@ -136,9 +166,10 @@
     "apply": "Appliquer",
     "hotels_found": "hôtels trouvés",
     "loading_more": "Chargement de plus",
+    "no_more_Data": "Aucune donnée supplémentaire",
     "searching_for_hotels": "Recherche d’hôtels en cours...",
     "no_hotels_found": "Aucun hôtel trouvé",
-    "search_criteria": "Essayez d’ajuster vos filtres ou vos critères de recherche",
+    "search_criteria": "Essayez d’ajuster vos filtres ou critères de recherche",
     "reset_all_filters": "Réinitialiser tous les filtres",
     "filters_search": "Filtres et recherche",
     "apply_filters": "Appliquer les filtres",
@@ -148,7 +179,7 @@
     "low_to_high": "Prix croissant",
     "high_to_low": "Prix décroissant",
     "name_a_to_z": "Nom (A–Z)",
-    "book_now": "Réserver maintenant"
+    "book_now": "Réserver"
   },
   "contact": {
     "contact_us": "Contactez-nous",
@@ -162,61 +193,24 @@
     "noAmenities": "Aucun équipement trouvé",
     "showMore": "Afficher plus",
     "chooseYourRoom": "Choisissez votre chambre",
-    "noRoomsAvailable": "Aucune chambre disponible pour les dates sélectionnées.",
-    "theToptierWayToTravel": "La manière TopTier de voyager",
+    "noRoomsAvailable": "Aucune chambre disponible pour vos dates sélectionnées.",
+    "theToptierWayToTravel": "La façon Toptier de voyager",
     "noBrandStories": "Aucune histoire de marque disponible pour cet établissement.",
     "needToKnowDetails": "Informations essentielles",
     "frequentlyAskedQuestions": "Questions fréquentes",
     "noSimilarHotels": "Aucun hôtel similaire trouvé.",
     "readMore": "Lire la suite",
     "readLess": "Lire moins",
-    "topRated": "Meilleure note",
+    "topRated": "Les mieux notés",
     "freeCancellation": "Annulation gratuite",
     "bestPriceGuarantee": "Garantie du meilleur prix",
     "map": "Carte",
     "unableToLoad": "Impossible de charger les détails de l’hôtel",
     "pleaseTryAgain": "Veuillez réessayer plus tard.",
     "allAmenities": "Tous les équipements",
-    "youmightAlsoLike": "Vous pourriez aussi aimer"
+    "youmightAlsoLike": "Vous aimerez aussi"
   },
   "bookingForm": {
-    "personalInformation": {
-      "title": "Informations personnelles",
-      "subtitle": "Indiquez le nom de la personne qui effectuera l’enregistrement.",
-      "firstNameLabel": "Prénom",
-      "lastNameLabel": "Nom",
-      "addressLabel": "Adresse"
-    },
-    "contactInformation": {
-      "title": "Coordonnées",
-      "subtitle": "Nous enverrons votre confirmation à cette adresse e-mail.",
-      "emailLabel": "Adresse e-mail",
-      "nationalityLabel": "Nationalité",
-      "currentCountryLabel": "Pays actuel",
-      "phoneCodeLabel": "Indicatif pays",
-      "phoneNumberLabel": "Numéro de téléphone"
-    },
-    "travelersInformation": {
-      "title": "Informations des voyageurs",
-      "subtitle": "Détails importants pour finaliser votre réservation",
-      "adultTraveller": "Voyageur adulte",
-      "childTraveller": "Voyageur enfant",
-      "titleLabel": "Civilité"
-    },
-    "paymentMethod": {
-      "title": "Moyen de paiement",
-      "subtitle": "Transactions sécurisées. Vos informations personnelles sont protégées.",
-      "noPaymentMethods": "Aucun moyen de paiement disponible"
-    },
-    "cancellationPolicy": {
-      "title": "Politique d’annulation",
-      "acceptText": "J’accepte la politique d’annulation pour cette réservation ainsi que les",
-      "termsAndConditions": "Conditions générales"
-    },
-    "buttons": {
-      "confirmAndBook": "Confirmer et réserver",
-      "processing": "Traitement en cours..."
-    },
     "errors": {
       "firstNameRequired": "Le prénom est requis",
       "lastNameRequired": "Le nom est requis",
@@ -226,17 +220,60 @@
       "currentCountryRequired": "Le pays actuel est requis",
       "countryCodeRequired": "L’indicatif pays est requis",
       "phoneNumberRequired": "Le numéro de téléphone est requis",
-      "invalidPhoneNumber": "Veuillez saisir un numéro de téléphone international valide",
+      "titleRequired": "Le titre est requis",
       "atLeastOneTraveller": "Au moins un voyageur est requis",
-      "titleRequired": "La civilité est requise",
-      "paymentMethodRequired": "Veuillez sélectionner un moyen de paiement",
-      "acceptPolicyRequired": "Vous devez accepter la politique d’annulation"
+      "acceptPolicyRequired": "Vous devez accepter la politique d’annulation",
+      "cardNameRequired": "Le nom du titulaire de la carte est requis",
+      "invalidCardNumber": "Numéro de carte invalide",
+      "invalidCardExpiry": "Date d’expiration invalide (MM/AA)",
+      "invalidCardCvv": "CVV invalide (3 à 4 chiffres)",
+      "invalidCardZip": "Code postal invalide"
     },
     "titles": {
       "mr": "M.",
       "mrs": "Mme",
       "ms": "Mlle",
       "dr": "Dr"
+    },
+    "personalInformation": {
+      "title": "Informations personnelles",
+      "subtitle": "Veuillez fournir vos informations personnelles pour la réservation.",
+      "firstNameLabel": "Prénom",
+      "lastNameLabel": "Nom",
+      "addressLabel": "Adresse"
+    },
+    "contactInformation": {
+      "title": "Coordonnées",
+      "subtitle": "Nous utiliserons ces informations pour vous envoyer votre confirmation de réservation.",
+      "emailLabel": "Adresse e-mail",
+      "nationalityLabel": "Nationalité",
+      "currentCountryLabel": "Pays actuel",
+      "phoneCodeLabel": "Indicatif pays",
+      "phoneNumberLabel": "Numéro de téléphone"
+    },
+    "travelersInformation": {
+      "title": "Informations des voyageurs",
+      "subtitle": "Veuillez fournir les détails de tous les voyageurs.",
+      "adultTraveller": "Voyageur adulte",
+      "childTraveller": "Voyageur enfant",
+      "titleLabel": "Titre",
+      "ageLabel": "Âge de l’enfant"
+    },
+    "paymentMethod": {
+      "title": "Méthode de paiement",
+      "subtitle": "Transaction sécurisée. Vos informations personnelles sont protégées.",
+      "cardInformationTitle": "Informations de carte",
+      "cardholderNameLabel": "Nom du titulaire",
+      "cardDetailsLabel": "Détails de la carte"
+    },
+    "cancellationPolicy": {
+      "title": "Politique d’annulation",
+      "acceptText": "J’accepte les",
+      "termsAndConditions": "Conditions générales"
+    },
+    "buttons": {
+      "processing": "Traitement en cours...",
+      "confirmAndBook": "Confirmer et réserver"
     }
   },
   "bookingDetails": {
@@ -245,11 +282,11 @@
     "roomName": "Nom de la chambre",
     "checkinDate": "Date d’arrivée",
     "checkoutDate": "Date de départ",
-    "roomQuantity": "Nombre de chambres",
+    "roomQuantity": "Quantité de chambre",
     "nights": "Nuits",
     "guests": "Voyageurs",
     "roomPrice": "Prix de la chambre",
-    "toptierFee": "Frais TopTier",
+    "toptierFee": "Frais Toptier",
     "total": "Total",
     "adults": "Adultes",
     "children": "Enfants"
@@ -262,11 +299,15 @@
       "paymentStatus": "Statut du paiement :",
       "bookingStatus": "Statut de la réservation :",
       "phone": "Téléphone :",
-      "email": "E-mail :"
+      "email": "E-mail :",
+      "Agent": "Agent",
+      "Customer": "Client",
+      "login": "Connexion",
+      "signup": "Inscription"
     },
     "bookingNote": "Demande d’annulation envoyée. Nous mettrons à jour dès que le statut changera",
     "bookingInfo": {
-      "bookingId": "ID de réservation",
+      "bookingId": "Numéro de réservation",
       "bookingpnr": "PNR",
       "proceed": "Procéder",
       "reference": "Référence",
@@ -275,9 +316,10 @@
     },
     "travellers": {
       "title": "Voyageurs",
+      "travellerType": "Type de voyageur",
       "table": {
-        "no": "N°",
-        "sr": "N°",
+        "number": "Numéro",
+        "type": "Type",
         "name": "Nom"
       }
     },
@@ -291,12 +333,13 @@
       "checkin": "Arrivée :",
       "checkout": "Départ :",
       "type": "Type :",
+      "quantity": "Quantité",
       "total": "Total :"
     },
     "fareAndTax": {
       "rateCommentTitle": "Commentaire tarifaire",
-      "taxMessage": "Montant estimé des taxes et frais pour cette réservation : {tax}, à payer à l’arrivée. La taxe de séjour peut varier selon l’hébergement. Heure d’arrivée : 14h00 - 00h00. Heure de départ : 12h30 - 12h00.",
-      "taxLabel": "TAXES",
+      "taxMessage": "Montant estimé des taxes et frais pour cette réservation : {tax}, payable à l’arrivée. La taxe locale peut varier selon l’établissement. Heure d’arrivée : 14h00 – 00h00. Heure de départ : 12h30 – 12h00.",
+      "taxLabel": "TAXE",
       "totalLabel": "Total"
     },
     "customer": {
@@ -324,13 +367,13 @@
   "support": {
     "heading": "Assistance",
     "p_1": "Chez",
-    "p_3": ", nous sommes passionnés par vous aider à explorer le monde en toute confiance et confort. Votre soutien nous permet de continuer à offrir les meilleures expériences de voyage, offres d’hôtels et inspirations à chaque voyageur.",
+    "p_3": ", nous sommes passionnés par vous aider à explorer le monde en toute confiance et confort. Votre soutien nous permet de continuer à offrir les meilleures expériences de voyage, offres hôtelières et inspirations pour chaque voyageur.",
     "contact_us": "Contactez-nous",
     "empower_travelers": "Autonomiser les voyageurs",
-    "empower_travelers_p": "Votre contribution aide les voyageurs à découvrir des pépites cachées et des destinations de confiance dans le monde entier.",
+    "empower_travelers_p": "Votre contribution aide les voyageurs à découvrir des pépites cachées et des destinations fiables à travers le monde.",
     "sustain_quality": "Maintenir la qualité",
-    "sustain_quality_p": "Nous améliorons continuellement nos services pour offrir de meilleures expériences de voyage à tous.",
-    "community_growth": "Développement communautaire",
+    "sustain_quality_p": "Nous améliorons continuellement nos services pour offrir à chacun de meilleures expériences de voyage.",
+    "community_growth": "Croissance communautaire",
     "community_growth_p": "Rejoignez notre mission pour construire une communauté mondiale de voyageurs passionnés par l’exploration."
   },
   "profilelabels": {
@@ -339,10 +382,10 @@
     "lastName": "Nom",
     "email": "E-mail",
     "password": "Mot de passe (facultatif)",
-    "phoneCode": "Indicatif téléphonique",
+    "phoneCode": "Indicatif téléphone",
     "phoneNumber": "Numéro de téléphone",
     "country": "Pays",
-    "state": "Région / État",
+    "state": "Région",
     "city": "Ville",
     "address1": "Adresse 1",
     "address2": "Adresse 2"
@@ -353,12 +396,12 @@
     "email": "Adresse e-mail",
     "password": "Nouveau mot de passe (laisser vide pour conserver l’actuel)",
     "phoneNumber": "Numéro de téléphone (ex. : 923483344559)",
-    "state": "Région / État",
+    "state": "Région",
     "city": "Ville",
-    "address1": "Ligne d’adresse 1",
-    "address2": "Ligne d’adresse 2",
+    "address1": "Adresse ligne 1",
+    "address2": "Adresse ligne 2",
     "selectCountryCode": "Sélectionner l’indicatif pays",
-    "selectCountry": "Sélectionner un pays"
+    "selectCountry": "Sélectionner le pays"
   },
   "profiletoasts": {
     "success": "Profil mis à jour avec succès !",
@@ -375,34 +418,37 @@
     "firstNameRequired": "Le prénom est requis",
     "lastNameRequired": "Le nom est requis",
     "invalidEmail": "Adresse e-mail invalide",
-    "phoneRequired": "Le numéro de téléphone est requis",
-    "invalidPhone": "Veuillez saisir un numéro de téléphone international valide",
+    "phoneRequired": "Numéro de téléphone requis",
+    "invalidPhone": "Veuillez entrer un numéro de téléphone international valide",
     "countryCodeRequired": "L’indicatif pays est requis",
-    "passwordTooShort": "Le mot de passe doit comporter au moins 6 caractères"
+    "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères"
   },
   "dashboard": {
-    "welcome_back": "Bon retour,",
+    "welcome_back": "Bienvenue de retour,",
     "overview_text": "Voici un aperçu rapide de votre compte voyage",
     "wallet_balance": "Solde du portefeuille",
+    "cancelled_bookings": "Réservations annulées",
     "wallet_balance_sub": "Solde total du portefeuille",
     "bookings": "Réservations",
     "bookings_sub": "Nombre total de réservations",
     "pending_invoices": "Factures en attente",
-    "pending_invoices_sub": "Factures en attente",
+    "pending_invoices_sub": "Réservations en attente",
     "all": "Tout",
     "paid": "Payé",
     "unpaid": "Non payé",
+    "refunded": "Remboursé",
     "cancelled": "Annulé",
     "search_placeholder": "Rechercher...",
     "client_name": "Nom du client",
-    "booking_id": "ID de réservation",
+    "booking_id": "Numéro de réservation",
     "pnr": "PNR",
     "payment": "Paiement",
     "booking": "Réservation",
     "date": "Date",
     "price": "Prix",
     "no_bookings_found": "Aucune réservation trouvée.",
-    "showing": "Affichage de",
+    "no_more_results": "Vous avez tout vu.",
+    "showing": "Affichage",
     "of": "sur",
     "entries": "résultats",
     "prev": "Précédent",
@@ -416,7 +462,7 @@
       "room_title": "Chambre(s)"
     },
     "nationality_label": "Nationalité",
-    "search_btnText": "Rechercher des logements",
+    "search_btnText": "Rechercher des hôtels",
     "searching": "Recherche en cours...",
     "search_btnText_mobile": "Rechercher",
     "rooms_label": "Chambres",
@@ -424,5 +470,100 @@
     "children_label": "Enfants",
     "child_age_label": "Âge de l’enfant",
     "years_label": "ans"
+  },
+  "roomCard": {
+    "loginToFavorite": "Vous devez être connecté pour ajouter aux favoris",
+    "favoriteUpdateFailed": "Une erreur est survenue :x:",
+    "favoriteUpdated": "Favoris mis à jour",
+    "favoriteUpdateError": "Échec de la mise à jour des favoris :x:",
+    "noAmenities": "Aucun équipement listé",
+    "freeBreakfast": "Petit-déjeuner gratuit",
+    "freeCancellation": "Annulation gratuite",
+    "reserve": "Réserver",
+    "moreOptions": "Plus d’options",
+    "close": "Fermer"
+  },
+  "roomOption": {
+    "roomNamePlaceholder": "Appartement une chambre",
+    "roomImage": "Image de la chambre",
+    "features": "Équipements",
+    "travellers": "Voyageurs",
+    "price": "Prix",
+    "freeBreakfast": "Petit-déjeuner gratuit",
+    "freeDinner": "Dîner gratuit",
+    "freeCancellation": "Annulation gratuite",
+    "notBookable": "Non réservable",
+    "showMore": "Afficher plus",
+    "showLess": "Afficher moins",
+    "noFeatures": "N/A",
+    "adults": "Adultes",
+    "children": "Enfants",
+    "bookNow": "Réserver"
+  },
+  "modal": {
+    "hotelImageAlt": "Image de l’hôtel",
+    "noImagePlaceholder": "Aucune image",
+    "supplierLabel": "Fournisseur :",
+    "serviceLabel": "—",
+    "bookingDetailsHeading": "Détails de la réservation",
+    "bookingReferenceLabel": "Référence de réservation",
+    "bookingStatusLabel": "Statut de la réservation",
+    "paymentStatusLabel": "Statut du paiement",
+    "pnrLabel": "PNR",
+    "checkInLabel": "Arrivée",
+    "checkOutLabel": "Départ",
+    "guestDetailsHeading": "Détails des voyageurs",
+    "noGuestDataMessage": "Aucune donnée de voyageur disponible.",
+    "adultsSectionTitle": "Adultes",
+    "childrenSectionTitle": "Enfants",
+    "otherGuestsSectionTitle": "Autres voyageurs",
+    "nameLabel": "Nom",
+    "typeLabel": "Type",
+    "ageLabel": "Âge",
+    "roomDetailsHeading": "Détails de la chambre",
+    "roomNameLabel": "Nom de la chambre",
+    "roomPriceLabel": "Prix de la chambre",
+    "roomQuantityLabel": "Quantité de chambre",
+    "adultsLabel": "Adultes",
+    "childrenLabel": "Enfants",
+    "invoiceButton": "Facture",
+    "closeButton": "Fermer",
+    "invoiceReferenceNotFound": "Référence de facture introuvable"
+  },
+  "dashboardCard": {
+    "noimage": "Aucune image",
+    "moredetails": "Plus de détails",
+    "upplier": "Fournisseur",
+    "bookingdetails": "Détails de la réservation",
+    "bookingreference": "Référence de réservation",
+    "bookingstatus": "Statut de la réservation",
+    "paymentstatus": "Statut du paiement",
+    "checkin": "Arrivée",
+    "checkout": "Départ",
+    "guestdetails": "Détails des voyageurs",
+    "noguest": "Aucune donnée de voyageur disponible.",
+    "name": "Nom",
+    "type": "Type",
+    "adults": "Adultes",
+    "age": "Âge",
+    "otherguests": "Autres voyageurs",
+    "roomdetails": "Détails de la chambre",
+    "roomname": "Nom de la chambre",
+    "roomprice": "Prix de la chambre",
+    "roomqaunitity": "Quantité de chambre",
+    "total_nights": "Nombre total de nuits",
+    "total_price": "Prix total",
+    "childs": "Enfants",
+    "invoice": "Facture",
+    "close": "Fermer",
+    "invoicenotfound": "Référence de facture introuvable"
+  },
+  "headermodule": {
+    "hotels": "Hotelsssssss",
+    "flights": "Vols",
+    "tours": "Tours",
+    "cars": "Voitures",
+    "visa": "Visas",
+    "extra": "Blog"
   }
 }

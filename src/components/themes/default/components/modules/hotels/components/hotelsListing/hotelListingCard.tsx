@@ -5,11 +5,12 @@ import { Icon } from "@iconify/react";
 import { toast } from "react-toastify";
 import { addToFavourite } from "@src/actions";
 import { useUser } from "@hooks/use-user";
-import  getCurrencySymbol  from "@src/utils/getCurrencySymbals";
+import getCurrencySymbol from "@src/utils/getCurrencySymbals";
 import useLocale from "@hooks/useLocale";
 import useDictionary from "@hooks/useDict";
 import useCurrency from "@hooks/useCurrency";
 import { useAppDispatch, useAppSelector } from "@lib/redux/store";
+import Spinner from "@components/core/Spinner";
 
 interface HotelListingCardProps {
   hotel: any;
@@ -18,6 +19,10 @@ interface HotelListingCardProps {
   onMapShow?: (hotel: any) => void;
   viewMode: any;
   onBookNow: any;
+  loading: null | string;
+
+  favourite:boolean;
+
 }
 
 const HotelCard = memo(function HotelCard({
@@ -27,10 +32,14 @@ const HotelCard = memo(function HotelCard({
   onMapShow,
   activeHotelId,
   setActiveHotelId,
+  loading,
+
+  favourite=true
+
 }: HotelListingCardProps) {
   const { user } = useUser();
   // Use number state to match API (0 = not fav, 1 = fav)
-        const { currency } = useAppSelector((state) => state.root || {});
+  const { currency } = useAppSelector((state) => state.root || {});
 
   const [isFav, setIsFav] = useState<number>(() => {
     return hotel.favorite === 1 || hotel.favorite === "1" ? 1 : 0;
@@ -51,7 +60,7 @@ const HotelCard = memo(function HotelCard({
   }, []);
 
   const { locale } = useLocale();
-        const { data: dict, isLoading } = useDictionary(locale as any);
+  const { data: dict, isLoading } = useDictionary(locale as any);
 
   const toggleLike = async () => {
     if (!user) {
@@ -147,21 +156,33 @@ const HotelCard = memo(function HotelCard({
       {/* Hotel Details */}
       <div
         className={`p-3 ${
-          viewMode === "list" ? "flex-1 flex flex-col truncate justify-between" : ""
+          viewMode === "list"
+            ? "flex-1 flex flex-col truncate justify-between"
+            : ""
         }`}
       >
         <div>
           <h3
             title={hotel.name}
-            className={`text-xl font-extrabold text-gray-900 mb-0 pl-1 sm:text-2xl md:text-xl lg:text-2xl overflow-hidden text-ellipsis whitespace-nowrap ${
-              viewMode === "list" ? "w-full" : "block"
-            }`}
+            className={`text-xl font-extrabold text-gray-900 mb-0 sm:text-2xl md:text-xl lg:text-2xl
+              overflow-hidden whitespace-nowrap ${
+                viewMode === "list" ? "w-full" : "block"
+              }
+              ltr:pl-1 rtl:pr-1 rtl:text-right`}
             style={{ fontFamily: "Urbanist, sans-serif" }}
           >
-            {hotel.name}
+            <bdi dir="ltr" className="block truncate">
+              {hotel.name}
+            </bdi>
           </h3>
-          <p className="text-[16px] sm:text-[17px] lg:text-[18px] my-2 font-[400] text-[#5B697E] pl-1 text-ellipsis overflow-hidden whitespace-nowrap">
-            {hotel.location}
+
+          <p
+            className="text-[16px] sm:text-[17px] lg:text-[18px] my-2 font-[400] text-[#5B697E]
+             overflow-hidden whitespace-nowrap text-ellipsis ltr:pl-1 rtl:pr-1 rtl:text-right"
+          >
+            <bdi dir="ltr" className="block truncate">
+              {hotel.location}
+            </bdi>
           </p>
           {/* Stars */}
           <div className="flex items-center gap-1 mb-1 pl-1">
@@ -180,9 +201,15 @@ const HotelCard = memo(function HotelCard({
           >
             <div className="flex gap-2 items-center mb-2 sm:mb-0">
               <p className="text-[24px] sm:text-[28px] lg:text-[30px] font-[900]">
-                <span className="text-xl"> {getCurrencySymbol(hotel.currency || currency)}{" "}{hotel.markup_price || hotel.price}</span>
+                <span className="text-xl">
+                  {" "}
+                  {getCurrencySymbol(hotel.currency || currency)}{" "}
+                  {hotel.markup_price || hotel.price}
+                </span>
                 {/* {hotel.actual_price || hotel.price} */}
-                <span className="text-[14px] sm:text-[16px] lg:text-xl font-[400] text-[#5B697E]">/night</span>
+                <span className="text-[14px] sm:text-[16px] lg:text-xl font-[400] text-[#5B697E]">
+                 /{dict?.hotel_listing?.per_night} 
+                </span>
               </p>
               {/* <p className="text-[14px] sm:text-[16px] lg:text-[14px] font-[400] text-[#5B697E]">
                 /night
@@ -192,15 +219,24 @@ const HotelCard = memo(function HotelCard({
         </div>
         {/* Buttons */}
         <div
-          className={`flex items-center gap-2 ${viewMode === "list" ? "mt-auto" : ""}`}
+          className={`flex items-center gap-2 ${
+            viewMode === "list" ? "mt-auto" : ""
+          }`}
         >
           <button
+            disabled={loading === hotel.hotel_id}
             className="flex-1 cursor-pointer bg-[#163D8C] hover:bg-gray-800 text-white font-medium py-3 md:py-2.5 px-3 text-sm sm:text-base md:text-sm lg:text-base rounded-full transition-colors duration-200 focus:outline-none"
             onClick={() => onBookNow && onBookNow(hotel)}
           >
-            {dict?.hotel_listing?.book_now || "Book Now"}
+            {loading === hotel.hotel_id ? (
+              <div className="flex items-center justify-center gap-2">
+                <Spinner /> <span></span>
+              </div>
+            ) : (
+              dict?.hotel_listing?.book_now || "Book Now"
+            )}
           </button>
-          <button
+         {favourite && <button
             onClick={toggleLike}
             className="bg-[#EBEFF4] cursor-pointer hover:bg-gray-200 rounded-full transition-all duration-200 flex items-center justify-center flex-shrink-0 w-12 h-12 sm:w-11 sm:h-11 lg:w-11.5 lg:h-11.5"
             aria-label={`${isFav === 1 ? "Unlike" : "Like"} ${hotel.name}`}
@@ -221,7 +257,7 @@ const HotelCard = memo(function HotelCard({
                 fill={isFav === 1 && user ? "#EF4444" : "none"}
               />
             </svg>
-          </button>
+          </button>}
         </div>
       </div>
     </div>

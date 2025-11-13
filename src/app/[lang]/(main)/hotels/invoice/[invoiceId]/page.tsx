@@ -7,14 +7,12 @@ import { getDictionary } from '@src/get-dictionary'
 
 
 export default async function Page({ params }: {
-  params: Promise<{ lang: 'en' | 'ar', invoiceId: string }>
+  params: Promise<{  invoiceId: string }>
 }) {
-  const { lang ,invoiceId} = await params
-  const dict = await getDictionary(lang)
-
+  const { invoiceId} = await params
   const response = await hotel_invoice(invoiceId)
   const result =response?.response
-  // console.log("invoice response",invoiceId)
+
   return (
     <TransitionLayout>
       <div className="flex flex-col bg-gray-100 dark:bg-gray-900 dark:text-gray-50 min-h-screen items-center justify-center ">

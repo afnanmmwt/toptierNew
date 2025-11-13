@@ -156,7 +156,7 @@ export default function HotelMap({ hotels, currentLocation, detailHandler }: Hot
     if (detailHandler) {
       detailHandler(hotel);
     } else {
-      router.push(`/hotel/${hotel.hotel_id}`);
+      router.push(`/hotels/${hotel.hotel_id}`);
     }
   };
 
@@ -194,7 +194,7 @@ export default function HotelMap({ hotels, currentLocation, detailHandler }: Hot
             : 'bg-white border-gray-300 text-black'
         }`}
         onClick={(e) => {
-          e.stopPropagation(); 
+          e.stopPropagation();
           handleHotelClick(hotel);
         }}
       >
@@ -233,7 +233,7 @@ export default function HotelMap({ hotels, currentLocation, detailHandler }: Hot
 
   return (
     <div className="relative w-full h-[800px] rounded-2xl overflow-hidden">
-     
+
       <div
         className="absolute top-9 right-5 z-[30] cursor-pointer"
         onClick={() => setShowModal(true)}
@@ -294,7 +294,7 @@ export default function HotelMap({ hotels, currentLocation, detailHandler }: Hot
                           }
                         }, 200);
                       },
-                      click: () => handleHotelClick(hotel), 
+                      click: () => handleHotelClick(hotel),
                     }}
                   >
                     <Tooltip
@@ -303,7 +303,7 @@ export default function HotelMap({ hotels, currentLocation, detailHandler }: Hot
                       opacity={1}
                       interactive
                     >
-                      {renderTooltipContent(hotel, isCurrent)} 
+                      {renderTooltipContent(hotel, isCurrent)}
                     </Tooltip>
                   </Marker>
                 );
@@ -350,7 +350,7 @@ export default function HotelMap({ hotels, currentLocation, detailHandler }: Hot
                       }
                     }, 200);
                   },
-                  click: () => handleHotelClick(hotel), 
+                  click: () => handleHotelClick(hotel),
                 }}
               >
                 <Tooltip
@@ -359,7 +359,7 @@ export default function HotelMap({ hotels, currentLocation, detailHandler }: Hot
                   opacity={1}
                   interactive
                 >
-                  {renderTooltipContent(hotel, isCurrent)} 
+                  {renderTooltipContent(hotel, isCurrent)}
                 </Tooltip>
               </Marker>
             );

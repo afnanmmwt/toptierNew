@@ -1,1 +1,1 @@
-// export {default as ForgetPassword} from "./forgetPassword"
+export {default as ForgetPassword} from "./forgetPassword"

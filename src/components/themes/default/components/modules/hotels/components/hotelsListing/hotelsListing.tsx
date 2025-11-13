@@ -61,7 +61,7 @@ const onShowMaphandler=(hotel:any)=>{
 
   const { allHotelsData: hotelsData,
       isloadingMore, listRef,
-        detailsBookNowHandler,isProcessingRef,loadMoreData ,noMoreData} = useHotelSearch()
+        detailsBookNowHandler,isProcessingRef,loadMoreData ,noMoreData,loadingHotelId} = useHotelSearch()
   const safeHotelsData = Array.isArray(hotelsData) && hotelsData?.length > 0
     ? hotelsData
     : Array.isArray(hotelsData)
@@ -82,8 +82,7 @@ const onShowMaphandler=(hotel:any)=>{
     selectedStars,
     setSelectedStars,
     isFilterLoading,
-updateSortBy
-
+updateSortBy,applyFilters
   } = useHotelFilter();
 
 
@@ -248,19 +247,19 @@ function getOptionLabel(option: string) {
                   {[5, 4, 3, 2, 1].map((stars) => (
                     <div
                       key={stars}
-                      className="flex items-center justify-between cursor-pointer"
+                      className="flex items-center justify-between "
                       onClick={() => {
                         setSelectedStars(stars);
                         updateRatingFilter(stars);
                       }}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex">
+                        <div className="flex ">
                           {[...Array(stars)].map((_, i) => (
                             <Icon
                               key={i}
                               icon="mdi:star"
-                              className={`h-5 w-5 ${selectedStars === stars ? "text-yellow-400" : "text-gray-300"
+                              className={`h-5 w-5 cursor-pointer ${selectedStars === stars ? "text-yellow-400" : "text-gray-300"
                                 }`}
                             />
                           ))}
@@ -288,13 +287,7 @@ function getOptionLabel(option: string) {
                 >
                   {dict?.hotel_listing?.reset_filters || "Reset Filters"}
                 </button>
-                <button
-                  onClick={resetFilters}
-                  disabled={!hasActiveFilters}
-                  className="w-full py-3 bg-[#163C8C] border border-[#163C8C] cursor-pointer text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {dict?.hotel_listing?.apply || "Apply"}
-                </button>
+
               </div>
             </div>
           </div>}
@@ -443,11 +436,13 @@ function getOptionLabel(option: string) {
                 {filteredHotels.map((hotel: any, index: number) => (
                   <HotelsListingCard
                     key={`${hotel.hotel_id}-${index}`}
+                    favourite={true}
                     hotel={hotel}
                     viewMode={viewMode}
                     onBookNow={(hotel: any) => detailsBookNowHandler(hotel)}
-                     setActiveHotelId={setActiveHotelId}
-                        activeHotelId={activeHotelId}
+                    setActiveHotelId={setActiveHotelId}
+                    activeHotelId={activeHotelId}
+                    loading={loadingHotelId}
 
                   />
                 ))}
@@ -477,6 +472,8 @@ function getOptionLabel(option: string) {
                         // //  Pass active state to child
                         setActiveHotelId={setActiveHotelId}
                         activeHotelId={activeHotelId}
+                        loading={loadingHotelId}
+                        favourite={true}
                       />
                     ))}
                   </div>
@@ -514,8 +511,8 @@ function getOptionLabel(option: string) {
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">{dict?.hotel_listing?.no_hotels_found || "No hotels found"}</h3>
                 <p className="text-gray-600 mb-4">{dict?.hotel_listing?.search_criteria || "Try adjusting your filters or search criteria"}</p>
                 <button
-                  onClick={() => resetFilters(event)}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  onClick={resetFilters}
+                  className="bg-blue-800 text-white px-4 py-2.5 cursor-pointer rounded-lg font-medium hover:bg-gray-950 transition-colors"
                 >
                   {dict?.hotel_listing?.reset_all_filters || "Reset All Filters"}
                 </button>
@@ -614,18 +611,22 @@ function getOptionLabel(option: string) {
             </div>
             <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 space-y-3 max-w-lg mx-auto w-full">
               <button
-                onClick={(e) => resetFilters(e)}
+                onClick={resetFilters}
                 disabled={!hasActiveFilters}
                 className="w-full py-2.5 text-sm bg-gray-100 text-blue-600 cursor-pointer rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {dict?.hotel_listing?.reset_filters || "Reset Filters"}
               </button>
-              <button
-                onClick={() => setMobileFiltersOpen(false)}
+              {/* <button
+               onClick={() => {
+  applyFilters();
+  setMobileFiltersOpen(false);
+}}
+
                 className="w-full py-2.5 text-sm bg-[#163C8C] text-white cursor-pointer rounded-lg font-medium hover:bg-[#163C8C] transition-colors"
               >
                 {dict?.hotel_listing?.apply_filters || "Apply Filters"} ({totalResults} {dict?.hotel_listing?.hotels || "hotels"})
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

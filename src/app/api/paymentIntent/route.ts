@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     // Parse it into an object
     const decodedData = JSON.parse(decodedString);
-    console.log("Decoded Stripe Credentials:", decodedData);
+
 
     if (!decodedData?.secret_key) {
       throw new Error("Stripe secret key missing in decoded data");
@@ -32,6 +32,7 @@ export async function POST(req: Request) {
     const user_id = userinfo?.user?.user_id ?? "";
 
     const { amount, currency, email, booking_ref_no, module_type } = await req.json();
+   
     if (!amount || !currency || !email || !booking_ref_no) {
       throw new Error("Missing required payment parameters");
     }
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
     });
 const origin = req.headers.get("origin")
     // 5. Generate invoice URL + token
-    const invoiceUrl = `${origin}/hotel/invoice/${booking_ref_no}`;
+    const invoiceUrl = `${origin}/hotels/invoice/${booking_ref_no}`;
 
     const tokenData = {
       booking_ref_no,

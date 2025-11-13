@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { HotelsListing } from "@components/themes/default";
 import { hotel_search_multi } from "@src/actions";
@@ -16,20 +16,38 @@ interface Props {
 const HotelsListingMain = ({ slug }: Props) => {
   const dispatch = useDispatch();
   const { hotelModuleNames } = useHotelSearch();
+  const { currency, locale } = useAppSelector((state) => state.root);
 
   const slugArr = Array.isArray(slug) ? slug : [];
   const city = slugArr[0]?.replace(/-/g, " ") ?? "";
   const isSlugValid = slugArr.length === 7 && slugArr.every(Boolean);
-  const {country, currency, locale}=useAppSelector((state)=>state.root)
+
   const enabled = isSlugValid && !!hotelModuleNames?.length;
- const savedForm = localStorage.getItem("hotelSearchForm");
-  if (!savedForm) return;
-  const parsedForm: any = JSON.parse(savedForm);
+
+  // ✅ State for form data parsed from localStorage
+  const [parsedForm, setParsedForm] = useState<any>(null);
+
+  // ✅ Read from localStorage inside useEffect (safe for SSR)
+  useEffect(() => {
+    try {
+      const savedForm = localStorage.getItem("hotelSearchForm");
+      if (savedForm) {
+        setParsedForm(JSON.parse(savedForm));
+      }
+    } catch (err) {
+      console.error("Error parsing hotelSearchForm:", err);
+      setParsedForm(null);
+    }
+  }, []);
+
+  // ✅ Only enable query when both form and slug are ready
+  const queryEnabled = enabled && !!parsedForm;
+
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["hotels", ...slugArr],
     queryFn: async () => {
-      // queryFn will only run when `enabled` is true
+
       const result = await hotel_search_multi(
         {
           destination: city,
@@ -43,19 +61,23 @@ const HotelsListingMain = ({ slug }: Props) => {
           price_from: "1",
           price_to: "5000",
           rating: "",
-          language:locale,
-          currency:currency,
-           child_age: parsedForm.children_ages || [],
+          language: locale,
+          currency: currency,
+
+          child_age: parsedForm?.children_ages || [],
+
         },
         hotelModuleNames
       );
-
       return result?.success ?? [];
     },
     staleTime: 1000 * 60 * 5,
-    enabled,
+
+    enabled: queryEnabled,
+
   });
 
+  // ✅ Sync hotels with Redux store
   useEffect(() => {
     if (Array.isArray(data)) {
       dispatch(setHotels(data));
@@ -64,8 +86,8 @@ const HotelsListingMain = ({ slug }: Props) => {
     }
   }, [data, dispatch]);
 
-  if (!slugArr.length) return null;
 
+  if (!slugArr.length) return null;
   if (error) return <div>Error loading hotels</div>;
 
   return <HotelsListing isLoading={isLoading} />;

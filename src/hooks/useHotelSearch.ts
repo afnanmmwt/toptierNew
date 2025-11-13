@@ -105,11 +105,11 @@ const useHotelSearch = () => {
     rooms: 1,
     adults: 2,
     children: 0,
-    nationality: "PK",
+    nationality: "US",
     children_ages: [], //  NEW
   });
   const hotelSearch_path = usePathname();
-  // console.log("hotelSearch_path", hotelSearch_path);
+
   const queryClient = useQueryClient();
     const {country, currency, locale}=useAppSelector((state)=>state.root)
 
@@ -126,7 +126,8 @@ const useHotelSearch = () => {
   // FIX 1: Add separate loading states
   const [isSearching, setIsSearching] = useState(false);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
-  //  console.log('use hotel search ',selectedHotel,selectedRomm)
+
+const [loadingHotelId, setLoadingHotelId] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const [page, setPage] = useState(1);
 
@@ -139,7 +140,7 @@ const useHotelSearch = () => {
   const router = useRouter();
   const allHotelsData = useAppSelector((state) => state.root.hotels);
   const dispatch = useDispatch();
-  // console.log('all hotel data',allHotelsData)
+
   const hotelModuleNames = useMemo(() => {
     return (
       modules
@@ -350,10 +351,10 @@ const useHotelSearch = () => {
         });
 
         localStorage.setItem("hotelSearchForm", JSON.stringify(form));
-      //  console.log('data range ===============', form)
+
         const destinationSlug = form.destination.trim().replace(/\s+/g, "-");
 
-        const url = `/hotel/${destinationSlug}/${params.get(
+        const url = `/hotels/${destinationSlug}/${params.get(
           "checkin"
         )}/${params.get("checkout")}/${params.get("rooms")}/${params.get(
           "adults"
@@ -454,10 +455,11 @@ const useHotelSearch = () => {
     ]
   );
 
-  // DETAISL BOOK NOW HANDLER
+  // DETAISL BOOK NOW HANDLER loadingHotelId, setLoadingHotelId
   const detailsBookNowHandler = async (hotel: any) => {
     // if (!hotel?.hotel_id || !hotel?.name || !hotel?.supplier_name) return;
     dispatch(setSeletecHotel({}));
+    setLoadingHotelId(hotel.hotel_id)
     //  store full hotel object in localStorage
     localStorage.setItem("currentHotel", JSON.stringify(hotel));
     const selectedNationality = localStorage.getItem("hotelSearchForm");
@@ -467,15 +469,14 @@ const useHotelSearch = () => {
     let suplier_name;
     if (selectedNationality) {
        parsedFormData = JSON.parse(selectedNationality); // now it's an object
-
-      // console.log("Nationality:", nationality);
     }
     //  construct URL
-    const url = `/hotelDetails/${hotel.hotel_id}/${slugName}/${form.checkin}/${form.checkout}/${form.rooms}/${form.adults}/${parsedFormData.children}/${parsedFormData.nationality}`;
+    const url = `/hotelDetails/${hotel.hotel_id}/${slugName}/${parsedFormData.checkin}/${parsedFormData.checkout}/${parsedFormData.rooms}/${parsedFormData.adults}/${parsedFormData.children}/${parsedFormData.nationality}`;
     dispatch(setSeletecHotel(hotel));
-    //  navigate
+     setTimeout(() => {
+     setLoadingHotelId(null)
     router.push(url);
-    // console.log("Book Now clicked for hotel ID:", hotel.hotel_id);
+  }, 500);
   };
 
   // Other utility functions
@@ -503,7 +504,6 @@ const useHotelSearch = () => {
           newForm.children_ages = currentAges.slice(0, newChildrenCount);
         }
       }
-
       return newForm;
     });
 
@@ -616,6 +616,7 @@ const useHotelSearch = () => {
     setSelectedRoom,
     selectedHotel,
     selectedRomm,
+   loadingHotelId, setLoadingHotelId,
 
     // Event handlers
     handleChange,

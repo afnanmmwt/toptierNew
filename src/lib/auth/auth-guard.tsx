@@ -31,9 +31,10 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
         // sessionStorage.setItem('lastRoute', pathname);
         router.replace('/auth/login');
 
-      }else {
-        sessionStorage.removeItem('lastRoute');
       }
+      // else {
+      //   sessionStorage.removeItem('lastRoute');
+      // }
       setIsChecking(false);
     }
   }, [user, error, isLoading, router, pathname]);

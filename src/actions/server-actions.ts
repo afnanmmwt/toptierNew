@@ -671,8 +671,6 @@ if (agent_ref) {
 }else{
   agent_id=userId
 }
-
-
 // else if (
 //   typeof userinfo === 'object' &&
 //   userinfo !== null &&
@@ -714,6 +712,53 @@ if (agent_ref) {
       },
     });
     const data = await response.json().catch(() => null);
+    if (!response.ok || data?.status === false) {
+      return { error: data?.message || "Something went wrong" };
+    }
+
+    return data;
+  } catch (error) {
+    return { error: (error as Error).message || "An error occurred" };
+  }
+};
+
+//======================== FINANCIAL API =====================
+interface financialPayload {
+
+  checkin: string;
+  checkout: string;
+  rooms?: string;
+  option:any
+
+}
+export const get_financial = async (payload: financialPayload) => {
+       const userinfo = (await getSession()) as any | null;
+
+     const userId =
+      typeof userinfo === 'object' && userinfo !== null
+        ? (userinfo.user_id || userinfo?.user?.user_id || '')
+        : '';
+  try {
+    const formData = new FormData();
+    //  match exactly with API keys
+    formData.append('user_id',userId || '')
+    formData.append("checkin", payload.checkin);
+    formData.append("checkout", payload.checkout);
+    formData.append("rooms", String(payload.rooms));
+    formData.append('option', JSON.stringify(payload.option) || '')
+
+    // formData.append('agent_id',agent_id || '');
+
+    const response = await fetch(`${baseUrl}/financial_details`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json, text/plain, */*",
+      },
+    });
+    const data = await response.json().catch(() => null);
+    // console.log('financial data', data)
+    // console.log('financial paylaod', formData)
     if (!response.ok || data?.status === false) {
       return { error: data?.message || "Something went wrong" };
     }

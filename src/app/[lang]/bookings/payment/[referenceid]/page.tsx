@@ -14,7 +14,6 @@ export default async function Page({ params }: {
   const status = invoice_response?.status;
   const result = invoice_response?.response?.[0];
 
-  console.log('Invoice Data:', result);
 
   return (
     <TransitionLayout>

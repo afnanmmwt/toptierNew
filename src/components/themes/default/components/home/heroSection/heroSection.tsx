@@ -19,7 +19,7 @@ const variants = {
 
 const HeroSection = () => {
   const app = useAppSelector((state) => state?.appData?.data);
- 
+
  const { homepage_text } = app?.app ?? {};
 
 
@@ -31,9 +31,7 @@ const HeroSection = () => {
    app?.app?.cover_img.trim() !== ""
       ? app?.app?.cover_img
       : defaultImage;
-
   const [bgError, setBgError] = useState(false);
-
   return (
     // Animate the entire section
     <motion.section

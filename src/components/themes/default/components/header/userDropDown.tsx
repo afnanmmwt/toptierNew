@@ -61,6 +61,8 @@ export default function ProfileDropdown() {
     await signOut();
     await checkSession?.();
     toast.success("Logged out successfully");
+    sessionStorage.removeItem('lastRoute')
+    localStorage.removeItem('adminRef')
     router.push("/");
   };
 

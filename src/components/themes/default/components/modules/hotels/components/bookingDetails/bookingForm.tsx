@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { Icon } from '@iconify/react';
 import useCountries from '@hooks/useCountries';
 import { useAppDispatch, useAppSelector } from '@lib/redux/store';
-import { hotel_booking } from '@src/actions';
+import { get_financial, hotel_booking } from '@src/actions';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Select from '@components/core/select';
@@ -16,7 +16,7 @@ import useDictionary from '@hooks/useDict'; //  Add this
 import useLocale from '@hooks/useLocale';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useUser } from '@hooks/use-user';
-import { country, setBookingReference } from '@lib/redux/base';
+import { country, setBookingReference, setSeletecRoom } from '@lib/redux/base';
 import { toast } from 'react-toastify';
 // Get dict for error messages
 const useBookingFormSchema = (dict: any) => {
@@ -166,7 +166,7 @@ export default function BookingForm(){
   const selectedRoom = useAppSelector((state:any) => state.root.selectedRoom);
     const hasAutoSaved = useRef(false);
   const { option } = selectedRoom || {};
-
+   const lastRoute=sessionStorage.getItem('lastRoute')
   const {
 bookingReference
 } = useAppSelector((state:any) => state.root);
@@ -202,6 +202,39 @@ const agent_fee= markup_type === "user_markup" ? markup_amount : ""
     const total_nights = Math.ceil(
       (outDate.getTime() - inDate.getTime()) / (1000 * 60 * 60 * 24)
     );
+    //================== APPLY AGENT COMMISSION ====================
+useEffect(() => {
+  if (user?.user_type === "Agent" && lastRoute === "/bookings") {
+    // console.log("update the booking option");
+
+    // Define async function inside effect
+    const fetchFinancialData = async () => {
+      try {
+ const payload ={
+  rooms:quantity,
+  checkin:checkin,
+  checkout:checkout,
+  option:selectedRoom?.option
+ }
+
+
+        const response = await get_financial(payload); //  your async API
+        if(response.status){
+          dispatch(
+            setSeletecRoom({
+              ...selectedRoom,
+              option: response.data // updated option from API
+            })
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching financial data:", error);
+      }
+    };
+
+    fetchFinancialData(); // call it
+  }
+}, [user, lastRoute]); // include deps if they can change
   //=============== ROOM DATA =========================
  const sanitizeNumber = (value:any) => {
   if (value === null || value === undefined) return "0";

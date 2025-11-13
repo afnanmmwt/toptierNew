@@ -1,17 +1,25 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import StripeProvider from "@lib/stripeProvider";
 import useDictionary from "@hooks/useDict";
 import useLocale from "@hooks/useLocale";
 import getCurrencySymbol from "@src/utils/getCurrencySymbals";
 import PendingPaymentForm from "./pendingPyamentForm";
+import { useUser } from "@hooks/use-user";
+import { useEffect } from "react";
 
 export default function PendingPaymentDetails({ invoiceData }: { invoiceData: any }) {
+  const {user}=useUser()
   const router = useRouter();
   const { locale } = useLocale();
   const { data: dict } = useDictionary(locale as any);
-
+const pathname = usePathname();
+useEffect(()=>{
+  if(!user){
+    localStorage.setItem('adminRef',pathname)
+  }
+},[user,pathname])
   if (!invoiceData) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-600">

@@ -22,6 +22,7 @@ const Login = ({ dict }: { dict?: any }) => {
   const [direction] = useDirection();
   const [isDarkMode] = useDarkMode();
   const lastRoute=sessionStorage.getItem('lastRoute')
+     const amdminRef=localStorage.getItem('adminRef')
   const { checkSession,user } = useUser();
   // Zod schema (use dict messages if available)
   const schema = z.object({
@@ -56,15 +57,14 @@ useEffect(() => {
     setLoading(false); //  stop loading
     checkSession?.().then(() => {
       const { userType, userId } = state;
-
       if (userType === "Agent" && userId) {
         const token = document.cookie
           .split('; ')
           .find(row => row.startsWith('access-token='))?.split('=')[1];
 
-        if (token && lastRoute !== "/bookings") {
+        if (token && lastRoute !== "/bookings" && !amdminRef) {
           // https://toptier-agent-d-ua92.vercel.app
-          window.location.href = `  https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(token)}&user_id=${userId}`;
+          window.location.href = `https://toptier-agent-d-ua92.vercel.app/?token=${encodeURIComponent(token)}&user_id=${userId}`;
           return;
         }
       }
@@ -79,6 +79,7 @@ useEffect(() => {
     setError("root", { message: state.error || "Login failed" });
   }
 }, [state, router, lang, dict, checkSession, lastRoute, setError]);
+
 
   // Client validation only — then submit hidden form
   const onSubmit = useCallback(

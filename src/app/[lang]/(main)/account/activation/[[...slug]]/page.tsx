@@ -116,5 +116,5 @@ const Page = async ({ params }: Props): Promise<React.JSX.Element> => {
   );
 };
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
 export default Page;

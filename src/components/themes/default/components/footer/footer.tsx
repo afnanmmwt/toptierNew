@@ -59,6 +59,7 @@ const Footer = () => {
         setEmail('')
       }
     } catch (err) {
+      console.log(err)
       toast.error('Something went wrong!')
     } finally {
       setLoading(false)
@@ -126,7 +127,7 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value)
-                  if (emailError) setEmailError(null) 
+                  if (emailError) setEmailError(null)
                 }}
                 //  Removed `required` to disable browser validation
                 className={`flex-1 w-full px-5 py-4 rounded-full border ${
@@ -173,8 +174,8 @@ const Footer = () => {
             <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 space-x-4">
 
 
-              <div className="relative w-19 text-gray-400"> 
-               
+              <div className="relative w-19 text-gray-400">
+
                 <LanguageDropdown />
 
 

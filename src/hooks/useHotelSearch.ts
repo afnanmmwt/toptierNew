@@ -8,8 +8,8 @@ import {
 } from "@src/actions";
 import { z } from "zod";
 import { useAppSelector } from "@lib/redux/store";
-import { usePathname, useRouter } from "next/navigation";
-import { currency, setHotels, setSeletecHotel } from "@lib/redux/base";
+import {  useRouter } from "next/navigation";
+import {  setHotels, setSeletecHotel } from "@lib/redux/base";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
@@ -108,10 +108,9 @@ const useHotelSearch = () => {
     nationality: "US",
     children_ages: [], //  NEW
   });
-  const hotelSearch_path = usePathname();
 
   const queryClient = useQueryClient();
-    const {country, currency, locale}=useAppSelector((state)=>state.root)
+    const { currency, locale}=useAppSelector((state)=>state.root)
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showGuestsDropdown, setShowGuestsDropdown] = useState(false);
@@ -121,7 +120,6 @@ const useHotelSearch = () => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [isloadingMore, setIsLoadingMore] = useState(false);
   const [noMoreData, setNoMoreData] = useState(false);
-  const [selectedHotel, setSelectedHotel] = useState<any>({});
   const [selectedRomm, setSelectedRoom] = useState<any>({});
   // FIX 1: Add separate loading states
   const [isSearching, setIsSearching] = useState(false);
@@ -289,7 +287,7 @@ const [loadingHotelId, setLoadingHotelId] = useState<string | null>(null);
             });
             return { mod, result };
           } catch (err) {
-            // console.error(`Module ${mod} failed:`, err);
+            console.error(`Module ${mod} failed:`, err);
             return { mod, result: null };
           }
         });
@@ -306,7 +304,7 @@ const [loadingHotelId, setLoadingHotelId] = useState<string | null>(null);
 
         return { success: true, data: results };
       } catch (err) {
-        // console.error("Batch API call failed:", err);
+        console.error("Batch API call failed:", err);
         return { success: false, error: (err as Error).message };
       } finally {
         isProcessingRef.current = false;
@@ -466,7 +464,6 @@ const [loadingHotelId, setLoadingHotelId] = useState<string | null>(null);
     //  generate slug
     const slugName = hotel.name.toLowerCase().replace(/\s+/g, "-");
     let parsedFormData:any;
-    let suplier_name;
     if (selectedNationality) {
        parsedFormData = JSON.parse(selectedNationality); // now it's an object
     }
@@ -614,7 +611,6 @@ const [loadingHotelId, setLoadingHotelId] = useState<string | null>(null);
     callAllModulesAPI, // Export for use in filters
     isProcessingRef,
     setSelectedRoom,
-    selectedHotel,
     selectedRomm,
    loadingHotelId, setLoadingHotelId,
 

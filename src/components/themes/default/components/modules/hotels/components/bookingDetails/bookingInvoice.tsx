@@ -11,7 +11,6 @@ import {
   processed_payment,
 } from "@src/actions";
 import { useRouter } from "next/navigation";
-import Dropdown from "@components/core/Dropdown";
 import { toast } from "react-toastify";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -51,16 +50,6 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>(
     invoiceDetails[0]?.payment_gateway || ""
   );
-  const { payment_gateways } = useAppSelector((state) => state.appData?.data);
-  const activePayments =
-    payment_gateways
-      ?.filter((p: any) => p.status)
-      ?.map((p: any) => ({
-        id: p.id,
-        name: p.name,
-        label: p.label || p.name,
-        icon: p.icon || null,
-      })) || [];
 
   const [isDownloading, setIsDownloading] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
@@ -76,12 +65,10 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
   }
 
   const data = invoiceDetails[0];
-
-
   const travellers: Traveller[] = JSON.parse(data.guest || "[]");
   const rooms: RoomData[] = JSON.parse(data.room_data || "[]");
-  const child_ages:any[]= JSON.parse(data.child_ages || "[]");
-  let childCounter=0
+  const child_ages: any[] = JSON.parse(data.child_ages || "[]");
+  let childCounter = 0;
   const booking_Data = JSON.parse(data.booking_data);
   const invoiceDetailsBooking = JSON.parse(data.booking_data || "{}");
   const invoiceUrl = `${window.location.origin}/hotels/invoice/${data.booking_ref_no}`;
@@ -719,28 +706,6 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     }
   };
 
-  const handlePayNow = async () => {
-    const re_id = invoiceDetails[0].booking_ref_no;
-    const response = await prapare_payment({
-      booking_ref_no: re_id,
-      invoice_url: invoiceUrl,
-      payment_getway: selectedPaymentMethod,
-    });
-    const result = response?.data;
-    if (response.success) {
-      const { payload, payment_gateway } = result;
-      const payment_response = await processed_payment({
-        payload: payload,
-        payment_gateway: payment_gateway,
-      });
-      const payment_result = payment_response?.data;
-      const url = payment_result?.checkout_url || payment_response.checkout_url;
-      if (payment_response.success) {
-        router.push(url);
-      }
-    }
-  };
-
   const handleCancellation = async () => {
     setIsCancelling(true);
     try {
@@ -754,10 +719,6 @@ const HotelInvoice: React.FC<HotelInvoiceProps> = ({ invoiceDetails }) => {
     } finally {
       setIsCancelling(false);
     }
-  };
-
-  const handleSelectPayment = (payment: any) => {
-    setSelectedPaymentMethod(payment.name.toLowerCase());
   };
 
   const handleShareWhatsApp = () => {
@@ -833,72 +794,6 @@ View Invoice: ${invoiceUrl}`;
             </div>
           </div>
         </div>
-
-        {/* {bookingData.paymentStatus === "unpaid" && (
-          <div className="paymentSection">
-            <div className="paymentTitle">Pay With</div>
-
-            <Dropdown
-              label={
-                <div className="flex items-center gap-2">
-                  {selectedPaymentMethod ? (
-                    <span>{selectedPaymentMethod}</span>
-                  ) : (
-                    <span className="text-gray-500">Select payment method</span>
-                  )}
-                </div>
-              }
-              dropDirection="down"
-              buttonClassName="dropdownButton"
-            >
-              {({ onClose }) => (
-                <div className="dropdownContent">
-                  {activePayments.map((method: any) => (
-                    <button
-                      key={method.id}
-                      type="button"
-                      onClick={() => {
-                        handleSelectPayment(method);
-                        onClose();
-                      }}
-                      className={`paymentOption ${
-                        selectedPaymentMethod === method.name.toLowerCase()
-                          ? "paymentOptionSelected"
-                          : ""
-                      }`}
-                    >
-                      {method.icon ? (
-                        <img
-                          src={method.icon}
-                          alt={method.label}
-                          className="paymentIcon"
-                        />
-                      ) : (
-                        <div className="iconPlaceholder">
-                          {method.label.charAt(0)}
-                        </div>
-                      )}
-                      <span>{method.label}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </Dropdown>
-
-            <button
-              onClick={handlePayNow}
-              disabled={!selectedPaymentMethod}
-              className="payButton"
-            >
-              {dict?.hotelInvoice?.bookingInfo?.proceed}
-            </button>
-
-            <div className="totalAmount">
-              USD {bookingData.total.replace(/[^0-9.,]/g, "")}
-            </div>
-          </div>
-        )} */}
-
         {/* Booking Details */}
         <div className="content">
           {bookingData.paymentStatus === "paid" &&
@@ -978,18 +873,23 @@ View Invoice: ${invoiceUrl}`;
                 </thead>
                 <tbody>
                   {travellers.map((t, index) => (
-  <tr key={index} className="tableRow">
-    <td className="tableCell">{index + 1}</td>
-    <td className="tableCell">{t.title}</td>
-    <td className="tableCell">{t.first_name} {t.last_name}</td>
-    <td className="tableCell">
-      {t.traveller_type === "child"
-        ? `${t.traveller_type} (${child_ages[childCounter++]?.ages} year${child_ages[childCounter-1]?.ages > 1 ? "s" : ""})`
-        : t.traveller_type}
-    </td>
-  </tr>
-))}
-
+                    <tr key={index} className="tableRow">
+                      <td className="tableCell">{index + 1}</td>
+                      <td className="tableCell">{t.title}</td>
+                      <td className="tableCell">
+                        {t.first_name} {t.last_name}
+                      </td>
+                      <td className="tableCell">
+                        {t.traveller_type === "child"
+                          ? `${t.traveller_type} (${
+                              child_ages[childCounter++]?.ages
+                            } year${
+                              child_ages[childCounter - 1]?.ages > 1 ? "s" : ""
+                            })`
+                          : t.traveller_type}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -1094,7 +994,7 @@ View Invoice: ${invoiceUrl}`;
                 {dict?.hotelInvoice?.fareAndTax?.taxLabel}
               </span>
               <span className="taxLabel">
-                 {invoiceDetails[0].tax} {"%"}
+                {invoiceDetails[0].tax} {"%"}
               </span>
             </div>
             <div className="totalRow">
@@ -1195,32 +1095,58 @@ View Invoice: ${invoiceUrl}`;
           </span>
         </button>
 
-        <button
-          onClick={handleCancellation}
-          className="actionButton cancellationButton"
-        >
-          {isCancelling ? (
-            <>
-              <Icon
-                icon="eos-icons:loading"
-                className="loadingIcon"
-                width="20"
-                height="20"
-              />
-              <span>
-                {dict?.featured_hotels?.cancelling || "جارٍ الإلغاء..."}
-              </span>
-            </>
-          ) : (
-            <>
-              <Icon icon="mdi:close" width="20" height="20" />
-              <span>
-                {dict?.hotelInvoice?.buttons?.requestCancellation ||
-                  "Request for Cancellation"}
-              </span>
-            </>
-          )}
-        </button>
+        {booking_Data.cancellation === "1" ? (
+          <button
+            onClick={handleCancellation}
+            className="actionButton cancellationButton"
+          >
+            {isCancelling ? (
+              <>
+                <Icon
+                  icon="eos-icons:loading"
+                  className="loadingIcon"
+                  width="20"
+                  height="20"
+                />
+                <span>
+                  {dict?.featured_hotels?.cancelling || "جارٍ الإلغاء..."}
+                </span>
+              </>
+            ) : (
+              <>
+                <Icon icon="mdi:close" width="20" height="20" />
+                <span>
+                  {dict?.hotelInvoice?.buttons?.requestCancellation ||
+                    "Request for Cancellation"}
+                </span>
+              </>
+            )}
+          </button>
+        ) : (
+          <button
+            // onClick={handleCancellation}
+            className="flex items-center justify-center gap-2 w-full min-w-[160px] bg-white border border-gray-300 rounded-lg shadow-sm px-6 h-11 font-semibold text-gray-800 cursor-not-allowed transition-opacity duration-200"
+          >
+            {isCancelling ? (
+              <>
+                <Icon
+                  icon="eos-icons:loading"
+                  className="animate-spin"
+                  width="20"
+                  height="20"
+                />
+                <span>
+                  {dict?.featured_hotels?.cancelling || "جارٍ الإلغاء..."}
+                </span>
+              </>
+            ) : (
+              <>
+                <Icon icon="mdi:close" width="20" height="20" />
+                <span>Cancellation Not Available</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

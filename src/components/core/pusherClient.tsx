@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Pusher from 'pusher-js';
-import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '@iconify/react';
 
